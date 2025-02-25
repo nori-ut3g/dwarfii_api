@@ -1,6 +1,6 @@
 /** @module api_codes */
 export const DwarfIP: "192.168.88.1";
-export function wsURL(IP: string): string;
+export function wsURL(IP: string, proxyURL?: any, useHttps?: boolean): string;
 export function wideangleURL(IP: string): string;
 export function telephotoURL(IP: string): string;
 export function rawPreviewURL(IP: string): string;

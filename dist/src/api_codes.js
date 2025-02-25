@@ -5,7 +5,16 @@ export const DwarfIP = "192.168.88.1";
  * @param {string} IP
  * @returns {string}
  */
-export const wsURL = (IP) => `ws://${IP}:9900`;
+//export const wsURL = (IP, PROXY, HTTPS) => `ws://${IP}:9900`;
+export const wsURL = (IP, proxyURL = undefined, useHttps = false) => {
+    if (proxyURL) {
+        const protocol = useHttps ? "wss" : "ws";
+        console.log(`Starting Web Socket : ${protocol}://${proxyURL}/?target=ws://${IP}:9900`);
+        return `${protocol}://${proxyURL}/?target=ws://${IP}:9900`;
+    }
+    console.log(`Starting Web Socket : ws://${IP}:9900`);
+    return `ws://${IP}:9900`;
+};
 /**
  * @param {string} IP
  * @returns {string}

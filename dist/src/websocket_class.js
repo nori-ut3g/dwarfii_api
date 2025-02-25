@@ -35,8 +35,8 @@ class Queue {
     }
 }
 /**
- * WebSocketHandler is the main interface to send messages to the Dwarf II via websocket
- * It will analyse all messages received by the Dwarf II and send the recieved messages to the caller
+ * WebSocketHandler is the main interface to send messages to the Dwarf via websocket
+ * It will analyse all messages received by the Dwarf and send the recieved messages to the caller
  * It's a singleton class
  * @class
  * @constructor
@@ -44,13 +44,15 @@ class Queue {
  */
 export class WebSocketHandler {
     /**
-     * Create a link to the Api and set the IP address of the dwarf II to connect to
-     * @param {string | undefined} IPDwarf ; Set the IP address of the dwarf II to connect to
+     * Create a link to the Api and set the IP address of the Dwarf to connect to
+     * @param {string | undefined} IPDwarf ; Set the IP address of the Dwarf to connect to
      */
     constructor(IPDwarf) {
         this.socket = null;
         this.is_opened = false;
         this.IPDwarf = undefined;
+        this.proxyURL = undefined;
+        this.useHttps = false;
         this.WS_Packet = {};
         this.isCallbackMessages = false;
         this.packetCallbackMessages = {};
@@ -60,7 +62,7 @@ export class WebSocketHandler {
         this.packetCallbackConnectStates = {};
         this.callbackReconnectFunction = undefined;
         /**
-         * closeSocketTimer : Timer could be defined to manage a connection time of the dwarf that is too long
+         * closeSocketTimer : Timer could be defined to manage a connection time of the Dwarf that is too long
          */
         this.closeSocketTimer = undefined;
         /**
@@ -95,35 +97,76 @@ export class WebSocketHandler {
         return WebSocketHandler.instance;
     }
     /**
-     * Set the IP address of the dwarf II to connect to
-     * @param {string} IPDwarf ; Set the IP address of the dwarf II to connect to, force another one that was configured when calling the constructor.
+     * Set the IP address of the Dwarf to connect to
+     * @param {string} IPDwarf ; Set the IP address of the Dwarf to connect to, force another one that was configured when calling the constructor.
      * @returns {Promise<void>}
      */
     setNewIpDwarf(IPDwarf) {
         return __awaiter(this, void 0, void 0, function* () {
             console.debug("websocket_class : setIpDwarf : ", IPDwarf);
             if (IPDwarf != this.IPDwarf) {
-                console.debug("websocket_class : new IP received, closing old one :", this.IPDwarf);
+                console.debug("websocket_class : new IP received, closing old one: ", this.IPDwarf);
                 this.close();
                 yield sleep(1000);
             }
             this.IPDwarf = IPDwarf;
-            console.debug("websocket_class : new Ip : ", this.IPDwarf);
+            console.debug("websocket_class : new Ip: ", this.IPDwarf);
         });
     }
     /**
-     * Set the device ID of the dwarf connected (readen from the dwarf or from the config file on the dwarf)
-     * @param {number} deviceIdDwarf ; Set the device ID of the dwarf connected.
+     * Set the URL address of the proxy uses to connect to the dwarf,
+     * by default not used, set it to empty param for not using a proxy
+     * @param {string} proxyURL ; Set the URL address of the Proxy the Dwarf to connect to.
+     * @returns {Promise<void>}
+     */
+    setProxyUrl(proxyURL = undefined) {
+        return __awaiter(this, void 0, void 0, function* () {
+            if (!proxyURL)
+                console.debug("websocket_class : Resetting Proxy URL value");
+            else
+                console.debug("websocket_class : Setting Proxy URL: ", proxyURL);
+            if (proxyURL != this.proxyURL) {
+                console.debug("websocket_class : new Proxy Url received, closing connection: ", this.proxyURL);
+                this.close();
+                yield sleep(1000);
+            }
+            this.proxyURL = proxyURL;
+            if (this.proxyURL)
+                console.debug("websocket_class : Using Proxy URL: ", this.proxyURL);
+            else
+                console.debug("websocket_class : Proxy URL reset");
+        });
+    }
+    /**
+     * Set the Https mode of the proxy connection, the Dwarf connect to
+     * @param {boolean} useHttps ; true if Https, then wss should be used with a proxy connection
+     * @returns {Promise<void>}
+     */
+    setHttpsMode(useHttps) {
+        return __awaiter(this, void 0, void 0, function* () {
+            console.debug("websocket_class : setHttpsMode : ", useHttps);
+            if (useHttps !== this.useHttps) {
+                console.debug("websocket_class : change Https mode, closing connection. Previous  mode : ", this.useHttps ? "on" : "off");
+                this.close();
+                yield sleep(1000);
+            }
+            this.useHttps = useHttps;
+            console.debug("websocket_class : Updated HTTPS mode : ", this.useHttps ? "on" : "off");
+        });
+    }
+    /**
+     * Set the device ID of the Dwarf connected (readen from the Dwarf or from the config file on the Dwarf)
+     * @param {number} deviceIdDwarf ; Set the device ID of the Dwarf connected.
      * @returns {boolean} status
      */
     setDeviceIdDwarf(deviceIdDwarf) {
         console.debug("websocket_class : setDeviceIdDwarf : ", deviceIdDwarf);
         if (setDwarfDeviceID(deviceIdDwarf)) {
-            console.debug("websocket_class : success setting the device ID of the dwarf : ", deviceIdDwarf);
+            console.debug("websocket_class : success setting the device ID of the Dwarf : ", deviceIdDwarf);
             return true;
         }
         else {
-            console.error("websocket_class : error setting the device ID of the dwarf : ", deviceIdDwarf);
+            console.error("websocket_class : error setting the device ID of the Dwarf : ", deviceIdDwarf);
             return false;
         }
     }
@@ -138,7 +181,7 @@ export class WebSocketHandler {
         }
     }
     /**
-     * Set the nb of times for trying to reconnect to the dwarf if the connection closes, default is 5.
+     * Set the nb of times for trying to reconnect to the Dwarf if the connection closes, default is 5.
      * @param {number} nbTimes ;
      * @returns {void}
      */
@@ -154,7 +197,7 @@ export class WebSocketHandler {
         this.nb_ping_error_default = nbTimes;
     }
     /**
-     * Verify the status of the connection with the Dwarf II
+     * Verify the status of the connection with the Dwarf
      * @returns {boolean} status of the connection
      */
     isConnected() {
@@ -166,7 +209,7 @@ export class WebSocketHandler {
             return false;
     }
     /**
-     * Main function, to call after prepare function, send the message and start dialogue with the Dwarf II
+     * Main function, to call after prepare function, send the message and start dialogue with the Dwarf
      * @returns {Promise<boolean>} false if the IP has not been set or if old Socket can't be closed
      */
     run() {
@@ -207,7 +250,7 @@ export class WebSocketHandler {
                     // Create WebSocket
                     this.socket = undefined;
                     let new_socket = undefined;
-                    new_socket = new WebSocket(wsURL(this.IPDwarf));
+                    new_socket = new WebSocket(wsURL(this.IPDwarf, this.proxyURL, this.useHttps));
                     console.log("Launch open new Socket");
                     // Socket Binary Mode
                     new_socket.binaryType = "arraybuffer";
@@ -216,7 +259,11 @@ export class WebSocketHandler {
                             this.socket = new_socket;
                             console.debug("new socket created", new_socket);
                             this.is_opened = true;
-                            console.debug(`websocket_class : open... on IP : ${this.IPDwarf}`);
+                            if (!this.proxyURL)
+                                console.debug(`websocket_class : open... on IP : ${this.IPDwarf}`);
+                            else {
+                                console.debug(`websocket_class: open... on IP: ${this.IPDwarf} using proxy: ${this.proxyURL || "none"}${this.useHttps ? " (HTTPS on)" : ""}`);
+                            }
                             console.debug("class instance open:", this);
                             // Start on the open event
                             this.start();
@@ -277,11 +324,11 @@ export class WebSocketHandler {
     }
     /**
      * Prepare function : Define the message to send and the command to listen to and the callbacks functions
-     * @param {Object|Object[]} WS_Packet ; Message or Array of Messages from the API to send to the Dwarf II
+     * @param {Object|Object[]} WS_Packet ; Message or Array of Messages from the API to send to the Dwarf
      * @param {string} senderId ; identifier of the sender
      * @param {string[]} expectedResponseCmd ; List of the Command Id to listen to, can be "*" to get all commands.
-     * @param {function} callbackMessage ; Callback Fonction (const customMessageHandler = (txt_info:string, result_data:object)) to analyse reponses from the Dwarf II
-     * @param {function} callbackConnectState ; Callback Fonction (const customStateHandler = (state)) to get the status result of the current connection of the Dwarf II
+     * @param {function} callbackMessage ; Callback Fonction (const customMessageHandler = (txt_info:string, result_data:object)) to analyse reponses from the Dwarf
+     * @param {function} callbackConnectState ; Callback Fonction (const customStateHandler = (state)) to get the status result of the current connection of the Dwarf
      * @param {function} callbackError ; Callback Fonction (const customErrorHandler = ()) called after an socket error.
      * @param {function} callbackReconnect ; Callback Fonction (const customReconnectHandler = ()) called after a socket reconnection.
      * @returns {Promise<void>}
@@ -595,8 +642,8 @@ export class WebSocketHandler {
         this.sendCallbackErrors();
     }
     /**
-     * Handle close event of the socket connection with the dwarf II
-     * To call from a timeout function during the connection with the dwarf II
+     * Handle close event of the socket connection with the Dwarf
+     * To call from a timeout function during the connection with the Dwarf
      * @returns {Promise<void>}
      */
     handleClose(message) {
@@ -616,7 +663,7 @@ export class WebSocketHandler {
         });
     }
     /**
-     * Force close the socket connection with the dwarf II
+     * Force close the socket connection with the Dwarf
      * @returns {Promise<void>}
      */
     close() {
