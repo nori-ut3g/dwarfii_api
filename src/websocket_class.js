@@ -804,12 +804,12 @@ export class WebSocketHandler {
     // need closing socket if connected
     if (this.socket && this.socket.readyState === WebSocket.OPEN) {
       console.log("Websocket close");
-      this.socket.close();
+      this.socket.close(1000, "Normal closure");
       await sleep(1000);
     }
     if (this.socket && this.socket.readyState != WebSocket.CLOSED) {
       // Socket still hangs, hard close
-      this.socket.close();
+      this.socket.close(1000, "Force close after timeout");
       console.log("Websocket force close");
       await sleep(1000);
     }
