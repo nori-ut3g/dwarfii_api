@@ -30,9 +30,9 @@ message ReqStopGoto {
     
 }
 
-// 开始叠图
+// 开始叠图 (V3: frame_count added, -1=infinite)
 message ReqCaptureRawLiveStacking {
-
+    int32 frame_count = 1;
 }
 
 // 停止叠图
@@ -129,19 +129,23 @@ message ReqStopTrackSpecialTarget {
 
 }
 
-// 一键Goto深空天体
+// 一键Goto深空天体 (V3: lon, lat, mode added)
 message ReqOneClickGotoDSO {
     double ra = 1;
     double dec = 2;
     string target_name = 3;
+    double lon = 4;
+    double lat = 5;
+    int32 mode = 6;
 }
 
-// 一键Goto太阳系
+// 一键Goto太阳系 (V3: mode added)
 message ReqOneClickGotoSolarSystem {
     int32 index = 1;
     double lon = 2;
     double lat = 3;
     string target_name = 4;
+    int32 mode = 5;
 }
 
 message ResOneClickGoto {
