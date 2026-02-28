@@ -18,7 +18,7 @@ export function messageV3CameraTeleOpenCamera() {
   let interface_id = Dwarfii_Api.DwarfCMD.CMD_V3_CAMERA_TELE_OPEN_CAMERA;
   let type_id = Dwarfii_Api.MessageTypeId.TYPE_REQUEST;
   const cmdClass = cmdMapping[interface_id];
-  let class_message = eval(`Dwarfii_Api.${cmdClass}`);
+  let class_message = Dwarfii_Api[cmdClass];
   let message = class_message.create({ action: 1 });
   console.log(
     `class Message = ${cmdClass} created message = ${JSON.stringify(message)}`
@@ -35,7 +35,7 @@ export function messageV3CameraTeleCloseCamera() {
   let interface_id = Dwarfii_Api.DwarfCMD.CMD_V3_CAMERA_TELE_OPEN_CAMERA;
   let type_id = Dwarfii_Api.MessageTypeId.TYPE_REQUEST;
   const cmdClass = cmdMapping[interface_id];
-  let class_message = eval(`Dwarfii_Api.${cmdClass}`);
+  let class_message = Dwarfii_Api[cmdClass];
   let message = class_message.create({});
   console.log(
     `class Message = ${cmdClass} created message = ${JSON.stringify(message)}`

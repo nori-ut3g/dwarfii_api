@@ -18,7 +18,7 @@ export function messageV3DeviceConfigGetConfig() {
   let interface_id = Dwarfii_Api.DwarfCMD.CMD_V3_DEVICE_CONFIG_GET_CONFIG;
   let type_id = Dwarfii_Api.MessageTypeId.TYPE_REQUEST;
   const cmdClass = cmdMapping[interface_id];
-  let class_message = eval(`Dwarfii_Api.${cmdClass}`);
+  let class_message = Dwarfii_Api[cmdClass];
   let message = class_message.create({});
   console.log(
     `class Message = ${cmdClass} created message = ${JSON.stringify(message)}`
@@ -36,7 +36,7 @@ export function messageV3DeviceConfigModeQuery(targetMode) {
   let interface_id = Dwarfii_Api.DwarfCMD.CMD_V3_DEVICE_CONFIG_MODE_QUERY;
   let type_id = Dwarfii_Api.MessageTypeId.TYPE_REQUEST;
   const cmdClass = cmdMapping[interface_id];
-  let class_message = eval(`Dwarfii_Api.${cmdClass}`);
+  let class_message = Dwarfii_Api[cmdClass];
   let message = class_message.create({ targetMode: targetMode });
   console.log(
     `class Message = ${cmdClass} created message = ${JSON.stringify(message)}`
@@ -53,7 +53,7 @@ export function messageV3DeviceConfigModeSwitch() {
   let interface_id = Dwarfii_Api.DwarfCMD.CMD_V3_DEVICE_CONFIG_MODE_SWITCH;
   let type_id = Dwarfii_Api.MessageTypeId.TYPE_REQUEST;
   const cmdClass = cmdMapping[interface_id];
-  let class_message = eval(`Dwarfii_Api.${cmdClass}`);
+  let class_message = Dwarfii_Api[cmdClass];
   let inner = Dwarfii_Api.V3ModeSwitchInner.create({ value: 1 });
   let message = class_message.create({ inner: inner });
   console.log(
@@ -72,7 +72,7 @@ export function messageV3DeviceConfigShootingModeSwitch(modeId) {
   let interface_id = Dwarfii_Api.DwarfCMD.CMD_V3_DEVICE_CONFIG_SHOOTING_MODE;
   let type_id = Dwarfii_Api.MessageTypeId.TYPE_REQUEST;
   const cmdClass = cmdMapping[interface_id];
-  let class_message = eval(`Dwarfii_Api.${cmdClass}`);
+  let class_message = Dwarfii_Api[cmdClass];
   let message = class_message.create({ modeId: modeId });
   console.log(
     `class Message = ${cmdClass} created message = ${JSON.stringify(message)}`

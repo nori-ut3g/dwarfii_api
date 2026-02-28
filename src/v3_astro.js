@@ -20,7 +20,7 @@ export function messageV3AstroStartStacking(frameCount = -1) {
     Dwarfii_Api.DwarfCMD.CMD_ASTRO_START_CAPTURE_RAW_LIVE_STACKING;
   let type_id = Dwarfii_Api.MessageTypeId.TYPE_REQUEST;
   const cmdClass = cmdMapping[interface_id];
-  let class_message = eval(`Dwarfii_Api.${cmdClass}`);
+  let class_message = Dwarfii_Api[cmdClass];
   let message = class_message.create({ frameCount: frameCount });
   console.log(
     `class Message = ${cmdClass} created message = ${JSON.stringify(message)}`
@@ -38,7 +38,7 @@ export function messageV3AstroStopStacking() {
     Dwarfii_Api.DwarfCMD.CMD_ASTRO_STOP_CAPTURE_RAW_LIVE_STACKING;
   let type_id = Dwarfii_Api.MessageTypeId.TYPE_REQUEST;
   const cmdClass = cmdMapping[interface_id];
-  let class_message = eval(`Dwarfii_Api.${cmdClass}`);
+  let class_message = Dwarfii_Api[cmdClass];
   let message = class_message.create({});
   console.log(
     `class Message = ${cmdClass} created message = ${JSON.stringify(message)}`
@@ -55,7 +55,7 @@ export function messageV3AstroStartTracking() {
   let interface_id = Dwarfii_Api.DwarfCMD.CMD_ASTRO_GO_LIVE;
   let type_id = Dwarfii_Api.MessageTypeId.TYPE_REQUEST;
   const cmdClass = cmdMapping[interface_id];
-  let class_message = eval(`Dwarfii_Api.${cmdClass}`);
+  let class_message = Dwarfii_Api[cmdClass];
   let message = class_message.create({});
   console.log(
     `class Message = ${cmdClass} created message = ${JSON.stringify(message)}`
@@ -78,7 +78,7 @@ export function messageV3AstroGotoDSO(ra, dec, targetName, lon, lat, mode = 2) {
   let interface_id = Dwarfii_Api.DwarfCMD.CMD_ASTRO_START_ONE_CLICK_GOTO_DSO;
   let type_id = Dwarfii_Api.MessageTypeId.TYPE_REQUEST;
   const cmdClass = cmdMapping[interface_id];
-  let class_message = eval(`Dwarfii_Api.${cmdClass}`);
+  let class_message = Dwarfii_Api[cmdClass];
   let message = class_message.create({
     ra: ra,
     dec: dec,
@@ -114,7 +114,7 @@ export function messageV3AstroGotoSolar(
     Dwarfii_Api.DwarfCMD.CMD_ASTRO_START_ONE_CLICK_GOTO_SOLAR_SYSTEM;
   let type_id = Dwarfii_Api.MessageTypeId.TYPE_REQUEST;
   const cmdClass = cmdMapping[interface_id];
-  let class_message = eval(`Dwarfii_Api.${cmdClass}`);
+  let class_message = Dwarfii_Api[cmdClass];
   let message = class_message.create({
     index: index,
     lon: lon,
@@ -137,7 +137,7 @@ export function messageV3AstroGotoDone() {
   let interface_id = Dwarfii_Api.DwarfCMD.CMD_ASTRO_STOP_ONE_CLICK_GOTO;
   let type_id = Dwarfii_Api.MessageTypeId.TYPE_REQUEST;
   const cmdClass = cmdMapping[interface_id];
-  let class_message = eval(`Dwarfii_Api.${cmdClass}`);
+  let class_message = Dwarfii_Api[cmdClass];
   let message = class_message.create({});
   console.log(
     `class Message = ${cmdClass} created message = ${JSON.stringify(message)}`
@@ -155,7 +155,7 @@ export function messageV3AstroSaveImage(path) {
   let interface_id = Dwarfii_Api.DwarfCMD.CMD_V3_ASTRO_SAVE_STACKED_IMAGE;
   let type_id = Dwarfii_Api.MessageTypeId.TYPE_REQUEST;
   const cmdClass = cmdMapping[interface_id];
-  let class_message = eval(`Dwarfii_Api.${cmdClass}`);
+  let class_message = Dwarfii_Api[cmdClass];
   let message = class_message.create({ path: path });
   console.log(
     `class Message = ${cmdClass} created message = ${JSON.stringify(message)}`
@@ -172,7 +172,7 @@ export function messageV3AstroListImages() {
   let interface_id = Dwarfii_Api.DwarfCMD.CMD_V3_ASTRO_LIST_SAVED_IMAGES;
   let type_id = Dwarfii_Api.MessageTypeId.TYPE_REQUEST;
   const cmdClass = cmdMapping[interface_id];
-  let class_message = eval(`Dwarfii_Api.${cmdClass}`);
+  let class_message = Dwarfii_Api[cmdClass];
   let message = class_message.create({});
   console.log(
     `class Message = ${cmdClass} created message = ${JSON.stringify(message)}`
@@ -198,7 +198,7 @@ export function messageV3AstroStatusPolling(
   let interface_id = Dwarfii_Api.DwarfCMD.CMD_V3_ASTRO_STATUS_POLLING;
   let type_id = Dwarfii_Api.MessageTypeId.TYPE_REQUEST;
   const cmdClass = cmdMapping[interface_id];
-  let class_message = eval(`Dwarfii_Api.${cmdClass}`);
+  let class_message = Dwarfii_Api[cmdClass];
   let message = class_message.create({
     field1: f1,
     field2: f2,
@@ -221,7 +221,7 @@ export function messageV3AstroGetParams(mode = 0) {
   let interface_id = Dwarfii_Api.DwarfCMD.CMD_V3_ASTRO_GET_PARAMS;
   let type_id = Dwarfii_Api.MessageTypeId.TYPE_REQUEST;
   const cmdClass = cmdMapping[interface_id];
-  let class_message = eval(`Dwarfii_Api.${cmdClass}`);
+  let class_message = Dwarfii_Api[cmdClass];
   let message = class_message.create({ mode: mode });
   console.log(
     `class Message = ${cmdClass} created message = ${JSON.stringify(message)}`
@@ -239,7 +239,7 @@ export function messageV3AstroSetParams(params) {
   let interface_id = Dwarfii_Api.DwarfCMD.CMD_V3_ASTRO_SET_PARAMS;
   let type_id = Dwarfii_Api.MessageTypeId.TYPE_REQUEST;
   const cmdClass = cmdMapping[interface_id];
-  let class_message = eval(`Dwarfii_Api.${cmdClass}`);
+  let class_message = Dwarfii_Api[cmdClass];
   let message = class_message.create({ params: params });
   console.log(
     `class Message = ${cmdClass} created message = ${JSON.stringify(message)}`
@@ -256,7 +256,7 @@ export function messageV3AstroGetPresets() {
   let interface_id = Dwarfii_Api.DwarfCMD.CMD_V3_ASTRO_GET_PRESETS;
   let type_id = Dwarfii_Api.MessageTypeId.TYPE_REQUEST;
   const cmdClass = cmdMapping[interface_id];
-  let class_message = eval(`Dwarfii_Api.${cmdClass}`);
+  let class_message = Dwarfii_Api[cmdClass];
   let message = class_message.create({});
   console.log(
     `class Message = ${cmdClass} created message = ${JSON.stringify(message)}`
@@ -275,7 +275,7 @@ export function messageV3AstroSetLocation(lon, lat) {
   let interface_id = Dwarfii_Api.DwarfCMD.CMD_V3_ASTRO_SET_LOCATION;
   let type_id = Dwarfii_Api.MessageTypeId.TYPE_REQUEST;
   const cmdClass = cmdMapping[interface_id];
-  let class_message = eval(`Dwarfii_Api.${cmdClass}`);
+  let class_message = Dwarfii_Api[cmdClass];
   let message = class_message.create({ lon: lon, lat: lat });
   console.log(
     `class Message = ${cmdClass} created message = ${JSON.stringify(message)}`
@@ -292,7 +292,7 @@ export function messageV3AstroConfirm() {
   let interface_id = Dwarfii_Api.DwarfCMD.CMD_V3_ASTRO_CONFIRM;
   let type_id = Dwarfii_Api.MessageTypeId.TYPE_REQUEST;
   const cmdClass = cmdMapping[interface_id];
-  let class_message = eval(`Dwarfii_Api.${cmdClass}`);
+  let class_message = Dwarfii_Api[cmdClass];
   let message = class_message.create({});
   console.log(
     `class Message = ${cmdClass} created message = ${JSON.stringify(message)}`

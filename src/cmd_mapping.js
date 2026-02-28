@@ -185,7 +185,7 @@ export const cmdMapping = {
   11048: "V3ReqConfirmObservation", // V3: Confirm observation
   13010: "V3ReqSetGPSLocation", // V3: Set GPS location
   15011: "V3ReqFocusInit", // V3: Focus init
-  16102: "ComResponse", // V3: Get shooting schedule
+  16102: "ReqGetAllShootingSchedule", // V3: Get shooting schedule
   16402: "V3ReqModeQuery", // V3: Mode query
   16403: "V3ReqShootingModeSwitch", // V3: Shooting mode switch
   16404: "V3ReqModeSwitch", // V3: Mode switch
@@ -380,7 +380,7 @@ export const responseMapping = {
   11048: "ComResponse", // V3: Confirm observation
   13010: "ComResponse", // V3: Set GPS location
   15011: "V3ResFocusInit", // V3: Focus init
-  16102: "ComResponse", // V3: Get shooting schedule
+  16102: "ResGetAllShootingSchedule", // V3: Get shooting schedule
   16402: "V3ResModeQuery", // V3: Mode query
   16403: "V3ResShootingModeSwitch", // V3: Shooting mode switch
   16404: "V3ResModeSwitch", // V3: Mode switch

@@ -22,7 +22,7 @@ export function messageV3SystemSetGPSLocation(lat, lon, alt, locationName) {
   let interface_id = Dwarfii_Api.DwarfCMD.CMD_V3_SYSTEM_SET_GPS_LOCATION;
   let type_id = Dwarfii_Api.MessageTypeId.TYPE_REQUEST;
   const cmdClass = cmdMapping[interface_id];
-  let class_message = eval(`Dwarfii_Api.${cmdClass}`);
+  let class_message = Dwarfii_Api[cmdClass];
   let message = class_message.create({
     lat: lat,
     lon: lon,

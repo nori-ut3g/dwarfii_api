@@ -18,7 +18,7 @@ export function messageV3FocusInit() {
   let interface_id = Dwarfii_Api.DwarfCMD.CMD_V3_FOCUS_INIT;
   let type_id = Dwarfii_Api.MessageTypeId.TYPE_REQUEST;
   const cmdClass = cmdMapping[interface_id];
-  let class_message = eval(`Dwarfii_Api.${cmdClass}`);
+  let class_message = Dwarfii_Api[cmdClass];
   let message = class_message.create({});
   console.log(
     `class Message = ${cmdClass} created message = ${JSON.stringify(message)}`
@@ -28,7 +28,7 @@ export function messageV3FocusInit() {
 /**
  * V3: Start astro auto focus
  * Create Encoded Packet for the command CMD_FOCUS_START_ASTRO_AUTO_FOCUS
- * Sends with action=1 to start
+ * Sends with mode=1 to start
  * @returns {Uint8Array}
  */
 export function messageV3FocusAutoFocusStart() {
@@ -36,7 +36,7 @@ export function messageV3FocusAutoFocusStart() {
   let interface_id = Dwarfii_Api.DwarfCMD.CMD_FOCUS_START_ASTRO_AUTO_FOCUS;
   let type_id = Dwarfii_Api.MessageTypeId.TYPE_REQUEST;
   const cmdClass = cmdMapping[interface_id];
-  let class_message = eval(`Dwarfii_Api.${cmdClass}`);
+  let class_message = Dwarfii_Api[cmdClass];
   let message = class_message.create({ mode: 1 });
   console.log(
     `class Message = ${cmdClass} created message = ${JSON.stringify(message)}`

@@ -16,11 +16,10 @@ export function messageV3ScheduleGet() {
   let module_id = Dwarfii_Api.ModuleId.MODULE_SHOOTING_SCHEDULE;
   let interface_id = Dwarfii_Api.DwarfCMD.CMD_V3_SCHEDULE_GET;
   let type_id = Dwarfii_Api.MessageTypeId.TYPE_REQUEST;
-  // Use ComResponse as cmd class (empty request)
-  let class_message = Dwarfii_Api.ComResponse;
+  let class_message = Dwarfii_Api.ReqGetAllShootingSchedule;
   let message = class_message.create({});
   console.log(
-    `class Message = ComResponse created message = ${JSON.stringify(message)}`
+    `class Message = ReqGetAllShootingSchedule created message = ${JSON.stringify(message)}`
   );
   return createPacket(message, class_message, module_id, interface_id, type_id);
 }

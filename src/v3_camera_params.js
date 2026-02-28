@@ -20,7 +20,7 @@ export function messageV3CameraParamsAdjust(paramId, value) {
   let interface_id = Dwarfii_Api.DwarfCMD.CMD_V3_CAMERA_PARAMS_ADJUST;
   let type_id = Dwarfii_Api.MessageTypeId.TYPE_REQUEST;
   const cmdClass = cmdMapping[interface_id];
-  let class_message = eval(`Dwarfii_Api.${cmdClass}`);
+  let class_message = Dwarfii_Api[cmdClass];
   let message = class_message.create({ paramId: paramId, value: value });
   console.log(
     `class Message = ${cmdClass} created message = ${JSON.stringify(message)}`
