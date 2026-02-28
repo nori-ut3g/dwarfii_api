@@ -62,6 +62,31 @@ export function setDwarfDeviceID(deviceID) {
   }
 }
 
+var DwarfMinorVersion = 9; // V2 default
+
+/** Set the protocol minor version for outgoing packets
+ * @param {number} version - Protocol minor version (9 for V2, 20 for V3)
+ * @returns {boolean}
+ */
+export function setDwarfMinorVersion(version) {
+  if (typeof version !== "number") {
+    return false;
+  }
+  if (version > 0) {
+    DwarfMinorVersion = version;
+    return true;
+  } else {
+    return false;
+  }
+}
+
+/** Get the current protocol minor version
+ * @returns {number}
+ */
+export function getDwarfMinorVersion() {
+  return DwarfMinorVersion;
+}
+
 /**
  * Returns the now UTC time as 'yyyy-mm-dd hh:mm:ss'
  * @returns {string}
@@ -137,7 +162,7 @@ export function createPacket(
   type_id
 ) {
   let major_version = Dwarfii_Api.WsMajorVersion.WS_MAJOR_VERSION_NUMBER;
-  let minor_version = Dwarfii_Api.WsMinorVersion.WS_MINOR_VERSION_NUMBER;
+  let minor_version = DwarfMinorVersion;
   let device_id = DwarfDeviceID;
   // message
   let message_buffer = undefined;

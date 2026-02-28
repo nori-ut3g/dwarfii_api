@@ -104,6 +104,15 @@ export const IRPass = 1;
 export const binning1x1 = 0;
 export const binning2x2 = 1;
 
+// Device IDs
+export const DwarfDeviceIdDwarfII = 1;
+export const DwarfDeviceIdDwarf3 = 2;
+export const DwarfDeviceIdDwarfMini = 4;
+
+// WebSocket protocol minor versions
+export const WsMinorVersionV2 = 9;
+export const WsMinorVersionV3 = 20;
+
 export const fileFits = 0;
 export const fileTiff = 1;
 
