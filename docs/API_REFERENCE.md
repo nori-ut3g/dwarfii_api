@@ -141,7 +141,7 @@ DWARF II / 3 / mini 用 WebSocket API ライブラリ。
 | 10038 | `messageCameraTeleGetAllFeatureParams()` | — | 全機能パラメータ取得 |
 | 10039 | `messageCameraTeleGetSystemWorkingState()` | — | システム動作状態取得 |
 | 10040 | `messageCameraTeleSetJPGQuality(quality)` | quality: JPEG品質 | JPEGプレビュー品質設定 |
-| 10040 | `messageCameraTeleSetRTSPPreviewBitsRate(bitrate_type)` | bitrate_type: ビットレート | RTSPプレビュービットレート設定 |
+| 10042 | `messageCameraTeleSetRTSPPreviewBitsRate(bitrate_type)` | bitrate_type: ビットレート | RTSPプレビュービットレート設定 |
 | 10041 | `messageCameraTelePhotoRaw()` | — | RAW撮影 |
 
 ### Camera Wide (広角カメラ)
@@ -357,17 +357,17 @@ DWARF II / 3 / mini 用 WebSocket API ライブラリ。
 | 11036 | CMD_V3_ASTRO_SAVE_COMPLETE | ComResponse | — | 画像保存完了 |
 | 15255 | CMD_V3_NOTIFY_EXPOSURE_PROGRESS | V3ResNotifyExposureProgress | elapsed, total | 露出進捗 (フレーム毎) |
 | 15261 | CMD_V3_NOTIFY_DEVICE_STATE | V3ResNotifyDeviceState | event, mode, state, path | デバイス状態 |
-| 15264 | CMD_V3_NOTIFY_CAMERA_PARAM_STATE | V3ResNotifyCameraParamState | param_id, value1, value2 | カメラパラメータ状態 |
-| 15267 | CMD_V3_NOTIFY_MODE_CHANGE | V3ResNotifyModeChange | changing, mode, sub_mode | モード変更 |
+| 15264 | CMD_V3_NOTIFY_CAMERA_PARAM_STATE | V3ResNotifyCameraParamState | paramId, value1, value2 | カメラパラメータ状態 |
+| 15267 | CMD_V3_NOTIFY_MODE_CHANGE | V3ResNotifyModeChange | changing, mode, subMode | モード変更 |
 | 15270 | CMD_V3_NOTIFY_STACKING_DATA | V3ResNotifyStackingData | field1, value, field3, flag | スタッキングデータ |
 | 15273 | CMD_V3_NOTIFY_PHOTO_STATE | V3ResNotifyPhotoState | started, complete | 写真撮影状態 |
 | 15274 | CMD_V3_NOTIFY_BURST_STATE | V3ResNotifyBurstState | started, complete | 連写状態 |
 | 15275 | CMD_V3_NOTIFY_VIDEO_STATE | V3ResNotifyVideoState | started, complete | 動画撮影状態 |
 | 15276 | CMD_V3_NOTIFY_TIMELAPSE_STATE | V3ResNotifyTimelapseState | started, complete | タイムラプス状態 |
 | 15278 | CMD_V3_NOTIFY_AUTOFOCUS_STATE | V3ResNotifyAutoFocusState | state (1=実行中, 3=完了) | オートフォーカス状態 |
-| 15285 | CMD_V3_NOTIFY_PHOTO_BURST_PROGRESS | V3ResNotifyPhotoBurstProgress | total_frames, current_frame, flag | 写真/連写進捗 |
-| 15286 | CMD_V3_NOTIFY_VIDEO_PROGRESS | V3ResNotifyVideoProgress | elapsed_sec, flag | 動画録画進捗 |
-| 15287 | CMD_V3_NOTIFY_TIMELAPSE_PROGRESS | V3ResNotifyTimelapseProgress | field1, field2, frame_count, flag | タイムラプス進捗 |
+| 15285 | CMD_V3_NOTIFY_PHOTO_BURST_PROGRESS | V3ResNotifyPhotoBurstProgress | totalFrames, currentFrame, flag | 写真/連写進捗 |
+| 15286 | CMD_V3_NOTIFY_VIDEO_PROGRESS | V3ResNotifyVideoProgress | elapsedSec, flag | 動画録画進捗 |
+| 15287 | CMD_V3_NOTIFY_TIMELAPSE_PROGRESS | V3ResNotifyTimelapseProgress | field1, field2, frameCount, flag | タイムラプス進捗 |
 | 15292 | CMD_V3_NOTIFY_TEMPERATURE2 | V3ResNotifyTemperature2 | temperature | 温度 |
 | 15296 | CMD_V3_NOTIFY_OBSERVATION_STATE | V3ResNotifyObservationState | state (1=開始, 2=確認, 3=完了) | 観測状態 |
 
