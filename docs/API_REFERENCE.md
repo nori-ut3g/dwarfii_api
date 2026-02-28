@@ -142,7 +142,7 @@ DWARF II / 3 / mini 用 WebSocket API ライブラリ。
 | 10038 | `messageCameraTeleGetAllFeatureParams()` | — | 全機能パラメータ取得 |
 | 10039 | `messageCameraTeleGetSystemWorkingState()` | — | システム動作状態取得 |
 | 10040 | `messageCameraTeleSetJPGQuality(quality)` | quality: JPEG品質 | JPEGプレビュー品質設定 |
-| 10042 | `messageCameraTeleSetRTSPPreviewBitsRate(bitrate_type)` | bitrate_type: ビットレート | RTSPプレビュービットレート設定 |
+| 10042 | `messageCameraTeleSetRTSPPreviewBitsRate(bitrate_type)` | bitrate_type: ビットレート | RTSPプレビュービットレート設定（実装バグ: 実際は CMD 10040 を送信） |
 | 10041 | `messageCameraTelePhotoRaw()` | — | RAW撮影 |
 
 ### Camera Wide (広角カメラ)
