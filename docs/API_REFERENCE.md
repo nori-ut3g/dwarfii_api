@@ -135,7 +135,7 @@ DWARF II / 3 / mini 用 WebSocket API ライブラリ。
 | 10032 | `messageCameraTeleGetIRCut()` | — | IRCUT 取得 |
 | 10033 | `messageCameraTeleStartTimeLapsePhoto()` | — | タイムラプス開始 |
 | 10034 | `messageCameraTeleStopTimeLapsePhoto()` | — | タイムラプス停止 |
-| 10035 | `messageCameraTeleSetAllParams(...)` | 14 params: exp/gain/ircut/wb/brightness/contrast/hue/saturation/sharpness/jpg_quality | 全パラメータ一括設定 |
+| 10035 | `messageCameraTeleSetAllParams(...)` | exp_mode, exp_index, gain_mode, gain_index, ircut_value, wb_mode, wb_index_type, wb_index, brightness, contrast, hue, saturation, sharpness, jpg_quality | 全パラメータ一括設定 |
 | 10036 | `messageCameraTeleGetAllParams()` | — | 全パラメータ取得 |
 | 10037 | `messageCameraTeleSetFeatureParams(...)` | has_auto/auto_mode/id/mode_index/index/continue_value | 機能パラメータ設定 |
 | 10038 | `messageCameraTeleGetAllFeatureParams()` | — | 全機能パラメータ取得 |
@@ -199,7 +199,7 @@ DWARF II / 3 / mini 用 WebSocket API ライブラリ。
 | 15000 | `messageFocusAutoFocus(mode, center_x, center_y)` | mode: AFモード, center_x/y: 中心座標 | 通常オートフォーカス |
 | 15001 | `messageFocusManualSingleStepFocus(direction)` | direction: 方向 | 手動シングルステップフォーカス |
 | 15002 | `messageFocusStartManualContinuFocus(direction)` | direction: 方向 | 手動連続フォーカス開始 |
-| 15003 | `messageFocusStopManualContinuFocus(binning)` | binning: ビニング | 手動連続フォーカス停止 |
+| 15003 | `messageFocusStopManualContinuFocus(binning)` | binning: ビニング（現在は無視されます） | 手動連続フォーカス停止 |
 | 15004 | `messageFocusStartAstroAutoFocus(mode)` | mode: AFモード | 天体オートフォーカス開始 |
 | 15005 | `messageFocusStopAstroAutoFocus()` | — | 天体オートフォーカス停止 |
 
