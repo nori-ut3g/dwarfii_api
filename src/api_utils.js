@@ -69,15 +69,15 @@ var DwarfMinorVersion = 9; // V2 default
  * @returns {boolean}
  */
 export function setDwarfMinorVersion(version) {
-  if (typeof version !== "number") {
-    return false;
-  }
-  if (version > 0) {
+  const supportedVersions = [
+    Dwarfii_Api.WsMinorVersion.WS_MINOR_VERSION_NUMBER, // 9 (V2)
+    Dwarfii_Api.WsMinorVersion.WS_MINOR_VERSION_V3, // 20 (V3)
+  ];
+  if (supportedVersions.includes(version)) {
     DwarfMinorVersion = version;
     return true;
-  } else {
-    return false;
   }
+  return false;
 }
 
 /** Get the current protocol minor version
