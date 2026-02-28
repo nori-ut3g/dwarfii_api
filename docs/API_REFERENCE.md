@@ -85,6 +85,7 @@ DWARF II / 3 / mini 用 WebSocket API ライブラリ。
 | 11017 | `messageAstroStopWideCaptureLiveStacking()` | — | 広角スタッキング停止 |
 | 11018 | `messageAstroStartEqSolving(lon, lat)` | lon: 経度, lat: 緯度 | EQ 検証開始 |
 | 11019 | `messageAstroStopEqSolving()` | — | EQ 検証停止 |
+| 11020 | — | — | 広角ライブビュー (CMD_ASTRO_WIDE_GO_LIVE — JS ラッパー未実装) |
 | 11021 | `messageAstroCaptureDarkFrameWithParam(exp_index, gain_index, bin_index, cap_size)` | 露出/ゲイン/ビニング/枚数 | パラメータ指定ダーク撮影開始 |
 | 11022 | `messageAstroStopCaptureDarkFrameWithParam()` | — | パラメータ指定ダーク撮影停止 |
 | 11023 | `messageAstroGetDarkFrameList()` | — | ダークフレーム一覧取得 |
@@ -176,7 +177,7 @@ DWARF II / 3 / mini 用 WebSocket API ライブラリ。
 | 12031 | `messageCameraWideStopRecord()` | — | 録画停止 |
 
 > **注意**: Camera Wide は Camera Tele と異なり、GET 系コマンド (12009 GetBrightness, 12011 GetContrast 等) の JS ラッパー関数が未実装です。proto と cmd_mapping には定義されています。
-> また `messageCameraWideSetGainMode()` / `messageCameraWideGetGainMode()` は JS に存在しますが、参照する proto enum (`CMD_CAMERA_WIDE_SET_GAIN_MODE`) が未定義のため使用できません。
+> また `messageCameraWideSetGainMode()` / `messageCameraWideGetGainMode()` は JS に存在しますが、参照する proto enum (`CMD_CAMERA_WIDE_SET_GAIN_MODE` / `CMD_CAMERA_WIDE_GET_GAIN_MODE`) が `protocol.proto` に存在しないため使用できません。
 
 ### System (システム)
 
