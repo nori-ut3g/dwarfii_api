@@ -65,7 +65,7 @@ export function messageV3AstroStartTracking() {
 /**
  * V3: One-click GOTO DSO with lon/lat/mode
  * Create Encoded Packet for the command CMD_ASTRO_START_ONE_CLICK_GOTO_DSO
- * @param {number} ra - Right Ascension (hours)
+ * @param {number} ra - Right Ascension (degrees)
  * @param {number} dec - Declination (degrees)
  * @param {string} targetName - Target name
  * @param {number} lon - Longitude
