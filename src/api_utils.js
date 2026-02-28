@@ -62,7 +62,7 @@ export function setDwarfDeviceID(deviceID) {
   }
 }
 
-var DwarfMinorVersion = 9; // V2 default
+var DwarfMinorVersion = Dwarfii_Api.WsMinorVersion.WS_MINOR_VERSION_NUMBER; // V2 default
 
 /** Set the protocol minor version for outgoing packets
  * @param {number} version - Protocol minor version (9 for V2, 20 for V3)
@@ -73,7 +73,7 @@ export function setDwarfMinorVersion(version) {
     Dwarfii_Api.WsMinorVersion.WS_MINOR_VERSION_NUMBER, // 9 (V2)
     Dwarfii_Api.WsMinorVersion.WS_MINOR_VERSION_V3, // 20 (V3)
   ];
-  if (supportedVersions.includes(version)) {
+  if (typeof version === "number" && supportedVersions.includes(version)) {
     DwarfMinorVersion = version;
     return true;
   }

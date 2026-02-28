@@ -193,7 +193,7 @@ export class WebSocketHandler {
   }
 
   /**
-   * Set the protocol minor version of the Dwarf connected
+   * Set the protocol minor version used for outgoing packets
    * @param {number} minorVersion ; Set the protocol minor version (9 for V2, 20 for V3).
    * @returns {boolean} status
    */

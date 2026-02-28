@@ -448,6 +448,7 @@ export const notifyMapping = {
   15257: "ResNotifyFocus", // Focus Position
 
   // V3 Notifications
+  11036: "ComResponse", // V3: Save complete notification
   15255: "V3ResNotifyExposureProgress", // V3: Per-frame exposure countdown
   15261: "V3ResNotifyDeviceState", // V3: Device state notification
   15264: "V3ResNotifyCameraParamState", // V3: Camera parameter state
