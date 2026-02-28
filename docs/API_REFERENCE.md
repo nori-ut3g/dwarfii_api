@@ -156,8 +156,8 @@ DWARF II / 3 / mini 用 WebSocket API ライブラリ。
 | 12003 | `messageCameraWideGetExpMode()` | — | 露出モード取得 |
 | 12004 | `messageCameraWideSetExp(index)` | index: 露出値 | 露出値設定 |
 | 12005 | `messageCameraWideGetExp()` | — | 露出値取得 |
-| 12006 | `messageCameraWideSetGainMode(mode)` | mode: ゲインモード | ゲインモード設定 |
-| 12007 | `messageCameraWideGetGainMode()` | — | ゲインモード取得 |
+| 12006 | `messageCameraWideSetGain(index)` | index: ゲイン値 | ゲイン値設定 |
+| 12007 | `messageCameraWideGetGain()` | — | ゲイン値取得 |
 | 12008 | `messageCameraWideSetBrightness(value)` | value: 明るさ | 明るさ設定 |
 | 12010 | `messageCameraWideSetContrast(value)` | value: コントラスト | コントラスト設定 |
 | 12012 | `messageCameraWideSetSaturation(value)` | value: 彩度 | 彩度設定 |
@@ -174,6 +174,9 @@ DWARF II / 3 / mini 用 WebSocket API ライブラリ。
 | 12028 | `messageCameraWideSetAllParams(...)` | 14 params | 全パラメータ一括設定 |
 | 12030 | `messageCameraWideStartRecord()` | — | 録画開始 |
 | 12031 | `messageCameraWideStopRecord()` | — | 録画停止 |
+
+> **注意**: Camera Wide は Camera Tele と異なり、GET 系コマンド (12009 GetBrightness, 12011 GetContrast 等) の JS ラッパー関数が未実装です。proto と cmd_mapping には定義されています。
+> また `messageCameraWideSetGainMode()` / `messageCameraWideGetGainMode()` は JS に存在しますが、参照する proto enum (`CMD_CAMERA_WIDE_SET_GAIN_MODE`) が未定義のため使用できません。
 
 ### System (システム)
 
@@ -378,16 +381,20 @@ DWARF II / 3 / mini 用 WebSocket API ライブラリ。
 DWARF mini に接続する際は、パケット送信前にプロトコルバージョンを V3 に切り替えます：
 
 ```javascript
-import { WebSocketHandler } from "dwarfii_api";
+import { WebSocketHandler, messageV3CameraTeleOpenCamera } from "dwarfii_api";
 
-const ws = WebSocketHandler.getInstance();
+// WebSocketHandler はシングルトン (コンストラクタが既存インスタンスを返す)
+const ws = new WebSocketHandler("192.168.11.31");
 ws.setDeviceIdDwarf(4);        // DWARF mini
 ws.setMinorVersionDwarf(20);   // V3 protocol
 
-// V3 コマンドを使用
-import { messageV3CameraTeleOpenCamera } from "dwarfii_api";
+// コマンド送信: prepare() でキューに積み、run() で接続・送信
 const packet = messageV3CameraTeleOpenCamera();
-ws.send(packet);
+const messageHandler = (senderId, resultData) => {
+  console.log("Response:", resultData);
+};
+ws.prepare(packet, "myApp", ["*"], messageHandler);
+ws.run();
 ```
 
 DWARF II/3 に接続する場合はデフォルト (V2) のまま使用します。
