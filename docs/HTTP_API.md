@@ -1,7 +1,7 @@
 # HTTP API リファレンス
 
-DWARF mini / II / 3 が提供する HTTP API (ポート 8082) のリファレンスです。
-pcap 解析により発見されたエンドポイントを網羅しています。
+DWARF mini / II / 3 が提供する HTTP API のリファレンスです。
+pcap 解析および実機テストにより発見されたエンドポイントを網羅しています。
 
 ## 目次
 
@@ -17,7 +17,15 @@ pcap 解析により発見されたエンドポイントを網羅しています
 
 ## 概要
 
-- ベース URL: `http://<DEVICE_IP>:8082`
+デバイスは 2 つの HTTP サーバーを稼働しています:
+
+| ポート | 用途 | 例 |
+|--------|------|-----|
+| **8082** | JSON API (deviceInfo, album管理, 撮影モード, MJPEGストリーム) | `POST http://<IP>:8082/deviceInfo` |
+| **80** | 静的ファイル配信 (FITS, JPG, PNG, TIFF, サムネイル) | `GET http://<IP>:80/DWARF_mini/.../*.fits` |
+
+- API ベース URL: `http://<DEVICE_IP>:8082`
+- ファイルダウンロード URL: `http://<DEVICE_IP>:80`
 - POST リクエストは `Content-Type: application/json`
 - レスポンスは JSON 形式、成功時 `code: 0`
 
@@ -367,8 +375,10 @@ await albumDelete("192.168.88.1", [
 
 ## ファイルダウンロード
 
-デバイス上のファイルは静的アセットとして配信されます。
+デバイス上のファイルは**ポート 80** の静的ファイルサーバーから配信されます。
 ファイルパスを直接 GET するだけでダウンロードできます。
+
+> **注意:** JSON API (ポート 8082) ではファイルダウンロードできません (404 になります)。
 
 ### URL の組み立て
 
@@ -377,19 +387,19 @@ import { fileDownloadUrl, downloadFile } from "dwarfii_api";
 
 // URL を取得 (ブラウザで開く場合など)
 const url = fileDownloadUrl("192.168.88.1", "/DWARF_mini/Astronomy/2026-03-01_M31/frame_001.fits");
-// => "http://192.168.88.1:8082/DWARF_mini/Astronomy/2026-03-01_M31/frame_001.fits"
+// => "http://192.168.88.1:80/DWARF_mini/Astronomy/2026-03-01_M31/frame_001.fits"
 ```
 
 ### curl でダウンロード
 
 ```bash
-# FITS ファイルをダウンロード
+# FITS ファイルをダウンロード (ポート 80)
 curl -o frame_001.fits \
-  http://192.168.88.1:8082/DWARF_mini/Astronomy/2026-03-01_M31/frame_001.fits
+  http://192.168.88.1:80/DWARF_mini/Astronomy/2026-03-01_M31/frame_001.fits
 
-# サムネイルをダウンロード
+# サムネイルをダウンロード (ポート 80)
 curl -o thumb.jpg \
-  http://192.168.88.1:8082/DWARF_mini/Astronomy/2026-03-01_M31/thumb.jpg
+  http://192.168.88.1:80/DWARF_mini/Astronomy/2026-03-01_M31/thumb.jpg
 ```
 
 ### JavaScript でダウンロード

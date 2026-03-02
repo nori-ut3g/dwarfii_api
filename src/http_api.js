@@ -1,23 +1,37 @@
 /** @module http_api */
 // HTTP API wrapper for DWARF mini / II / 3 file download and album management.
-// All endpoints are served on port 8082 of the device.
+//
+// The device runs two HTTP servers:
+//   - Port 8082: JSON API (deviceInfo, album management, shooting modes, MJPEG streams)
+//   - Port 80:   Static file server (FITS, JPG, PNG, TIFF, thumbnails)
 //
 // Runtime requirement: global `fetch` (Node.js 18+ or browser).
 // For older Node.js runtimes, polyfill with `undici` or `node-fetch`.
 
-const DEFAULT_HTTP_PORT = 8082;
+const DEFAULT_API_PORT = 8082;
+const DEFAULT_FILE_PORT = 80;
 
 /*** --------------------------------------------------------- ***/
 /*** ------------- URL BUILDERS ------------------------------ ***/
 /*** --------------------------------------------------------- ***/
 
 /**
- * Build the base URL for the HTTP API.
+ * Build the base URL for the JSON API (port 8082).
  * @param {string} IP - Device IP address
- * @param {number} [port=8082] - HTTP port
+ * @param {number} [port=8082] - API port
  * @returns {string}
  */
-function baseUrl(IP, port = DEFAULT_HTTP_PORT) {
+function apiBaseUrl(IP, port = DEFAULT_API_PORT) {
+  return `http://${IP}:${port}`;
+}
+
+/**
+ * Build the base URL for static file downloads (port 80).
+ * @param {string} IP - Device IP address
+ * @param {number} [port=80] - File server port
+ * @returns {string}
+ */
+function fileBaseUrl(IP, port = DEFAULT_FILE_PORT) {
   return `http://${IP}:${port}`;
 }
 
@@ -31,7 +45,7 @@ function baseUrl(IP, port = DEFAULT_HTTP_PORT) {
  * @returns {string}
  */
 export function mainstreamUrl(IP) {
-  return `${baseUrl(IP)}/mainstream`;
+  return `${apiBaseUrl(IP)}/mainstream`;
 }
 
 /**
@@ -40,7 +54,7 @@ export function mainstreamUrl(IP) {
  * @returns {string}
  */
 export function secondstreamUrl(IP) {
-  return `${baseUrl(IP)}/secondstream`;
+  return `${apiBaseUrl(IP)}/secondstream`;
 }
 
 /*** --------------------------------------------------------- ***/
@@ -49,13 +63,13 @@ export function secondstreamUrl(IP) {
 
 /**
  * Build the full download URL for a file on the device.
- * Files are served as static assets — just GET the returned URL.
+ * Files are served on port 80 as static assets — just GET the returned URL.
  * @param {string} IP - Device IP address
  * @param {string} filePath - Absolute file path on device (e.g. "/DWARF_mini/Astronomy/.../xxx.fits")
  * @returns {string}
  */
 export function fileDownloadUrl(IP, filePath) {
-  return `${baseUrl(IP)}${filePath}`;
+  return `${fileBaseUrl(IP)}${filePath}`;
 }
 
 /**
@@ -87,7 +101,7 @@ export async function downloadFile(IP, filePath) {
  * @returns {Promise<Object>}
  */
 export async function getDeviceInfo(IP) {
-  const url = `${baseUrl(IP)}/deviceInfo`;
+  const url = `${apiBaseUrl(IP)}/deviceInfo`;
   const response = await fetch(url, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -108,7 +122,7 @@ export async function getDeviceInfo(IP) {
  * @returns {Promise<Object>}
  */
 export async function getDeviceActivateInfo(IP) {
-  const url = `${baseUrl(IP)}/getDeviceActivateInfo`;
+  const url = `${apiBaseUrl(IP)}/getDeviceActivateInfo`;
   const response = await fetch(url, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -131,7 +145,7 @@ export async function getDeviceActivateInfo(IP) {
  * @returns {Promise<Object>}
  */
 export async function fetchDefaultParamsConfig(IP) {
-  const url = `${baseUrl(IP)}/getDefaultParamsConfig`;
+  const url = `${apiBaseUrl(IP)}/getDefaultParamsConfig`;
   const response = await fetch(url);
   if (!response.ok) {
     throw new Error(
@@ -148,7 +162,7 @@ export async function fetchDefaultParamsConfig(IP) {
  * @returns {Promise<Object>}
  */
 export async function getFirmwareVersion(IP) {
-  const url = `${baseUrl(IP)}/firmwareVersion`;
+  const url = `${apiBaseUrl(IP)}/firmwareVersion`;
   const response = await fetch(url);
   if (!response.ok) {
     throw new Error(
@@ -169,7 +183,7 @@ export async function getFirmwareVersion(IP) {
  * @returns {Promise<Object>}
  */
 export async function getSupportedShootingModes(IP) {
-  const url = `${baseUrl(IP)}/shootingMode/getSupportedShootingModes`;
+  const url = `${apiBaseUrl(IP)}/shootingMode/getSupportedShootingModes`;
   const response = await fetch(url);
   if (!response.ok) {
     throw new Error(
@@ -186,7 +200,7 @@ export async function getSupportedShootingModes(IP) {
  * @returns {Promise<Object>}
  */
 export async function getParamAndSetting(IP) {
-  const url = `${baseUrl(IP)}/shootingMode/getParamAndSetting`;
+  const url = `${apiBaseUrl(IP)}/shootingMode/getParamAndSetting`;
   const response = await fetch(url, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -212,7 +226,7 @@ export async function getParamAndSetting(IP) {
  * @returns {Promise<Object>}
  */
 export async function albumListMediaCounts(IP) {
-  const url = `${baseUrl(IP)}/album/list/mediaCounts`;
+  const url = `${apiBaseUrl(IP)}/album/list/mediaCounts`;
   const response = await fetch(url, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -238,7 +252,7 @@ export async function albumListMediaInfos(
   IP,
   mediaTypeList = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9]
 ) {
-  const url = `${baseUrl(IP)}/album/list/mediaInfos`;
+  const url = `${apiBaseUrl(IP)}/album/list/mediaInfos`;
   const response = await fetch(url, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -261,7 +275,7 @@ export async function albumListMediaInfos(
  * @returns {Promise<Object>}
  */
 export async function albumAstroFitsList(IP, srcDir) {
-  const url = `${baseUrl(IP)}/album/astro/fitsList`;
+  const url = `${apiBaseUrl(IP)}/album/astro/fitsList`;
   const response = await fetch(url, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -283,7 +297,7 @@ export async function albumAstroFitsList(IP, srcDir) {
  * @returns {Promise<Object>}
  */
 export async function albumDelete(IP, datas) {
-  const url = `${baseUrl(IP)}/album/delete`;
+  const url = `${apiBaseUrl(IP)}/album/delete`;
   const response = await fetch(url, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
