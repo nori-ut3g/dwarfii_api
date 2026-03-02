@@ -4,7 +4,6 @@ import $root from "./protobuf/protobuf.js";
 const Dwarfii_Api = $root;
 import { createPacket } from "./api_utils.js";
 import { cmdMapping } from "./cmd_mapping.js";
-
 /*** --------------------------------------------------------- ***/
 /*** -------- V3 MODULE CAMERA PARAMS (16700+) --------------- ***/
 /*** --------------------------------------------------------- ***/
@@ -17,20 +16,18 @@ import { cmdMapping } from "./cmd_mapping.js";
  * @returns {Uint8Array}
  */
 export function messageV3CameraParamSet(paramId, value, flag = 0) {
-  let module_id = Dwarfii_Api.ModuleId.MODULE_CAMERA_PARAMS;
-  let interface_id = Dwarfii_Api.DwarfCMD.CMD_V3_CAMERA_PARAMS_SET_PARAM;
-  let type_id = Dwarfii_Api.MessageTypeId.TYPE_REQUEST;
-  const cmdClass = cmdMapping[interface_id];
-  let class_message = Dwarfii_Api[cmdClass];
-  let message = class_message.create({
-    paramId: paramId,
-    flag: flag,
-    value: value,
-  });
-  console.log(
-    `class Message = ${cmdClass} created message = ${JSON.stringify(message)}`
-  );
-  return createPacket(message, class_message, module_id, interface_id, type_id);
+    let module_id = Dwarfii_Api.ModuleId.MODULE_CAMERA_PARAMS;
+    let interface_id = Dwarfii_Api.DwarfCMD.CMD_V3_CAMERA_PARAMS_SET_PARAM;
+    let type_id = Dwarfii_Api.MessageTypeId.TYPE_REQUEST;
+    const cmdClass = cmdMapping[interface_id];
+    let class_message = Dwarfii_Api[cmdClass];
+    let message = class_message.create({
+        paramId: paramId,
+        flag: flag,
+        value: value,
+    });
+    console.log(`class Message = ${cmdClass} created message = ${JSON.stringify(message)}`);
+    return createPacket(message, class_message, module_id, interface_id, type_id);
 }
 /**
  * V3: Set exposure/gain parameter
@@ -41,20 +38,18 @@ export function messageV3CameraParamSet(paramId, value, flag = 0) {
  * @returns {Uint8Array}
  */
 export function messageV3CameraParamSetExpGain(paramId, value, flag = 1) {
-  let module_id = Dwarfii_Api.ModuleId.MODULE_CAMERA_PARAMS;
-  let interface_id = Dwarfii_Api.DwarfCMD.CMD_V3_CAMERA_PARAMS_SET_EXP_GAIN;
-  let type_id = Dwarfii_Api.MessageTypeId.TYPE_REQUEST;
-  const cmdClass = cmdMapping[interface_id];
-  let class_message = Dwarfii_Api[cmdClass];
-  let message = class_message.create({
-    paramId: paramId,
-    flag: flag,
-    value: value,
-  });
-  console.log(
-    `class Message = ${cmdClass} created message = ${JSON.stringify(message)}`
-  );
-  return createPacket(message, class_message, module_id, interface_id, type_id);
+    let module_id = Dwarfii_Api.ModuleId.MODULE_CAMERA_PARAMS;
+    let interface_id = Dwarfii_Api.DwarfCMD.CMD_V3_CAMERA_PARAMS_SET_EXP_GAIN;
+    let type_id = Dwarfii_Api.MessageTypeId.TYPE_REQUEST;
+    const cmdClass = cmdMapping[interface_id];
+    let class_message = Dwarfii_Api[cmdClass];
+    let message = class_message.create({
+        paramId: paramId,
+        flag: flag,
+        value: value,
+    });
+    console.log(`class Message = ${cmdClass} created message = ${JSON.stringify(message)}`);
+    return createPacket(message, class_message, module_id, interface_id, type_id);
 }
 /**
  * V3: Adjust camera parameter (relative adjustment)
@@ -64,18 +59,15 @@ export function messageV3CameraParamSetExpGain(paramId, value, flag = 1) {
  * @returns {Uint8Array}
  */
 export function messageV3CameraParamsAdjust(paramId, value) {
-  let module_id = Dwarfii_Api.ModuleId.MODULE_CAMERA_PARAMS;
-  let interface_id = Dwarfii_Api.DwarfCMD.CMD_V3_CAMERA_PARAMS_ADJUST;
-  let type_id = Dwarfii_Api.MessageTypeId.TYPE_REQUEST;
-  const cmdClass = cmdMapping[interface_id];
-  let class_message = Dwarfii_Api[cmdClass];
-  let message = class_message.create({ paramId: paramId, value: value });
-  console.log(
-    `class Message = ${cmdClass} created message = ${JSON.stringify(message)}`
-  );
-  return createPacket(message, class_message, module_id, interface_id, type_id);
+    let module_id = Dwarfii_Api.ModuleId.MODULE_CAMERA_PARAMS;
+    let interface_id = Dwarfii_Api.DwarfCMD.CMD_V3_CAMERA_PARAMS_ADJUST;
+    let type_id = Dwarfii_Api.MessageTypeId.TYPE_REQUEST;
+    const cmdClass = cmdMapping[interface_id];
+    let class_message = Dwarfii_Api[cmdClass];
+    let message = class_message.create({ paramId: paramId, value: value });
+    console.log(`class Message = ${cmdClass} created message = ${JSON.stringify(message)}`);
+    return createPacket(message, class_message, module_id, interface_id, type_id);
 }
-
 /**
  * Encode a paramId from its constituent parts.
  *
@@ -92,15 +84,12 @@ export function messageV3CameraParamsAdjust(paramId, value) {
  * @returns {number} Encoded paramId
  */
 export function encodeParamId(shootingMode, category, cameraId, paramIndex) {
-  return (
-    (((shootingMode & 0xff) << 24) |
-      ((category & 0xff) << 16) |
-      ((cameraId & 0xff) << 8) |
-      (paramIndex & 0xff)) >>>
-    0
-  );
+    return ((((shootingMode & 0xff) << 24) |
+        ((category & 0xff) << 16) |
+        ((cameraId & 0xff) << 8) |
+        (paramIndex & 0xff)) >>>
+        0);
 }
-
 /**
  * Decode a paramId into its constituent parts.
  *
@@ -108,10 +97,10 @@ export function encodeParamId(shootingMode, category, cameraId, paramIndex) {
  * @returns {{ shootingMode: number, category: number, cameraId: number, paramIndex: number }}
  */
 export function decodeParamId(paramId) {
-  return {
-    shootingMode: (paramId >>> 24) & 0xff,
-    category: (paramId >>> 16) & 0xff,
-    cameraId: (paramId >>> 8) & 0xff,
-    paramIndex: paramId & 0xff,
-  };
+    return {
+        shootingMode: (paramId >>> 24) & 0xff,
+        category: (paramId >>> 16) & 0xff,
+        cameraId: (paramId >>> 8) & 0xff,
+        paramIndex: paramId & 0xff,
+    };
 }
