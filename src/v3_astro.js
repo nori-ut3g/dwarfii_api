@@ -208,7 +208,7 @@ export function messageV3AstroStatusPolling(
  * V3: Get astro parameters
  * Create Encoded Packet for the command CMD_V3_ASTRO_GET_PARAMS (11040)
  *
- * Response contains repeated V3AstroParamsData, each with a pipe_params field
+ * Response contains repeated V3AstroParamsData, each with a pipeParams field
  * in the format: "exposure|gain|total|count|binning|format"
  * e.g. "0|0|60|60|1|null"
  *
@@ -234,7 +234,7 @@ export function messageV3AstroGetParams(mode = 0) {
  * The params string is pipe-delimited: "exposure|gain|total|count|binning|format"
  * e.g. "0|0|60|60|1|null"
  *
- * Response is V3ResSetAstroParams with code and pipe_params echo.
+ * Response is V3ResSetAstroParams with code and pipeParams echo.
  *
  * @param {string} params - Pipe-delimited parameter string e.g. "0|0|60|60|1|null"
  * @returns {Uint8Array}

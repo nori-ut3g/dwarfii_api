@@ -79,7 +79,7 @@ export function messageV3CameraParamsAdjust(paramId, value) {
 /**
  * Encode a paramId from its constituent parts.
  *
- * paramId layout (64-bit integer):
+ * paramId layout (unsigned 32-bit packed into int64 proto field):
  *   bits [31..24] = shootingMode  (e.g. 0=photo, 1=video, 2=astro)
  *   bits [23..16] = category      (parameter group)
  *   bits [15..8]  = cameraId      (0=tele, 1=wide)
@@ -93,10 +93,11 @@ export function messageV3CameraParamsAdjust(paramId, value) {
  */
 export function encodeParamId(shootingMode, category, cameraId, paramIndex) {
   return (
-    ((shootingMode & 0xff) << 24) |
-    ((category & 0xff) << 16) |
-    ((cameraId & 0xff) << 8) |
-    (paramIndex & 0xff)
+    (((shootingMode & 0xff) << 24) |
+      ((category & 0xff) << 16) |
+      ((cameraId & 0xff) << 8) |
+      (paramIndex & 0xff)) >>>
+    0
   );
 }
 
@@ -107,10 +108,11 @@ export function encodeParamId(shootingMode, category, cameraId, paramIndex) {
  * @returns {{ shootingMode: number, category: number, cameraId: number, paramIndex: number }}
  */
 export function decodeParamId(paramId) {
+  const id = paramId >>> 0; // normalize to unsigned 32-bit
   return {
-    shootingMode: (paramId >> 24) & 0xff,
-    category: (paramId >> 16) & 0xff,
-    cameraId: (paramId >> 8) & 0xff,
-    paramIndex: paramId & 0xff,
+    shootingMode: (id >>> 24) & 0xff,
+    category: (id >>> 16) & 0xff,
+    cameraId: (id >>> 8) & 0xff,
+    paramIndex: id & 0xff,
   };
 }
