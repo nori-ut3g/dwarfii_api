@@ -26,7 +26,7 @@ import {
   getDeviceInfo,
   albumListMediaInfos,
   fileDownloadUrl,
-} from "dwarfii_api/src/http_api.js";
+} from "dwarfii_api";
 
 const IP = "192.168.88.1";
 
@@ -373,7 +373,7 @@ await albumDelete("192.168.88.1", [
 ### URL の組み立て
 
 ```javascript
-import { fileDownloadUrl, downloadFile } from "dwarfii_api/src/http_api.js";
+import { fileDownloadUrl, downloadFile } from "dwarfii_api";
 
 // URL を取得 (ブラウザで開く場合など)
 const url = fileDownloadUrl("192.168.88.1", "/DWARF_mini/Astronomy/2026-03-01_M31/frame_001.fits");
@@ -414,7 +414,7 @@ import {
   albumListMediaInfos,
   albumAstroFitsList,
   downloadFile,
-} from "dwarfii_api/src/http_api.js";
+} from "dwarfii_api";
 import { writeFile } from "node:fs/promises";
 import { basename } from "node:path";
 
@@ -453,7 +453,7 @@ MJPEG ストリームは HTTP で直接取得できます。
 ### メインストリーム (望遠カメラ)
 
 ```javascript
-import { mainstreamUrl } from "dwarfii_api/src/http_api.js";
+import { mainstreamUrl } from "dwarfii_api";
 
 const url = mainstreamUrl("192.168.88.1");
 // => "http://192.168.88.1:8082/mainstream"
@@ -473,7 +473,7 @@ ffmpeg -i http://192.168.88.1:8082/mainstream -c copy output.mjpeg
 ### セカンドストリーム (広角カメラ)
 
 ```javascript
-import { secondstreamUrl } from "dwarfii_api/src/http_api.js";
+import { secondstreamUrl } from "dwarfii_api";
 
 const url = secondstreamUrl("192.168.88.1");
 // => "http://192.168.88.1:8082/secondstream"

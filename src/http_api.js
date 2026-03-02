@@ -1,6 +1,9 @@
 /** @module http_api */
 // HTTP API wrapper for DWARF mini / II / 3 file download and album management.
 // All endpoints are served on port 8082 of the device.
+//
+// Runtime requirement: global `fetch` (Node.js 18+ or browser).
+// For older Node.js runtimes, polyfill with `undici` or `node-fetch`.
 
 const DEFAULT_HTTP_PORT = 8082;
 
@@ -132,7 +135,7 @@ export async function fetchDefaultParamsConfig(IP) {
   const response = await fetch(url);
   if (!response.ok) {
     throw new Error(
-      `getDefaultParamsConfig failed: ${response.status} ${response.statusText}`
+      `fetchDefaultParamsConfig failed: ${response.status} ${response.statusText}`
     );
   }
   return response.json();
