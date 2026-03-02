@@ -6,15 +6,19 @@
 // Import directly:
 //   import { fileDownloadUrl, downloadFile } from "dwarfii_api/src/http_api.js";
 //
-// The device runs two HTTP servers:
-//   - Port 8082: JSON API (deviceInfo, album management, shooting modes, MJPEG streams)
+// The device runs multiple servers:
+//   - Port 8082: JSON API (deviceInfo, album management, shooting modes)
 //   - Port 80:   Static file server (FITS, JPG, PNG, TIFF, thumbnails)
+//   - Port 554:  RTSP streaming (actual working camera streams)
+//   - Port 8092: MJPEG streaming (endpoint exists but returns 0 bytes)
 //
 // Runtime requirement: global `fetch` (Node.js 18+ or browser).
 // For older Node.js runtimes, polyfill with `undici` or `node-fetch`.
 
 const DEFAULT_API_PORT = 8082;
 const DEFAULT_FILE_PORT = 80;
+export const DEFAULT_RTSP_PORT = 554;
+export const DEFAULT_MJPEG_PORT = 8092;
 
 /*** --------------------------------------------------------- ***/
 /*** ------------- URL BUILDERS ------------------------------ ***/
@@ -45,21 +49,47 @@ function fileBaseUrl(IP, port = DEFAULT_FILE_PORT) {
 /*** --------------------------------------------------------- ***/
 
 /**
- * Get the mainstream (telephoto) MJPEG stream URL.
+ * Get the RTSP URL for the telephoto (main) camera stream.
+ * This is the actual working stream protocol used by DWARF mini / 3.
+ * @param {string} IP - Device IP address
+ * @param {number} [port=554] - RTSP port
+ * @returns {string} e.g. "rtsp://192.168.88.1:554/ch0/stream0"
+ */
+export function rtspTeleUrl(IP, port = DEFAULT_RTSP_PORT) {
+  return `rtsp://${IP}:${port}/ch0/stream0`;
+}
+
+/**
+ * Get the RTSP URL for the wide-angle camera stream.
+ * This is the actual working stream protocol used by DWARF mini / 3.
+ * @param {string} IP - Device IP address
+ * @param {number} [port=554] - RTSP port
+ * @returns {string} e.g. "rtsp://192.168.88.1:554/ch1/stream0"
+ */
+export function rtspWideUrl(IP, port = DEFAULT_RTSP_PORT) {
+  return `rtsp://${IP}:${port}/ch1/stream0`;
+}
+
+/**
+ * Get the mainstream (telephoto) MJPEG stream URL (port 8092).
+ * NOTE: This endpoint exists on the device but returns 0 bytes in practice.
+ * Use {@link rtspTeleUrl} for actual camera streaming.
  * @param {string} IP - Device IP address
  * @returns {string}
  */
 export function mainstreamUrl(IP) {
-  return `${apiBaseUrl(IP)}/mainstream`;
+  return `http://${IP}:${DEFAULT_MJPEG_PORT}/mainstream`;
 }
 
 /**
- * Get the second stream (wide-angle) MJPEG stream URL.
+ * Get the second stream (wide-angle) MJPEG stream URL (port 8092).
+ * NOTE: This endpoint exists on the device but returns 0 bytes in practice.
+ * Use {@link rtspWideUrl} for actual camera streaming.
  * @param {string} IP - Device IP address
  * @returns {string}
  */
 export function secondstreamUrl(IP) {
-  return `${apiBaseUrl(IP)}/secondstream`;
+  return `http://${IP}:${DEFAULT_MJPEG_PORT}/secondstream`;
 }
 
 /*** --------------------------------------------------------- ***/

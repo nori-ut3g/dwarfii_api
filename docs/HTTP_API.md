@@ -1,6 +1,6 @@
 # HTTP API リファレンス
 
-DWARF mini / II / 3 が提供する HTTP API のリファレンスです。
+DWARF mini / II / 3 が提供する HTTP / RTSP API のリファレンスです。
 pcap 解析および実機テストにより発見されたエンドポイントを網羅しています。
 
 ## 目次
@@ -11,21 +11,25 @@ pcap 解析および実機テストにより発見されたエンドポイント
 - [撮影モード](#撮影モード)
 - [アルバム管理](#アルバム管理)
 - [ファイルダウンロード](#ファイルダウンロード)
-- [ストリーミング](#ストリーミング)
+- [カメラストリーミング](#カメラストリーミング)
 
 ---
 
 ## 概要
 
-デバイスは 2 つの HTTP サーバーを稼働しています:
+デバイスは複数のサーバーを稼働しています:
 
 | ポート | 用途 | 例 |
 |--------|------|-----|
-| **8082** | JSON API (deviceInfo, album管理, 撮影モード, MJPEGストリーム) | `POST http://<IP>:8082/deviceInfo` |
+| **8082** | JSON API (deviceInfo, album管理, 撮影モード) | `POST http://<IP>:8082/deviceInfo` |
 | **80** | 静的ファイル配信 (FITS, JPG, PNG, TIFF, サムネイル) | `GET http://<IP>:80/DWARF_mini/.../*.fits` |
+| **554** | RTSP ストリーミング (実際に動作するカメラストリーム) | `rtsp://<IP>:554/ch0/stream0` |
+| **8092** | MJPEG エンドポイント (存在するが 0 バイトを返す) | `http://<IP>:8092/mainstream` |
 
-- API ベース URL: `http://<DEVICE_IP>:8082`
+- JSON API ベース URL: `http://<DEVICE_IP>:8082`
 - ファイルダウンロード URL: `http://<DEVICE_IP>:80`
+- RTSP ストリーミング: `rtsp://<DEVICE_IP>:554` (実際に動作するカメラストリーム)
+- MJPEG エンドポイント: `http://<DEVICE_IP>:8092` (存在するが 0 バイトを返す)
 - POST リクエストは `Content-Type: application/json`
 - レスポンスは JSON 形式、成功時 `code: 0`
 
@@ -460,43 +464,55 @@ for (const media of mediaInfos.data) {
 
 ---
 
-## ストリーミング
+## カメラストリーミング
 
-MJPEG ストリームは HTTP で直接取得できます。
+### RTSP ストリーミング (ポート 554) -- 推奨
 
-### メインストリーム (望遠カメラ)
+実機テストにより、DWARF mini / 3 のカメラストリームは **RTSP (ポート 554)** で提供されることが確認されています。
+DWARF mini と DWARF 3 は同じ RTSP アプローチを使用しています。
+
+| カメラ | RTSP URL | チャンネル |
+|--------|----------|-----------|
+| 望遠 (Tele) | `rtsp://<IP>:554/ch0/stream0` | ch0 |
+| 広角 (Wide) | `rtsp://<IP>:554/ch1/stream0` | ch1 |
 
 ```javascript
-import { mainstreamUrl } from "dwarfii_api/src/http_api.js";
+import { rtspTeleUrl, rtspWideUrl } from "dwarfii_api/src/http_api.js";
 
-const url = mainstreamUrl("192.168.88.1");
-// => "http://192.168.88.1:8082/mainstream"
+const teleUrl = rtspTeleUrl("192.168.88.1");
+// => "rtsp://192.168.88.1:554/ch0/stream0"
 
-// HTML の <img> タグで表示可能
-// <img src="http://192.168.88.1:8082/mainstream" />
+const wideUrl = rtspWideUrl("192.168.88.1");
+// => "rtsp://192.168.88.1:554/ch1/stream0"
 ```
 
 ```bash
-# VLC で表示
-vlc http://192.168.88.1:8082/mainstream
+# VLC で望遠カメラストリームを表示
+vlc rtsp://192.168.88.1:554/ch0/stream0
 
-# ffmpeg で録画
-ffmpeg -i http://192.168.88.1:8082/mainstream -c copy output.mjpeg
+# ffmpeg で広角カメラストリームを録画
+ffmpeg -rtsp_transport tcp -i rtsp://192.168.88.1:554/ch1/stream0 -c copy output.mp4
+
+# ffplay でリアルタイム表示
+ffplay -rtsp_transport tcp rtsp://192.168.88.1:554/ch0/stream0
 ```
 
-### セカンドストリーム (広角カメラ)
+### MJPEG エンドポイント (ポート 8092) -- 非推奨
+
+MJPEG エンドポイントはポート 8092 に存在しますが、実機テストでは **0 バイト** を返すことが確認されています。
+実用的なストリーミングには上記の RTSP を使用してください。
+
+> **注意:** 以前のドキュメントではポート 8082 に MJPEG ストリームがあると記載されていましたが、
+> これは誤りでした。MJPEG エンドポイントはポート 8092 に存在し (ただしデータなし)、
+> ポート 8082 は JSON API 専用です。
 
 ```javascript
-import { secondstreamUrl } from "dwarfii_api/src/http_api.js";
+import { mainstreamUrl, secondstreamUrl } from "dwarfii_api/src/http_api.js";
 
-const url = secondstreamUrl("192.168.88.1");
-// => "http://192.168.88.1:8082/secondstream"
+// これらの URL は存在するが、実際にはデータを返さない
+const mjpegTele = mainstreamUrl("192.168.88.1");
+// => "http://192.168.88.1:8092/mainstream"
+
+const mjpegWide = secondstreamUrl("192.168.88.1");
+// => "http://192.168.88.1:8092/secondstream"
 ```
-
-```bash
-vlc http://192.168.88.1:8082/secondstream
-```
-
-> **注意:** DWARF II / 3 では従来ポート 8092 でストリーミングが提供されていましたが、
-> DWARF mini ではポート 8082 に統一されています。
-> 既存の `api_codes.js` の `telephotoURL` / `wideangleURL` (ポート 8092) と混同しないよう注意してください。
