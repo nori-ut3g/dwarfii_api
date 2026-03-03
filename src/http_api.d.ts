@@ -156,10 +156,41 @@ export type MediaInfosResponse = ApiResponse<MediaInfo[]>;
 /** Response from /album/astro/fitsList */
 export type FitsListResponse = ApiResponse<{ fitsInfo: FitsFileInfo[] }>;
 
+// ---- Constants ----
+
+export declare const DEFAULT_RTSP_PORT: 554;
+export declare const DEFAULT_MJPEG_PORT: 8092;
+
 // ---- Function signatures ----
 
-// Streaming URLs
+// RTSP streaming (actual working protocol)
+
+/**
+ * Get the RTSP URL for the telephoto (main) camera stream.
+ * This is the actual working stream protocol used by DWARF mini / 3.
+ */
+export declare function rtspTeleUrl(IP: string, port?: number): string;
+
+/**
+ * Get the RTSP URL for the wide-angle camera stream.
+ * This is the actual working stream protocol used by DWARF mini / 3.
+ */
+export declare function rtspWideUrl(IP: string, port?: number): string;
+
+// MJPEG streaming (endpoint exists but returns 0 bytes)
+
+/**
+ * Get the mainstream (telephoto) MJPEG stream URL (port 8092).
+ * NOTE: This endpoint exists on the device but returns 0 bytes in practice.
+ * Use rtspTeleUrl() for actual camera streaming.
+ */
 export declare function mainstreamUrl(IP: string): string;
+
+/**
+ * Get the second stream (wide-angle) MJPEG stream URL (port 8092).
+ * NOTE: This endpoint exists on the device but returns 0 bytes in practice.
+ * Use rtspWideUrl() for actual camera streaming.
+ */
 export declare function secondstreamUrl(IP: string): string;
 
 // File download (port 80 — static file server)
