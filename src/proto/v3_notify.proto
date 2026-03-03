@@ -34,8 +34,8 @@ message V3DeviceStatePath {
 // V3 Camera parameter state notification: CMD 15264
 message V3ResNotifyCameraParamState {
     int64 param_id = 1;
-    int32 value1 = 2;
-    int32 value2 = 3;
+    int32 flag = 2;  // 1 = manual mode (used in exp/gain notifications)
+    int32 value = 3; // Parameter value
 }
 
 // V3 Mode change notification: CMD 15267
@@ -45,12 +45,13 @@ message V3ResNotifyModeChange {
     int32 sub_mode = 3;
 }
 
-// V3 Stacking data notification: CMD 15270
+// V3 White balance notification: CMD 15270
+// Despite the message name, pcap analysis shows this carries WB color temperature data
 message V3ResNotifyStackingData {
     int32 field1 = 1;
-    int32 value = 2;
+    int32 color_temperature = 2; // White balance color temperature value
     int32 field3 = 3;
-    int32 flag = 4;
+    int32 camera = 4; // 0 = tele, 1 = wide
 }
 
 // V3 Photo state notification: CMD 15273
