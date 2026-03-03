@@ -155,6 +155,28 @@ export const cmdMapping = {
     15500: "ReqStartPanoramaByGrid", // Start panorama
     15501: "ReqStopPanorama", // Stop panorama
     15502: "ReqStartPanoramaByEulerRange", // Start panorama Euler Range
+    // V3 Commands
+    10050: "V3ReqOpenTeleCamera", // V3: Open/close tele camera
+    12036: "V3ReqOpenWideCamera", // V3: Open/close wide camera
+    11033: "V3ReqSaveStackedImage", // V3: Save stacked image
+    11034: "V3ReqListSavedImages", // V3: List saved images
+    11039: "V3ReqStatusPolling", // V3: Status polling
+    11040: "V3ReqGetAstroParams", // V3: Get astro parameters
+    11041: "V3ReqSetAstroParams", // V3: Set astro parameters
+    11043: "V3ReqGetExposurePresets", // V3: Get exposure presets
+    11047: "V3ReqSetObservationLocation", // V3: Set observation location
+    11048: "V3ReqConfirmObservation", // V3: Confirm observation
+    13010: "V3ReqSetGPSLocation", // V3: Set GPS location
+    15011: "V3ReqFocusInit", // V3: Focus init
+    16102: "ReqGetAllShootingSchedule", // V3: Get shooting schedule
+    16402: "V3ReqModeQuery", // V3: Mode query
+    16403: "V3ReqShootingModeSwitch", // V3: Shooting mode switch
+    16404: "V3ReqModeSwitch", // V3: Mode switch
+    16405: "V3ReqGetDeviceConfig", // V3: Get device config
+    16700: "V3ReqSetCameraParam", // V3: Set camera param
+    16701: "V3ReqSetExposureGain", // V3: Set exposure/gain
+    16703: "V3ReqAdjustParam", // V3: Adjust camera param
+    16706: "V3ReqStreamControl", // V3: Stream control
 };
 export const responseMapping = {
     // BLE Class Response
@@ -311,6 +333,29 @@ export const responseMapping = {
     15500: "ComResponse", // Start panorama
     15501: "ComResponse", // Stop panorama
     15502: "ComResponse", // Start panorama Euler Range
+    // V3 Responses
+    10050: "ComResponse", // V3: Open/close tele camera
+    12036: "ComResponse", // V3: Open/close wide camera
+    11033: "V3ResSaveStackedImage", // V3: Save stacked image
+    11034: "ComResponse", // V3: List saved images
+    11036: "ComResponse", // V3: Save complete
+    11039: "ComResponse", // V3: Status polling
+    11040: "V3ResGetAstroParams", // V3: Get astro parameters
+    11041: "ComResponse", // V3: Set astro parameters
+    11043: "V3ResGetExposurePresets", // V3: Get exposure presets
+    11047: "ComResponse", // V3: Set observation location
+    11048: "ComResponse", // V3: Confirm observation
+    13010: "ComResponse", // V3: Set GPS location
+    15011: "V3ResFocusInit", // V3: Focus init
+    16102: "ResGetAllShootingSchedule", // V3: Get shooting schedule
+    16402: "V3ResModeQuery", // V3: Mode query
+    16403: "V3ResShootingModeSwitch", // V3: Shooting mode switch
+    16404: "V3ResModeSwitch", // V3: Mode switch
+    16405: "V3ResGetDeviceConfig", // V3: Get device config
+    16700: "ComResponse", // V3: Set camera param
+    16701: "ComResponse", // V3: Set exposure/gain
+    16703: "ComResponse", // V3: Adjust camera param
+    16706: "ComResponse", // V3: Stream control
 };
 export const notifyMapping = {
     15200: "ResNotifyPictureMatching", // Telephoto wide-angle image matching
@@ -367,6 +412,23 @@ export const notifyMapping = {
     //  CMD_NOTIFY_WIDE_MULTI_TRACK_RESULT = 15251; // Wide-angle multi-target box result notification
     //  CMD_NOTIFY_WIDE_TRACK_RESULT = 15252; // Wide-angle single target box result notification
     15257: "ResNotifyFocus", // Focus Position
+    // V3 Notifications
+    11036: "ComResponse", // V3: Save complete notification
+    15255: "V3ResNotifyExposureProgress", // V3: Per-frame exposure countdown
+    15261: "V3ResNotifyDeviceState", // V3: Device state notification
+    15264: "V3ResNotifyCameraParamState", // V3: Camera parameter state
+    15267: "V3ResNotifyModeChange", // V3: Mode change notification
+    15270: "V3ResNotifyStackingData", // V3: Stacking data notification
+    15273: "V3ResNotifyPhotoState", // V3: Normal photo state
+    15274: "V3ResNotifyBurstState", // V3: Burst capture state
+    15275: "V3ResNotifyVideoState", // V3: Video recording state
+    15276: "V3ResNotifyTimelapseState", // V3: Timelapse state
+    15278: "V3ResNotifyAutoFocusState", // V3: AutoFocus state
+    15285: "V3ResNotifyPhotoBurstProgress", // V3: Photo/burst progress
+    15286: "V3ResNotifyVideoProgress", // V3: Video recording progress
+    15287: "V3ResNotifyTimelapseProgress", // V3: Timelapse progress
+    15292: "V3ResNotifyTemperature2", // V3: Temperature2
+    15296: "V3ResNotifyObservationState", // V3: Observation state
 };
 export const notifyResponseMapping = {
     10000: "ComResponse", // Turn on the camera
@@ -513,6 +575,16 @@ export const notifyResponseMapping = {
     15500: "ComResponse", // Start panorama
     15501: "ComResponse", // Stop panorama
     15502: "ComResponse", // Start panorama Euler Range
+    // V3 Notification Responses
+    10050: "ComResponse", // V3: Open/close tele camera
+    12036: "ComResponse", // V3: Open/close wide camera
+    11033: "V3ResSaveStackedImage", // V3: Save stacked image
+    11036: "ComResponse", // V3: Save complete
+    11048: "ComResponse", // V3: Confirm observation
+    16402: "V3ResModeQuery", // V3: Mode query
+    16403: "V3ResShootingModeSwitch", // V3: Shooting mode switch
+    16404: "V3ResModeSwitch", // V3: Mode switch
+    16703: "ComResponse", // V3: Adjust camera param
 };
 const classStateMappings = {
     "Dwarfii_Api.ResNotifyStateAstroGoto:0": "ASTRO_STATE_IDLE",

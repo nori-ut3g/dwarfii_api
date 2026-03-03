@@ -18,3 +18,4 @@ export * from "./src/v3_focus.js";
 export * from "./src/v3_device_config.js";
 export * from "./src/v3_camera_params.js";
 export * from "./src/v3_schedule.js";
+export * from "./src/http_api.js";
