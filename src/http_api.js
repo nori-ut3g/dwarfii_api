@@ -1,6 +1,11 @@
 /** @module http_api */
 // HTTP API wrapper for DWARF mini / II / 3 file download and album management.
 //
+// This module is NOT exported from the package main entry point (dist/index.js),
+// which exclusively exports WebSocket/protobuf protocol functions.
+// Import directly:
+//   import { fileDownloadUrl, downloadFile } from "dwarfii_api/src/http_api.js";
+//
 // The device runs two HTTP servers:
 //   - Port 8082: JSON API (deviceInfo, album management, shooting modes, MJPEG streams)
 //   - Port 80:   Static file server (FITS, JPG, PNG, TIFF, thumbnails)
