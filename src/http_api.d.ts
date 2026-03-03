@@ -162,7 +162,7 @@ export type FitsListResponse = ApiResponse<{ fitsInfo: FitsFileInfo[] }>;
 export declare function mainstreamUrl(IP: string): string;
 export declare function secondstreamUrl(IP: string): string;
 
-// File download
+// File download (port 80 — static file server)
 export declare function fileDownloadUrl(IP: string, filePath: string): string;
 export declare function downloadFile(
   IP: string,
