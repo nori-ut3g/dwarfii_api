@@ -2,8 +2,10 @@
 import fs from 'fs';
 import protobuf from 'protobufjs';
 import path from 'path';
+import { fileURLToPath } from 'url';
 
-const PROTO_DIR = '/Users/nori/claude-project/dwarf/dwarfii_api/src/proto';
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const PROTO_DIR = path.resolve(__dirname, '../../src/proto');
 
 function parseHex(hex) {
   const clean = hex.replace(/[^0-9a-fA-F]/g, '');
@@ -42,7 +44,12 @@ async function main() {
   }
   const WsPacket = root.lookupType('WsPacket');
 
-  const lines = fs.readFileSync('/tmp/ws-raw-capture2.tsv', 'utf-8').trim().split('\n');
+  const tsvFile = process.argv[2];
+  if (!tsvFile) {
+    console.error('Usage: node ws-gap-check.mjs <tsv-file>');
+    process.exit(1);
+  }
+  const lines = fs.readFileSync(tsvFile, 'utf-8').trim().split('\n');
   const DWARF_IP = '192.168.11.31';
   const typeNames = { 0: 'REQ', 1: 'RESP', 2: 'NOTIFY', 3: 'NRESP' };
   const SKIP_CMDS = new Set([11039]); // only skip polling

@@ -115,7 +115,14 @@ export function decodeParamId(paramId) {
   let id;
   if (typeof paramId === "bigint") {
     id = paramId;
-  } else if (typeof paramId === "string" || typeof paramId === "number") {
+  } else if (typeof paramId === "string") {
+    id = BigInt(paramId);
+  } else if (typeof paramId === "number") {
+    if (!Number.isSafeInteger(paramId)) {
+      throw new RangeError(
+        "paramId as number exceeds Number.MAX_SAFE_INTEGER; pass a string or BigInt instead"
+      );
+    }
     id = BigInt(paramId);
   } else if (paramId && typeof (/** @type {*} */ (paramId).low) === "number") {
     // protobuf.js Long object

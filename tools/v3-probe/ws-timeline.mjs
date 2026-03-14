@@ -1,9 +1,10 @@
 // Extract WebSocket timeline with timestamps to find photo capture commands
 import protobuf from 'protobufjs';
 import path from 'path';
-import { execSync } from 'child_process';
+import { fileURLToPath } from 'url';
 
-const PROTO_DIR = '/Users/nori/claude-project/dwarf/dwarfii_api/src/proto';
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const PROTO_DIR = path.resolve(__dirname, '../../src/proto');
 
 function parseHex(hex) {
   const clean = hex.replace(/[^0-9a-fA-F]/g, '');
@@ -36,7 +37,11 @@ function extractWsPayload(buf) {
 }
 
 async function main() {
-  const pcapFile = process.argv[2] || '/Users/nori/claude-project/dwarf/dwarfii_api/tools/v3-probe/captures/iphone-capture2.pcap';
+  const tsvFile = process.argv[2];
+  if (!tsvFile) {
+    console.error('Usage: node ws-timeline.mjs <tsv-file>');
+    process.exit(1);
+  }
   const root = new protobuf.Root();
   for (const f of ['base.proto', 'protocol.proto']) {
     try { await root.load(path.join(PROTO_DIR, f)); } catch {}
@@ -44,7 +49,6 @@ async function main() {
   const WsPacket = root.lookupType('WsPacket');
 
   const fs = await import('fs');
-  const tsvFile = '/tmp/ws-raw-capture2.tsv';
   const output = fs.readFileSync(tsvFile, 'utf-8');
 
   const DWARF_IP = '192.168.11.31';

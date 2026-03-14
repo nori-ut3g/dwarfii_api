@@ -166,7 +166,7 @@ function blindDecode(buf) {
         shift += 7n;
         if (!(b & 0x80)) break;
       }
-      fields.push({ field: fieldNum, type: "varint", value: Number(val) });
+      fields.push({ field: fieldNum, type: "varint", value: val <= BigInt(Number.MAX_SAFE_INTEGER) ? Number(val) : val.toString() });
     } else if (wireType === 1) { // 64-bit
       if (pos + 8 <= buf.length) {
         const dv = new DataView(buf.buffer, buf.byteOffset + pos, 8);
