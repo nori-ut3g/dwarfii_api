@@ -22,8 +22,13 @@ function extractWsPayload(buf) {
   let payloadLen = buf[1] & 0x7f;
   let offset = 2;
   if (opcode !== 1 && opcode !== 2) return null;
-  if (payloadLen === 126) { payloadLen = (buf[2] << 8) | buf[3]; offset = 4; }
-  else if (payloadLen === 127) { payloadLen = (buf[6] << 24) | (buf[7] << 16) | (buf[8] << 8) | buf[9]; offset = 10; }
+  if (payloadLen === 126) {
+    if (buf.length < 4) return null;
+    payloadLen = (buf[2] << 8) | buf[3]; offset = 4;
+  } else if (payloadLen === 127) {
+    if (buf.length < 10) return null;
+    payloadLen = (buf[6] << 24) | (buf[7] << 16) | (buf[8] << 8) | buf[9]; offset = 10;
+  }
   if (masked) {
     if (buf.length < offset + 4) return null;
     const maskKey = buf.subarray(offset, offset + 4);

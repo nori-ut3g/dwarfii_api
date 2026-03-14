@@ -124,7 +124,11 @@ export function decodeParamId(paramId) {
       );
     }
     id = BigInt(paramId);
-  } else if (paramId && typeof (/** @type {*} */ (paramId).low) === "number") {
+  } else if (
+    paramId &&
+    typeof (/** @type {*} */ (paramId).low) === "number" &&
+    typeof (/** @type {*} */ (paramId).high) === "number"
+  ) {
     // protobuf.js Long object
     const long = /** @type {{low: number, high: number}} */ (paramId);
     id = (BigInt(long.high >>> 0) << 32n) | BigInt(long.low >>> 0);
