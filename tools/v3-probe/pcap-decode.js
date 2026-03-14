@@ -13,6 +13,7 @@ const PROTO_DIR = path.resolve(__dirname, "../../src/proto");
 
 // Known command names
 const CMD_NAMES = {
+  // V2 Tele camera
   10000: "OpenCamera(tele)", 10001: "CloseCamera(tele)",
   10007: "SetExpMode(tele)", 10008: "GetExpMode(tele)",
   10009: "SetExp(tele)", 10010: "GetExp(tele)",
@@ -21,52 +22,159 @@ const CMD_NAMES = {
   10035: "SetAllParams(tele)", 10036: "GetAllParams(tele)",
   10037: "SetFeatureParam", 10038: "GetAllFeatureParams",
   10039: "GetSystemWorkingState",
+  // V3 Tele camera
+  10050: "V3:OpenTele",
+  // V2 Astro
   11000: "StartCalibration", 11002: "StartGotoDSO",
+  // V3 Astro
+  11033: "V3:SaveStacked", 11034: "V3:ListSaved",
+  11039: "V3:StatusPoll", 11040: "V3:GetAstroParams", 11041: "V3:SetAstroParams",
+  11043: "V3:GetExpPresets", 11047: "V3:SetObsLocation", 11048: "V3:ConfirmObs",
+  // V2 Wide camera
   12000: "OpenCamera(wide)", 12001: "CloseCamera(wide)",
   12027: "GetAllParams(wide)", 12028: "SetAllParams(wide)",
+  // V3 Wide camera
+  12036: "V3:OpenWide",
+  // V2 System
   13000: "SetTime", 13001: "SetTimeZone", 13004: "SetMasterLock",
+  // V3 System
+  13010: "V3:SetGPS",
+  // V2 RGB
   13500: "OpenRGB", 13501: "CloseRGB",
+  // V2 Motor
   14000: "MotorRun", 14011: "MotorGetPosition",
+  // V2 Focus
   15000: "AutoFocus",
+  // V3 Focus
+  15011: "V3:FocusInit",
+  // V2 Notifications
   15200: "N:WidiMatch", 15201: "N:Battery", 15202: "N:Charge",
-  15203: "N:SDCard", 15213: "N:TeleParam", 15214: "N:WideParam",
+  15203: "N:SDCard", 15204: "N:RecordTime",
+  15208: "N:OperationState", 15209: "N:RawLiveStackProg",
+  15210: "N:AstroCalibState",
+  15213: "N:TeleParam", 15214: "N:WideParam",
   15215: "N:TeleFuncState", 15216: "N:WideFuncState",
   15217: "N:SetFeatureParam",
-  15221: "N:RGB", 15223: "N:HostSlave", 15234: "N:StreamType",
+  15221: "N:RGB", 15222: "N:PowerIndState",
+  15223: "N:HostSlave",
+  15233: "N:OneClickGoto", 15234: "N:StreamType",
   15243: "N:Temperature", 15257: "N:Focus",
+  // V3 Notifications
+  15255: "N:V3ExpProgress", 15261: "N:V3DeviceState",
   15264: "N:V3CameraParam",
+  15267: "N:V3ModeChange", 15270: "N:V3StackingData",
+  15273: "N:V3PhotoState", 15274: "N:V3BurstState",
+  15275: "N:V3VideoState", 15276: "N:V3TimelapseState",
+  15278: "N:V3AutoFocus",
+  15285: "N:V3PhotoBurstProg", 15286: "N:V3VideoProg",
+  15287: "N:V3TimelapseProg",
+  15292: "N:V3Temp2", 15296: "N:V3ObsState",
+  // V3 Schedule
+  16102: "V3:GetSchedule",
+  // V3 Device Config (mod=14)
+  16402: "V3:ModeQuery", 16403: "V3:ShootModeSwitch",
+  16404: "V3:ModeSwitch", 16405: "V3:GetDevConfig",
+  // V3 Camera Params (mod=15)
   16700: "V3:SetCameraParam", 16701: "V3:SetExpGain", 16703: "V3:AdjustParam",
+  16706: "V3:StreamCtrl",
 };
 
 // Response/Notify inner message types
 const INNER_TYPES = {
-  // type=1 (RESP)
+  // --- type=0 (REQ) ---
+  // V2
+  // (V2 requests typically don't need inner decode — add as needed)
+  // V3
+  "10050:0": "V3ReqOpenTeleCamera",
+  "12036:0": "V3ReqOpenWideCamera",
+  "11033:0": "V3ReqSaveStackedImage", "11034:0": "V3ReqListSavedImages",
+  "11039:0": "V3ReqStatusPolling",
+  "11040:0": "V3ReqGetAstroParams", "11041:0": "V3ReqSetAstroParams",
+  "11043:0": "V3ReqGetExposurePresets",
+  "11047:0": "V3ReqSetObservationLocation", "11048:0": "V3ReqConfirmObservation",
+  "13010:0": "V3ReqSetGPSLocation",
+  "15011:0": "V3ReqFocusInit",
+  "16102:0": "ReqGetAllShootingSchedule",
+  "16402:0": "V3ReqModeQuery", "16403:0": "V3ReqShootingModeSwitch",
+  "16404:0": "V3ReqModeSwitch", "16405:0": "V3ReqGetDeviceConfig",
+  "16700:0": "V3ReqSetCameraParam", "16701:0": "V3ReqSetExposureGain",
+  "16703:0": "V3ReqAdjustParam",
+  "16706:0": "V3ReqStreamControl",
+
+  // --- type=1 (RESP) ---
+  // V2
   "10000:1": "ResOpenCamera", "10001:1": "ResCloseCamera",
   "12000:1": "ResOpenCamera", "12001:1": "ResCloseCamera",
   "10036:1": "ResGetAllParams", "10038:1": "ResGetAllFeatureParams",
   "10039:1": "ResGetSystemWorkingState",
   "12027:1": "ResGetAllParams",
   "13000:1": "ResSetTime", "13004:1": "ResSetMasterLock",
-  // type=2 (NOTIFY)
+  // V3
+  "10050:1": "ComResponse", "12036:1": "ComResponse",
+  "11033:1": "V3ResSaveStackedImage", "11034:1": "ComResponse",
+  "11039:1": "ComResponse",
+  "11040:1": "V3ResGetAstroParams", "11041:1": "V3ResSetAstroParams",
+  "11043:1": "V3ResGetExposurePresets",
+  "11047:1": "ComResponse", "11048:1": "ComResponse",
+  "13010:1": "ComResponse",
+  "15011:1": "V3ResFocusInit",
+  "16102:1": "ResGetAllShootingSchedule",
+  "16402:1": "V3ResModeQuery", "16403:1": "V3ResShootingModeSwitch",
+  "16404:1": "V3ResModeSwitch", "16405:1": "V3ResGetDeviceConfig",
+  "16700:1": "ComResponse", "16701:1": "ComResponse", "16703:1": "ComResponse",
+  "16706:1": "ComResponse",
+
+  // --- type=2 (NOTIFY) ---
+  // V2
+  "15200:2": "ResNotifyPictureMatching",
   "15201:2": "ResNotifyEle", "15202:2": "ResNotifyCharge",
   "15203:2": "ResNotifySDcardInfo",
+  "15204:2": "ResNotifyRecordTime",
+  "15208:2": "ResNotifyOperationState",
+  "15209:2": "ResNotifyProgressCaptureRawLiveStacking",
+  "15210:2": "ResNotifyStateAstroCalibration",
   "15213:2": "ResNotifyTeleSetParam", "15214:2": "ResNotifyWideSetParam",
   "15215:2": "ResNotifyTeleFunctionState", "15216:2": "ResNotifyWideFunctionState",
   "15217:2": "ResNotifySetFeatureParam",
-  "15221:2": "ResNotifyRGBState", "15223:2": "ResNotifyWsHostSlaveMode",
+  "15221:2": "ResNotifyRGBState",
+  "15222:2": "ResNotifyPowerIndState",
+  "15223:2": "ResNotifyWsHostSlaveMode",
+  "15233:2": "ResNotifyOneClickGotoState",
   "15234:2": "ResNotifyStreamType",
+  "15243:2": "ResNotifyTemperature",
+  "15257:2": "ResNotifyFocus",
+  // V3
+  "15255:2": "V3ResNotifyExposureProgress",
+  "15261:2": "V3ResNotifyDeviceState",
   "15264:2": "V3ResNotifyCameraParamState",
-  // type=0 (REQ)
-  "16700:0": "V3ReqSetCameraParam", "16701:0": "V3ReqSetExposureGain",
-  "16703:0": "V3ReqAdjustParam",
-  // type=1 (RESP) — V3 camera params use ComResponse
-  "16700:1": "ComResponse", "16701:1": "ComResponse", "16703:1": "ComResponse",
-  // type=3 (NRESP)
+  "15267:2": "V3ResNotifyModeChange",
+  "15270:2": "V3ResNotifyStackingData",
+  "15273:2": "V3ResNotifyPhotoState",
+  "15274:2": "V3ResNotifyBurstState",
+  "15275:2": "V3ResNotifyVideoState",
+  "15276:2": "V3ResNotifyTimelapseState",
+  "15278:2": "V3ResNotifyAutoFocusState",
+  "15285:2": "V3ResNotifyPhotoBurstProgress",
+  "15286:2": "V3ResNotifyVideoProgress",
+  "15287:2": "V3ResNotifyTimelapseProgress",
+  "15292:2": "V3ResNotifyTemperature2",
+  "15296:2": "V3ResNotifyObservationState",
+
+  // --- type=3 (NRESP) ---
+  // V2
   "10000:3": "ResOpenCamera", "12000:3": "ResOpenCamera",
   "10001:3": "ResCloseCamera", "12001:3": "ResCloseCamera",
   "10039:3": "ResGetSystemWorkingState",
   "14011:3": "ResGetPosition",
   "13004:3": "ResSetMasterLock",
+  // V3
+  "10050:3": "ComResponse", "12036:3": "ComResponse",
+  "11033:3": "V3ResSaveStackedImage", "11036:3": "ComResponse",
+  "11048:3": "ComResponse",
+  "16402:3": "V3ResModeQuery", "16403:3": "V3ResShootingModeSwitch",
+  "16404:3": "V3ResModeSwitch",
+  "16700:3": "ComResponse", "16701:3": "ComResponse", "16703:3": "ComResponse",
+  "16706:3": "ComResponse",
 };
 
 async function loadProtoRoot() {
@@ -75,7 +183,7 @@ async function loadProtoRoot() {
     "base.proto", "protocol.proto", "camera.proto", "astro.proto",
     "system.proto", "motor_control.proto", "notify.proto", "track.proto",
     "focus.proto", "panorama.proto", "rgb.proto", "ble.proto",
-    "shooting_schedule.proto",
+    "shooting_schedule.proto", "device_config.proto", "camera_params.proto",
     "v3_camera.proto", "v3_notify.proto", "v3_astro.proto",
     "v3_system.proto", "v3_focus.proto",
   ];
