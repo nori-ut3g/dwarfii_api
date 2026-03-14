@@ -339,6 +339,24 @@ export function analyzePacket(message_buffer, input_data_log = true) {
       decoded_message.data[key] = Response_message[key];
     }
   }
+  // Convert Long objects (protobuf int64) to strings to preserve 64-bit precision
+  // in JSON.stringify output (e.g. paramId in V3 camera param notifications)
+  for (let key in decoded_message.data) {
+    const val = decoded_message.data[key];
+    if (
+      val &&
+      typeof val === "object" &&
+      typeof val.low === "number" &&
+      typeof val.high === "number"
+    ) {
+      decoded_message.data[key] =
+        val.toNumber !== undefined
+          ? val.high === 0 && val.low >= 0
+            ? val.toNumber()
+            : val.toString()
+          : String(val);
+    }
+  }
   // add command in plain text
   let value = "";
   if (decoded_message.cmd) {
