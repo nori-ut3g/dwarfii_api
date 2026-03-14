@@ -79,12 +79,12 @@ export function messageV3CameraParamsAdjust(paramId, value) {
 /**
  * Encode a paramId from its constituent parts.
  *
- * paramId layout (64-bit, big-endian byte order):
- *   byte[7] (bits 63..56) = shootingMode  (e.g. 0=photo, 1=video, 2=astro)
- *   byte[6] (bits 55..48) = category      (parameter group)
- *   byte[5..2]            = reserved (0)
- *   byte[1] (bits 15..8)  = cameraId      (0=tele, 1=wide)
- *   byte[0] (bits 7..0)   = paramIndex    (parameter index within the category)
+ * paramId layout (64-bit):
+ *   bits 63..56 = shootingMode  (e.g. 0=photo, 1=video, 2=astro)
+ *   bits 55..48 = category      (parameter group)
+ *   bits 47..16 = reserved (0)
+ *   bits 15..8  = cameraId      (0=tele, 1=wide)
+ *   bits 7..0   = paramIndex    (parameter index within the category)
  *
  * Returns a decimal string suitable for protobuf.js int64 fields.
  *
