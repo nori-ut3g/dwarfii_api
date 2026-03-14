@@ -341,7 +341,7 @@ export const responseMapping = {
     11036: "ComResponse", // V3: Save complete
     11039: "ComResponse", // V3: Status polling
     11040: "V3ResGetAstroParams", // V3: Get astro parameters
-    11041: "ComResponse", // V3: Set astro parameters
+    11041: "V3ResSetAstroParams", // V3: Set astro parameters
     11043: "V3ResGetExposurePresets", // V3: Get exposure presets
     11047: "ComResponse", // V3: Set observation location
     11048: "ComResponse", // V3: Confirm observation

@@ -13933,6 +13933,7 @@ $root.V3ReqSetCameraParam = (function () {
      * @exports IV3ReqSetCameraParam
      * @interface IV3ReqSetCameraParam
      * @property {number|Long|null} [paramId] V3ReqSetCameraParam paramId
+     * @property {number|null} [flag] V3ReqSetCameraParam flag
      * @property {number|null} [value] V3ReqSetCameraParam value
      */
     /**
@@ -13958,6 +13959,13 @@ $root.V3ReqSetCameraParam = (function () {
     V3ReqSetCameraParam.prototype.paramId = $util.Long
         ? $util.Long.fromBits(0, 0, false)
         : 0;
+    /**
+     * V3ReqSetCameraParam flag.
+     * @member {number} flag
+     * @memberof V3ReqSetCameraParam
+     * @instance
+     */
+    V3ReqSetCameraParam.prototype.flag = 0;
     /**
      * V3ReqSetCameraParam value.
      * @member {number} value
@@ -13991,8 +13999,10 @@ $root.V3ReqSetCameraParam = (function () {
         if (message.paramId != null &&
             Object.hasOwnProperty.call(message, "paramId"))
             writer.uint32(/* id 1, wireType 0 =*/ 8).int64(message.paramId);
+        if (message.flag != null && Object.hasOwnProperty.call(message, "flag"))
+            writer.uint32(/* id 2, wireType 0 =*/ 16).int32(message.flag);
         if (message.value != null && Object.hasOwnProperty.call(message, "value"))
-            writer.uint32(/* id 2, wireType 0 =*/ 16).int32(message.value);
+            writer.uint32(/* id 3, wireType 0 =*/ 24).int32(message.value);
         return writer;
     };
     /**
@@ -14030,6 +14040,10 @@ $root.V3ReqSetCameraParam = (function () {
                     break;
                 }
                 case 2: {
+                    message.flag = reader.int32();
+                    break;
+                }
+                case 3: {
                     message.value = reader.int32();
                     break;
                 }
@@ -14072,6 +14086,9 @@ $root.V3ReqSetCameraParam = (function () {
                     $util.isInteger(message.paramId.low) &&
                     $util.isInteger(message.paramId.high)))
                 return "paramId: integer|Long expected";
+        if (message.flag != null && message.hasOwnProperty("flag"))
+            if (!$util.isInteger(message.flag))
+                return "flag: integer expected";
         if (message.value != null && message.hasOwnProperty("value"))
             if (!$util.isInteger(message.value))
                 return "value: integer expected";
@@ -14098,6 +14115,8 @@ $root.V3ReqSetCameraParam = (function () {
                 message.paramId = object.paramId;
             else if (typeof object.paramId === "object")
                 message.paramId = new $util.LongBits(object.paramId.low >>> 0, object.paramId.high >>> 0).toNumber();
+        if (object.flag != null)
+            message.flag = object.flag | 0;
         if (object.value != null)
             message.value = object.value | 0;
         return message;
@@ -14127,6 +14146,7 @@ $root.V3ReqSetCameraParam = (function () {
             }
             else
                 object.paramId = options.longs === String ? "0" : 0;
+            object.flag = 0;
             object.value = 0;
         }
         if (message.paramId != null && message.hasOwnProperty("paramId"))
@@ -14140,6 +14160,8 @@ $root.V3ReqSetCameraParam = (function () {
                         : options.longs === Number
                             ? new $util.LongBits(message.paramId.low >>> 0, message.paramId.high >>> 0).toNumber()
                             : message.paramId;
+        if (message.flag != null && message.hasOwnProperty("flag"))
+            object.flag = message.flag;
         if (message.value != null && message.hasOwnProperty("value"))
             object.value = message.value;
         return object;
@@ -51844,7 +51866,7 @@ $root.V3ResGetAstroParams = (function () {
      * @exports IV3ResGetAstroParams
      * @interface IV3ResGetAstroParams
      * @property {number|null} [code] V3ResGetAstroParams code
-     * @property {IV3AstroParamsData|null} [params] V3ResGetAstroParams params
+     * @property {Array.<IV3AstroParamsData>|null} [params] V3ResGetAstroParams params
      */
     /**
      * Constructs a new V3ResGetAstroParams.
@@ -51855,6 +51877,7 @@ $root.V3ResGetAstroParams = (function () {
      * @param {IV3ResGetAstroParams=} [properties] Properties to set
      */
     function V3ResGetAstroParams(properties) {
+        this.params = [];
         if (properties)
             for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
                 if (properties[keys[i]] != null)
@@ -51869,11 +51892,11 @@ $root.V3ResGetAstroParams = (function () {
     V3ResGetAstroParams.prototype.code = 0;
     /**
      * V3ResGetAstroParams params.
-     * @member {IV3AstroParamsData|null|undefined} params
+     * @member {Array.<IV3AstroParamsData>} params
      * @memberof V3ResGetAstroParams
      * @instance
      */
-    V3ResGetAstroParams.prototype.params = null;
+    V3ResGetAstroParams.prototype.params = $util.emptyArray;
     /**
      * Creates a new V3ResGetAstroParams instance using the specified properties.
      * @function create
@@ -51899,8 +51922,9 @@ $root.V3ResGetAstroParams = (function () {
             writer = $Writer.create();
         if (message.code != null && Object.hasOwnProperty.call(message, "code"))
             writer.uint32(/* id 1, wireType 0 =*/ 8).int32(message.code);
-        if (message.params != null && Object.hasOwnProperty.call(message, "params"))
-            $root.V3AstroParamsData.encode(message.params, writer.uint32(/* id 2, wireType 2 =*/ 18).fork()).ldelim();
+        if (message.params != null && message.params.length)
+            for (var i = 0; i < message.params.length; ++i)
+                $root.V3AstroParamsData.encode(message.params[i], writer.uint32(/* id 2, wireType 2 =*/ 18).fork()).ldelim();
         return writer;
     };
     /**
@@ -51938,7 +51962,9 @@ $root.V3ResGetAstroParams = (function () {
                     break;
                 }
                 case 2: {
-                    message.params = $root.V3AstroParamsData.decode(reader, reader.uint32());
+                    if (!(message.params && message.params.length))
+                        message.params = [];
+                    message.params.push($root.V3AstroParamsData.decode(reader, reader.uint32()));
                     break;
                 }
                 default:
@@ -51978,9 +52004,13 @@ $root.V3ResGetAstroParams = (function () {
             if (!$util.isInteger(message.code))
                 return "code: integer expected";
         if (message.params != null && message.hasOwnProperty("params")) {
-            var error = $root.V3AstroParamsData.verify(message.params);
-            if (error)
-                return "params." + error;
+            if (!Array.isArray(message.params))
+                return "params: array expected";
+            for (var i = 0; i < message.params.length; ++i) {
+                var error = $root.V3AstroParamsData.verify(message.params[i]);
+                if (error)
+                    return "params." + error;
+            }
         }
         return null;
     };
@@ -51998,10 +52028,15 @@ $root.V3ResGetAstroParams = (function () {
         var message = new $root.V3ResGetAstroParams();
         if (object.code != null)
             message.code = object.code | 0;
-        if (object.params != null) {
-            if (typeof object.params !== "object")
-                throw TypeError(".V3ResGetAstroParams.params: object expected");
-            message.params = $root.V3AstroParamsData.fromObject(object.params);
+        if (object.params) {
+            if (!Array.isArray(object.params))
+                throw TypeError(".V3ResGetAstroParams.params: array expected");
+            message.params = [];
+            for (var i = 0; i < object.params.length; ++i) {
+                if (typeof object.params[i] !== "object")
+                    throw TypeError(".V3ResGetAstroParams.params: object expected");
+                message.params[i] = $root.V3AstroParamsData.fromObject(object.params[i]);
+            }
         }
         return message;
     };
@@ -52018,14 +52053,17 @@ $root.V3ResGetAstroParams = (function () {
         if (!options)
             options = {};
         var object = {};
-        if (options.defaults) {
+        if (options.arrays || options.defaults)
+            object.params = [];
+        if (options.defaults)
             object.code = 0;
-            object.params = null;
-        }
         if (message.code != null && message.hasOwnProperty("code"))
             object.code = message.code;
-        if (message.params != null && message.hasOwnProperty("params"))
-            object.params = $root.V3AstroParamsData.toObject(message.params, options);
+        if (message.params && message.params.length) {
+            object.params = [];
+            for (var j = 0; j < message.params.length; ++j)
+                object.params[j] = $root.V3AstroParamsData.toObject(message.params[j], options);
+        }
         return object;
     };
     /**
@@ -52063,7 +52101,7 @@ $root.V3AstroParamsData = (function () {
      * @property {number|null} [gain] V3AstroParamsData gain
      * @property {number|null} [total] V3AstroParamsData total
      * @property {number|null} [count] V3AstroParamsData count
-     * @property {string|null} [format] V3AstroParamsData format
+     * @property {string|null} [pipeParams] V3AstroParamsData pipeParams
      */
     /**
      * Constructs a new V3AstroParamsData.
@@ -52108,12 +52146,12 @@ $root.V3AstroParamsData = (function () {
      */
     V3AstroParamsData.prototype.count = 0;
     /**
-     * V3AstroParamsData format.
-     * @member {string} format
+     * V3AstroParamsData pipeParams.
+     * @member {string} pipeParams
      * @memberof V3AstroParamsData
      * @instance
      */
-    V3AstroParamsData.prototype.format = "";
+    V3AstroParamsData.prototype.pipeParams = "";
     /**
      * Creates a new V3AstroParamsData instance using the specified properties.
      * @function create
@@ -52146,8 +52184,9 @@ $root.V3AstroParamsData = (function () {
             writer.uint32(/* id 3, wireType 0 =*/ 24).int32(message.total);
         if (message.count != null && Object.hasOwnProperty.call(message, "count"))
             writer.uint32(/* id 4, wireType 0 =*/ 32).int32(message.count);
-        if (message.format != null && Object.hasOwnProperty.call(message, "format"))
-            writer.uint32(/* id 5, wireType 2 =*/ 42).string(message.format);
+        if (message.pipeParams != null &&
+            Object.hasOwnProperty.call(message, "pipeParams"))
+            writer.uint32(/* id 6, wireType 2 =*/ 50).string(message.pipeParams);
         return writer;
     };
     /**
@@ -52196,8 +52235,8 @@ $root.V3AstroParamsData = (function () {
                     message.count = reader.int32();
                     break;
                 }
-                case 5: {
-                    message.format = reader.string();
+                case 6: {
+                    message.pipeParams = reader.string();
                     break;
                 }
                 default:
@@ -52245,9 +52284,9 @@ $root.V3AstroParamsData = (function () {
         if (message.count != null && message.hasOwnProperty("count"))
             if (!$util.isInteger(message.count))
                 return "count: integer expected";
-        if (message.format != null && message.hasOwnProperty("format"))
-            if (!$util.isString(message.format))
-                return "format: string expected";
+        if (message.pipeParams != null && message.hasOwnProperty("pipeParams"))
+            if (!$util.isString(message.pipeParams))
+                return "pipeParams: string expected";
         return null;
     };
     /**
@@ -52270,8 +52309,8 @@ $root.V3AstroParamsData = (function () {
             message.total = object.total | 0;
         if (object.count != null)
             message.count = object.count | 0;
-        if (object.format != null)
-            message.format = String(object.format);
+        if (object.pipeParams != null)
+            message.pipeParams = String(object.pipeParams);
         return message;
     };
     /**
@@ -52292,7 +52331,7 @@ $root.V3AstroParamsData = (function () {
             object.gain = 0;
             object.total = 0;
             object.count = 0;
-            object.format = "";
+            object.pipeParams = "";
         }
         if (message.exposure != null && message.hasOwnProperty("exposure"))
             object.exposure = message.exposure;
@@ -52302,8 +52341,8 @@ $root.V3AstroParamsData = (function () {
             object.total = message.total;
         if (message.count != null && message.hasOwnProperty("count"))
             object.count = message.count;
-        if (message.format != null && message.hasOwnProperty("format"))
-            object.format = message.format;
+        if (message.pipeParams != null && message.hasOwnProperty("pipeParams"))
+            object.pipeParams = message.pipeParams;
         return object;
     };
     /**
@@ -52519,6 +52558,218 @@ $root.V3ReqSetAstroParams = (function () {
         return typeUrlPrefix + "/V3ReqSetAstroParams";
     };
     return V3ReqSetAstroParams;
+})();
+$root.V3ResSetAstroParams = (function () {
+    /**
+     * Properties of a V3ResSetAstroParams.
+     * @exports IV3ResSetAstroParams
+     * @interface IV3ResSetAstroParams
+     * @property {number|null} [code] V3ResSetAstroParams code
+     * @property {string|null} [pipeParams] V3ResSetAstroParams pipeParams
+     */
+    /**
+     * Constructs a new V3ResSetAstroParams.
+     * @exports V3ResSetAstroParams
+     * @classdesc Represents a V3ResSetAstroParams.
+     * @implements IV3ResSetAstroParams
+     * @constructor
+     * @param {IV3ResSetAstroParams=} [properties] Properties to set
+     */
+    function V3ResSetAstroParams(properties) {
+        if (properties)
+            for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+                if (properties[keys[i]] != null)
+                    this[keys[i]] = properties[keys[i]];
+    }
+    /**
+     * V3ResSetAstroParams code.
+     * @member {number} code
+     * @memberof V3ResSetAstroParams
+     * @instance
+     */
+    V3ResSetAstroParams.prototype.code = 0;
+    /**
+     * V3ResSetAstroParams pipeParams.
+     * @member {string} pipeParams
+     * @memberof V3ResSetAstroParams
+     * @instance
+     */
+    V3ResSetAstroParams.prototype.pipeParams = "";
+    /**
+     * Creates a new V3ResSetAstroParams instance using the specified properties.
+     * @function create
+     * @memberof V3ResSetAstroParams
+     * @static
+     * @param {IV3ResSetAstroParams=} [properties] Properties to set
+     * @returns {V3ResSetAstroParams} V3ResSetAstroParams instance
+     */
+    V3ResSetAstroParams.create = function create(properties) {
+        return new V3ResSetAstroParams(properties);
+    };
+    /**
+     * Encodes the specified V3ResSetAstroParams message. Does not implicitly {@link V3ResSetAstroParams.verify|verify} messages.
+     * @function encode
+     * @memberof V3ResSetAstroParams
+     * @static
+     * @param {IV3ResSetAstroParams} message V3ResSetAstroParams message or plain object to encode
+     * @param {$protobuf.Writer} [writer] Writer to encode to
+     * @returns {$protobuf.Writer} Writer
+     */
+    V3ResSetAstroParams.encode = function encode(message, writer) {
+        if (!writer)
+            writer = $Writer.create();
+        if (message.code != null && Object.hasOwnProperty.call(message, "code"))
+            writer.uint32(/* id 1, wireType 0 =*/ 8).int32(message.code);
+        if (message.pipeParams != null &&
+            Object.hasOwnProperty.call(message, "pipeParams"))
+            writer.uint32(/* id 2, wireType 2 =*/ 18).string(message.pipeParams);
+        return writer;
+    };
+    /**
+     * Encodes the specified V3ResSetAstroParams message, length delimited. Does not implicitly {@link V3ResSetAstroParams.verify|verify} messages.
+     * @function encodeDelimited
+     * @memberof V3ResSetAstroParams
+     * @static
+     * @param {IV3ResSetAstroParams} message V3ResSetAstroParams message or plain object to encode
+     * @param {$protobuf.Writer} [writer] Writer to encode to
+     * @returns {$protobuf.Writer} Writer
+     */
+    V3ResSetAstroParams.encodeDelimited = function encodeDelimited(message, writer) {
+        return this.encode(message, writer).ldelim();
+    };
+    /**
+     * Decodes a V3ResSetAstroParams message from the specified reader or buffer.
+     * @function decode
+     * @memberof V3ResSetAstroParams
+     * @static
+     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+     * @param {number} [length] Message length if known beforehand
+     * @returns {V3ResSetAstroParams} V3ResSetAstroParams
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    V3ResSetAstroParams.decode = function decode(reader, length) {
+        if (!(reader instanceof $Reader))
+            reader = $Reader.create(reader);
+        var end = length === undefined ? reader.len : reader.pos + length, message = new $root.V3ResSetAstroParams();
+        while (reader.pos < end) {
+            var tag = reader.uint32();
+            switch (tag >>> 3) {
+                case 1: {
+                    message.code = reader.int32();
+                    break;
+                }
+                case 2: {
+                    message.pipeParams = reader.string();
+                    break;
+                }
+                default:
+                    reader.skipType(tag & 7);
+                    break;
+            }
+        }
+        return message;
+    };
+    /**
+     * Decodes a V3ResSetAstroParams message from the specified reader or buffer, length delimited.
+     * @function decodeDelimited
+     * @memberof V3ResSetAstroParams
+     * @static
+     * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+     * @returns {V3ResSetAstroParams} V3ResSetAstroParams
+     * @throws {Error} If the payload is not a reader or valid buffer
+     * @throws {$protobuf.util.ProtocolError} If required fields are missing
+     */
+    V3ResSetAstroParams.decodeDelimited = function decodeDelimited(reader) {
+        if (!(reader instanceof $Reader))
+            reader = new $Reader(reader);
+        return this.decode(reader, reader.uint32());
+    };
+    /**
+     * Verifies a V3ResSetAstroParams message.
+     * @function verify
+     * @memberof V3ResSetAstroParams
+     * @static
+     * @param {Object.<string,*>} message Plain object to verify
+     * @returns {string|null} `null` if valid, otherwise the reason why it is not
+     */
+    V3ResSetAstroParams.verify = function verify(message) {
+        if (typeof message !== "object" || message === null)
+            return "object expected";
+        if (message.code != null && message.hasOwnProperty("code"))
+            if (!$util.isInteger(message.code))
+                return "code: integer expected";
+        if (message.pipeParams != null && message.hasOwnProperty("pipeParams"))
+            if (!$util.isString(message.pipeParams))
+                return "pipeParams: string expected";
+        return null;
+    };
+    /**
+     * Creates a V3ResSetAstroParams message from a plain object. Also converts values to their respective internal types.
+     * @function fromObject
+     * @memberof V3ResSetAstroParams
+     * @static
+     * @param {Object.<string,*>} object Plain object
+     * @returns {V3ResSetAstroParams} V3ResSetAstroParams
+     */
+    V3ResSetAstroParams.fromObject = function fromObject(object) {
+        if (object instanceof $root.V3ResSetAstroParams)
+            return object;
+        var message = new $root.V3ResSetAstroParams();
+        if (object.code != null)
+            message.code = object.code | 0;
+        if (object.pipeParams != null)
+            message.pipeParams = String(object.pipeParams);
+        return message;
+    };
+    /**
+     * Creates a plain object from a V3ResSetAstroParams message. Also converts values to other types if specified.
+     * @function toObject
+     * @memberof V3ResSetAstroParams
+     * @static
+     * @param {V3ResSetAstroParams} message V3ResSetAstroParams
+     * @param {$protobuf.IConversionOptions} [options] Conversion options
+     * @returns {Object.<string,*>} Plain object
+     */
+    V3ResSetAstroParams.toObject = function toObject(message, options) {
+        if (!options)
+            options = {};
+        var object = {};
+        if (options.defaults) {
+            object.code = 0;
+            object.pipeParams = "";
+        }
+        if (message.code != null && message.hasOwnProperty("code"))
+            object.code = message.code;
+        if (message.pipeParams != null && message.hasOwnProperty("pipeParams"))
+            object.pipeParams = message.pipeParams;
+        return object;
+    };
+    /**
+     * Converts this V3ResSetAstroParams to JSON.
+     * @function toJSON
+     * @memberof V3ResSetAstroParams
+     * @instance
+     * @returns {Object.<string,*>} JSON object
+     */
+    V3ResSetAstroParams.prototype.toJSON = function toJSON() {
+        return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+    };
+    /**
+     * Gets the default type url for V3ResSetAstroParams
+     * @function getTypeUrl
+     * @memberof V3ResSetAstroParams
+     * @static
+     * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+     * @returns {string} The default type url
+     */
+    V3ResSetAstroParams.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+        if (typeUrlPrefix === undefined) {
+            typeUrlPrefix = "type.googleapis.com";
+        }
+        return typeUrlPrefix + "/V3ResSetAstroParams";
+    };
+    return V3ResSetAstroParams;
 })();
 $root.V3ReqGetExposurePresets = (function () {
     /**
@@ -55606,8 +55857,8 @@ $root.V3ResNotifyCameraParamState = (function () {
      * @exports IV3ResNotifyCameraParamState
      * @interface IV3ResNotifyCameraParamState
      * @property {number|Long|null} [paramId] V3ResNotifyCameraParamState paramId
-     * @property {number|null} [value1] V3ResNotifyCameraParamState value1
-     * @property {number|null} [value2] V3ResNotifyCameraParamState value2
+     * @property {number|null} [flag] V3ResNotifyCameraParamState flag
+     * @property {number|null} [value] V3ResNotifyCameraParamState value
      */
     /**
      * Constructs a new V3ResNotifyCameraParamState.
@@ -55633,19 +55884,19 @@ $root.V3ResNotifyCameraParamState = (function () {
         ? $util.Long.fromBits(0, 0, false)
         : 0;
     /**
-     * V3ResNotifyCameraParamState value1.
-     * @member {number} value1
+     * V3ResNotifyCameraParamState flag.
+     * @member {number} flag
      * @memberof V3ResNotifyCameraParamState
      * @instance
      */
-    V3ResNotifyCameraParamState.prototype.value1 = 0;
+    V3ResNotifyCameraParamState.prototype.flag = 0;
     /**
-     * V3ResNotifyCameraParamState value2.
-     * @member {number} value2
+     * V3ResNotifyCameraParamState value.
+     * @member {number} value
      * @memberof V3ResNotifyCameraParamState
      * @instance
      */
-    V3ResNotifyCameraParamState.prototype.value2 = 0;
+    V3ResNotifyCameraParamState.prototype.value = 0;
     /**
      * Creates a new V3ResNotifyCameraParamState instance using the specified properties.
      * @function create
@@ -55672,10 +55923,10 @@ $root.V3ResNotifyCameraParamState = (function () {
         if (message.paramId != null &&
             Object.hasOwnProperty.call(message, "paramId"))
             writer.uint32(/* id 1, wireType 0 =*/ 8).int64(message.paramId);
-        if (message.value1 != null && Object.hasOwnProperty.call(message, "value1"))
-            writer.uint32(/* id 2, wireType 0 =*/ 16).int32(message.value1);
-        if (message.value2 != null && Object.hasOwnProperty.call(message, "value2"))
-            writer.uint32(/* id 3, wireType 0 =*/ 24).int32(message.value2);
+        if (message.flag != null && Object.hasOwnProperty.call(message, "flag"))
+            writer.uint32(/* id 2, wireType 0 =*/ 16).int32(message.flag);
+        if (message.value != null && Object.hasOwnProperty.call(message, "value"))
+            writer.uint32(/* id 3, wireType 0 =*/ 24).int32(message.value);
         return writer;
     };
     /**
@@ -55713,11 +55964,11 @@ $root.V3ResNotifyCameraParamState = (function () {
                     break;
                 }
                 case 2: {
-                    message.value1 = reader.int32();
+                    message.flag = reader.int32();
                     break;
                 }
                 case 3: {
-                    message.value2 = reader.int32();
+                    message.value = reader.int32();
                     break;
                 }
                 default:
@@ -55759,12 +56010,12 @@ $root.V3ResNotifyCameraParamState = (function () {
                     $util.isInteger(message.paramId.low) &&
                     $util.isInteger(message.paramId.high)))
                 return "paramId: integer|Long expected";
-        if (message.value1 != null && message.hasOwnProperty("value1"))
-            if (!$util.isInteger(message.value1))
-                return "value1: integer expected";
-        if (message.value2 != null && message.hasOwnProperty("value2"))
-            if (!$util.isInteger(message.value2))
-                return "value2: integer expected";
+        if (message.flag != null && message.hasOwnProperty("flag"))
+            if (!$util.isInteger(message.flag))
+                return "flag: integer expected";
+        if (message.value != null && message.hasOwnProperty("value"))
+            if (!$util.isInteger(message.value))
+                return "value: integer expected";
         return null;
     };
     /**
@@ -55788,10 +56039,10 @@ $root.V3ResNotifyCameraParamState = (function () {
                 message.paramId = object.paramId;
             else if (typeof object.paramId === "object")
                 message.paramId = new $util.LongBits(object.paramId.low >>> 0, object.paramId.high >>> 0).toNumber();
-        if (object.value1 != null)
-            message.value1 = object.value1 | 0;
-        if (object.value2 != null)
-            message.value2 = object.value2 | 0;
+        if (object.flag != null)
+            message.flag = object.flag | 0;
+        if (object.value != null)
+            message.value = object.value | 0;
         return message;
     };
     /**
@@ -55819,8 +56070,8 @@ $root.V3ResNotifyCameraParamState = (function () {
             }
             else
                 object.paramId = options.longs === String ? "0" : 0;
-            object.value1 = 0;
-            object.value2 = 0;
+            object.flag = 0;
+            object.value = 0;
         }
         if (message.paramId != null && message.hasOwnProperty("paramId"))
             if (typeof message.paramId === "number")
@@ -55833,10 +56084,10 @@ $root.V3ResNotifyCameraParamState = (function () {
                         : options.longs === Number
                             ? new $util.LongBits(message.paramId.low >>> 0, message.paramId.high >>> 0).toNumber()
                             : message.paramId;
-        if (message.value1 != null && message.hasOwnProperty("value1"))
-            object.value1 = message.value1;
-        if (message.value2 != null && message.hasOwnProperty("value2"))
-            object.value2 = message.value2;
+        if (message.flag != null && message.hasOwnProperty("flag"))
+            object.flag = message.flag;
+        if (message.value != null && message.hasOwnProperty("value"))
+            object.value = message.value;
         return object;
     };
     /**
@@ -56106,9 +56357,9 @@ $root.V3ResNotifyStackingData = (function () {
      * @exports IV3ResNotifyStackingData
      * @interface IV3ResNotifyStackingData
      * @property {number|null} [field1] V3ResNotifyStackingData field1
-     * @property {number|null} [value] V3ResNotifyStackingData value
+     * @property {number|null} [colorTemperature] V3ResNotifyStackingData colorTemperature
      * @property {number|null} [field3] V3ResNotifyStackingData field3
-     * @property {number|null} [flag] V3ResNotifyStackingData flag
+     * @property {number|null} [camera] V3ResNotifyStackingData camera
      */
     /**
      * Constructs a new V3ResNotifyStackingData.
@@ -56132,12 +56383,12 @@ $root.V3ResNotifyStackingData = (function () {
      */
     V3ResNotifyStackingData.prototype.field1 = 0;
     /**
-     * V3ResNotifyStackingData value.
-     * @member {number} value
+     * V3ResNotifyStackingData colorTemperature.
+     * @member {number} colorTemperature
      * @memberof V3ResNotifyStackingData
      * @instance
      */
-    V3ResNotifyStackingData.prototype.value = 0;
+    V3ResNotifyStackingData.prototype.colorTemperature = 0;
     /**
      * V3ResNotifyStackingData field3.
      * @member {number} field3
@@ -56146,12 +56397,12 @@ $root.V3ResNotifyStackingData = (function () {
      */
     V3ResNotifyStackingData.prototype.field3 = 0;
     /**
-     * V3ResNotifyStackingData flag.
-     * @member {number} flag
+     * V3ResNotifyStackingData camera.
+     * @member {number} camera
      * @memberof V3ResNotifyStackingData
      * @instance
      */
-    V3ResNotifyStackingData.prototype.flag = 0;
+    V3ResNotifyStackingData.prototype.camera = 0;
     /**
      * Creates a new V3ResNotifyStackingData instance using the specified properties.
      * @function create
@@ -56177,12 +56428,13 @@ $root.V3ResNotifyStackingData = (function () {
             writer = $Writer.create();
         if (message.field1 != null && Object.hasOwnProperty.call(message, "field1"))
             writer.uint32(/* id 1, wireType 0 =*/ 8).int32(message.field1);
-        if (message.value != null && Object.hasOwnProperty.call(message, "value"))
-            writer.uint32(/* id 2, wireType 0 =*/ 16).int32(message.value);
+        if (message.colorTemperature != null &&
+            Object.hasOwnProperty.call(message, "colorTemperature"))
+            writer.uint32(/* id 2, wireType 0 =*/ 16).int32(message.colorTemperature);
         if (message.field3 != null && Object.hasOwnProperty.call(message, "field3"))
             writer.uint32(/* id 3, wireType 0 =*/ 24).int32(message.field3);
-        if (message.flag != null && Object.hasOwnProperty.call(message, "flag"))
-            writer.uint32(/* id 4, wireType 0 =*/ 32).int32(message.flag);
+        if (message.camera != null && Object.hasOwnProperty.call(message, "camera"))
+            writer.uint32(/* id 4, wireType 0 =*/ 32).int32(message.camera);
         return writer;
     };
     /**
@@ -56220,7 +56472,7 @@ $root.V3ResNotifyStackingData = (function () {
                     break;
                 }
                 case 2: {
-                    message.value = reader.int32();
+                    message.colorTemperature = reader.int32();
                     break;
                 }
                 case 3: {
@@ -56228,7 +56480,7 @@ $root.V3ResNotifyStackingData = (function () {
                     break;
                 }
                 case 4: {
-                    message.flag = reader.int32();
+                    message.camera = reader.int32();
                     break;
                 }
                 default:
@@ -56267,15 +56519,16 @@ $root.V3ResNotifyStackingData = (function () {
         if (message.field1 != null && message.hasOwnProperty("field1"))
             if (!$util.isInteger(message.field1))
                 return "field1: integer expected";
-        if (message.value != null && message.hasOwnProperty("value"))
-            if (!$util.isInteger(message.value))
-                return "value: integer expected";
+        if (message.colorTemperature != null &&
+            message.hasOwnProperty("colorTemperature"))
+            if (!$util.isInteger(message.colorTemperature))
+                return "colorTemperature: integer expected";
         if (message.field3 != null && message.hasOwnProperty("field3"))
             if (!$util.isInteger(message.field3))
                 return "field3: integer expected";
-        if (message.flag != null && message.hasOwnProperty("flag"))
-            if (!$util.isInteger(message.flag))
-                return "flag: integer expected";
+        if (message.camera != null && message.hasOwnProperty("camera"))
+            if (!$util.isInteger(message.camera))
+                return "camera: integer expected";
         return null;
     };
     /**
@@ -56292,12 +56545,12 @@ $root.V3ResNotifyStackingData = (function () {
         var message = new $root.V3ResNotifyStackingData();
         if (object.field1 != null)
             message.field1 = object.field1 | 0;
-        if (object.value != null)
-            message.value = object.value | 0;
+        if (object.colorTemperature != null)
+            message.colorTemperature = object.colorTemperature | 0;
         if (object.field3 != null)
             message.field3 = object.field3 | 0;
-        if (object.flag != null)
-            message.flag = object.flag | 0;
+        if (object.camera != null)
+            message.camera = object.camera | 0;
         return message;
     };
     /**
@@ -56315,18 +56568,19 @@ $root.V3ResNotifyStackingData = (function () {
         var object = {};
         if (options.defaults) {
             object.field1 = 0;
-            object.value = 0;
+            object.colorTemperature = 0;
             object.field3 = 0;
-            object.flag = 0;
+            object.camera = 0;
         }
         if (message.field1 != null && message.hasOwnProperty("field1"))
             object.field1 = message.field1;
-        if (message.value != null && message.hasOwnProperty("value"))
-            object.value = message.value;
+        if (message.colorTemperature != null &&
+            message.hasOwnProperty("colorTemperature"))
+            object.colorTemperature = message.colorTemperature;
         if (message.field3 != null && message.hasOwnProperty("field3"))
             object.field3 = message.field3;
-        if (message.flag != null && message.hasOwnProperty("flag"))
-            object.flag = message.flag;
+        if (message.camera != null && message.hasOwnProperty("camera"))
+            object.camera = message.camera;
         return object;
     };
     /**

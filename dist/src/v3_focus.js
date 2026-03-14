@@ -38,3 +38,50 @@ export function messageV3FocusAutoFocusStart() {
     console.log(`class Message = ${cmdClass} created message = ${JSON.stringify(message)}`);
     return createPacket(message, class_message, module_id, interface_id, type_id);
 }
+/**
+ * V3: Manual single-step focus
+ * Create Encoded Packet for the command CMD_FOCUS_MANUAL_SINGLE_STEP_FOCUS
+ * @param {number} direction - Focus direction (0=forward, 1=backward)
+ * @returns {Uint8Array}
+ */
+export function messageV3FocusManualSingleStep(direction = 0) {
+    let module_id = Dwarfii_Api.ModuleId.MODULE_FOCUS;
+    let interface_id = Dwarfii_Api.DwarfCMD.CMD_FOCUS_MANUAL_SINGLE_STEP_FOCUS;
+    let type_id = Dwarfii_Api.MessageTypeId.TYPE_REQUEST;
+    const cmdClass = cmdMapping[interface_id];
+    let class_message = Dwarfii_Api[cmdClass];
+    let message = class_message.create({ direction: direction });
+    console.log(`class Message = ${cmdClass} created message = ${JSON.stringify(message)}`);
+    return createPacket(message, class_message, module_id, interface_id, type_id);
+}
+/**
+ * V3: Start manual continuous focus
+ * Create Encoded Packet for the command CMD_FOCUS_START_MANUAL_CONTINU_FOCUS
+ * @param {number} direction - Focus direction (0=forward, 1=backward)
+ * @returns {Uint8Array}
+ */
+export function messageV3FocusManualContinuStart(direction = 0) {
+    let module_id = Dwarfii_Api.ModuleId.MODULE_FOCUS;
+    let interface_id = Dwarfii_Api.DwarfCMD.CMD_FOCUS_START_MANUAL_CONTINU_FOCUS;
+    let type_id = Dwarfii_Api.MessageTypeId.TYPE_REQUEST;
+    const cmdClass = cmdMapping[interface_id];
+    let class_message = Dwarfii_Api[cmdClass];
+    let message = class_message.create({ direction: direction });
+    console.log(`class Message = ${cmdClass} created message = ${JSON.stringify(message)}`);
+    return createPacket(message, class_message, module_id, interface_id, type_id);
+}
+/**
+ * V3: Stop manual continuous focus
+ * Create Encoded Packet for the command CMD_FOCUS_STOP_MANUAL_CONTINU_FOCUS
+ * @returns {Uint8Array}
+ */
+export function messageV3FocusManualContinuStop() {
+    let module_id = Dwarfii_Api.ModuleId.MODULE_FOCUS;
+    let interface_id = Dwarfii_Api.DwarfCMD.CMD_FOCUS_STOP_MANUAL_CONTINU_FOCUS;
+    let type_id = Dwarfii_Api.MessageTypeId.TYPE_REQUEST;
+    const cmdClass = cmdMapping[interface_id];
+    let class_message = Dwarfii_Api[cmdClass];
+    let message = class_message.create({});
+    console.log(`class Message = ${cmdClass} created message = ${JSON.stringify(message)}`);
+    return createPacket(message, class_message, module_id, interface_id, type_id);
+}
