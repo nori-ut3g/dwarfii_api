@@ -86,8 +86,10 @@ const CAPTURED_DATA = {
   // 11040: empty
   // 13010: GPS coords (Tokyo area based on the doubles)
   "13010_gps": Buffer.from(
-    "0977190c5b60ea41401108306713367c614019264292ac3e750f40220" +
-    "6e697a5ac67e697ac67", "hex"
+    "0941e7b26d62ea41401" +
+    "19f8bbee9357c61401" +
+    "9c84854613b751040220" +
+    "6e697a5e69cac", "hex"
   ),
   // 11043 with arg field1=1: 08 01
   "11043_get1": Buffer.from("0801", "hex"),

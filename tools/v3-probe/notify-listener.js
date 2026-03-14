@@ -61,52 +61,55 @@ function buildPacket(root, mod, cmd, msgTypeName, data) {
 
 // All known notify message types
 const NOTIFY_MAP = {
-  15200: "ResNotifyWidiPictureMatching",
-  15201: "ResNotifyEle",
-  15202: "ResNotifyCharge",
+  // Names match cmd_mapping.js notifyMapping (authoritative source)
+  15200: "ResNotifyPictureMatching",
+  15201: "ComResWithInt",                              // Battery
+  15202: "ComResWithInt",                              // Charge status
   15203: "ResNotifySDcardInfo",
-  15204: "ResNotifyTeleRecordTime",
-  15205: "ResNotifyTeleTimelaseOutTime",
-  15206: "ResNotifyStateCaptureRawDark",
-  15207: "ResNotifyPrographCaptureRawDark",
-  15208: "ResNotifyStateCaptureRawLiveStacking",
-  15209: "ResNotifyPrographCaptureRawLiveStacking",
+  15204: "ResNotifyRecordTime",
+  15205: "ResNotifyTimeLapseOutTime",
+  15206: "ResNotifyOperationState",                    // Dark field state
+  15207: "ResNotifyProgressCaptureRawDark",
+  15208: "ResNotifyOperationState",                    // Astro overlay state
+  15209: "ResNotifyProgressCaptureRawLiveStacking",
   15210: "ResNotifyStateAstroCalibration",
   15211: "ResNotifyStateAstroGoto",
   15212: "ResNotifyStateAstroTracking",
-  15213: "ResNotifyTeleSetParam",
-  15214: "ResNotifyWideSetParam",
-  15215: "ResNotifyTeleFunctionState",
-  15216: "ResNotifyWideFunctionState",
-  15217: "ResNotifySetFeatureParam",
-  15218: "ResNotifyTeleBurstProgress",
+  15213: "ResNotifyParam",                             // Tele param echo
+  15214: "ResNotifyParam",                             // Wide param echo
+  15215: "ResNotifyCamFunctionState",                  // Tele func state
+  15216: "ResNotifyCamFunctionState",                  // Wide func state
+  15217: "ResNotifyParam",                             // Feature param echo
+  15218: "ResNotifyBurstProgress",                     // Tele burst
   15219: "ResNotifyPanoramaProgress",
-  15220: "ResNotifyWideBurstProgress",
-  15221: "ResNotifyRGBState",
+  15220: "ResNotifyBurstProgress",                     // Wide burst
+  15221: "ResNotifyRgbState",
   15222: "ResNotifyPowerIndState",
-  15223: "ResNotifyWsHostSlaveMode",
-  15224: "ResNotifyMtpState",
+  15223: "ResNotifyHostSlaveMode",
+  15224: "ResNotifyMTPState",
   15225: "ResNotifyTrackResult",
-  15226: "ResNotifyWideTimelaseOutTime",
-  15227: "ResNotifyCpuMode",
-  15228: "ResNotifyStateAstroTrackingSpecial",
+  15226: "ResNotifyTimeLapseOutTime",                  // Wide timelapse
+  15227: "ResNotifyCPUMode",
+  15228: "ResNotifyStateAstroTrackingSpecial",          // Sun/moon tracking
   15229: "ResNotifyPowerOff",
   15230: "ResNotifyAlbumUpdate",
-  15231: "ResNotifySentryModeState",
+  15231: "ResNotifyStateSentryMode",
+  15232: "ResNotifyTrackResult",                       // Sentry tracking box
+  15233: "ResNotifyOneClickGotoState",
   15234: "ResNotifyStreamType",
-  15235: "ResNotifyWideRecordTime",
-  15236: "ResNotifyStateWideCaptureRawLiveStacking",
-  15237: "ResNotifyPrographWideCaptureRawLiveStacking",
+  15235: "ResNotifyRecordTime",                        // Wide recording
+  15236: "ResNotifyOperationState",                    // Wide astro overlay
+  15237: "ResNotifyProgressCaptureRawLiveStacking",    // Wide astro progress
   15238: "ResNotifyMultiTrackResult",
   15239: "ResNotifyEqSolvingState",
-  15240: "ResNotifyUfoModeState",
-  15241: "ResNotifyTeleLongExpProgress",
-  15242: "ResNotifyWideLongExpProgress",
+  15240: "ResNotifyStateSentryMode",                   // UFO mode
+  15241: "ResNotifyLongExpPhotoProgress",               // Tele long exp
+  15242: "ResNotifyLongExpPhotoProgress",               // Wide long exp
   15243: "ResNotifyTemperature",
-  15247: "ResNotifyStateCaptureWideDark",
+  15247: "ResNotifyOperationState",                    // Wide dark field
   15248: "ResNotifyShootingScheduleResultAndState",
   15249: "ResNotifyShootingTaskState",
-  15250: "ResNotifySkySearchState",
+  15250: "ResNotifySkySeacherState",
   15257: "ResNotifyFocus",
 };
 

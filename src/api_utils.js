@@ -341,22 +341,38 @@ export function analyzePacket(message_buffer, input_data_log = true) {
   }
   // Convert Long objects (protobuf int64) to strings to preserve 64-bit precision
   // in JSON.stringify output (e.g. paramId in V3 camera param notifications)
-  for (let key in decoded_message.data) {
-    const val = decoded_message.data[key];
-    if (
-      val &&
-      typeof val === "object" &&
-      typeof val.low === "number" &&
-      typeof val.high === "number"
-    ) {
-      decoded_message.data[key] =
-        val.toNumber !== undefined
-          ? val.high === 0 && val.low >= 0
-            ? val.toNumber()
-            : val.toString()
-          : String(val);
+  function convertLongs(obj) {
+    if (!obj || typeof obj !== "object") return;
+    for (let key in obj) {
+      const val = obj[key];
+      if (
+        val &&
+        typeof val === "object" &&
+        typeof val.low === "number" &&
+        typeof val.high === "number"
+      ) {
+        obj[key] =
+          val.toNumber !== undefined
+            ? val.high === 0 && val.low >= 0
+              ? val.toNumber()
+              : val.toString()
+            : String(val);
+      } else if (Array.isArray(val)) {
+        val.forEach((item, i) => {
+          if (item && typeof item === "object" && typeof item.low === "number" && typeof item.high === "number") {
+            val[i] = item.toNumber !== undefined
+              ? item.high === 0 && item.low >= 0 ? item.toNumber() : item.toString()
+              : String(item);
+          } else if (item && typeof item === "object") {
+            convertLongs(item);
+          }
+        });
+      } else if (val && typeof val === "object") {
+        convertLongs(val);
+      }
     }
   }
+  convertLongs(decoded_message.data);
   // add command in plain text
   let value = "";
   if (decoded_message.cmd) {

@@ -28,6 +28,7 @@ const CMD_NAMES = {
   11000: "StartCalibration", 11002: "StartGotoDSO",
   // V3 Astro
   11033: "V3:SaveStacked", 11034: "V3:ListSaved",
+  11036: "V3:SaveComplete",
   11039: "V3:StatusPoll", 11040: "V3:GetAstroParams", 11041: "V3:SetAstroParams",
   11043: "V3:GetExpPresets", 11047: "V3:SetObsLocation", 11048: "V3:ConfirmObs",
   // V2 Wide camera
