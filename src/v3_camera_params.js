@@ -11,7 +11,7 @@ import { cmdMapping } from "./cmd_mapping.js";
 /**
  * V3: Set camera parameter (general)
  * Create Encoded Packet for the command CMD_V3_CAMERA_PARAMS_SET_PARAM (16700)
- * @param {number} paramId - Parameter ID (encoded via encodeParamId)
+ * @param {number|string} paramId - Parameter ID (encoded via encodeParamId)
  * @param {number} value - Parameter value
  * @param {number} [flag=0] - Flag (0 = auto, 1 = manual; used for some params)
  * @returns {Uint8Array}
@@ -35,7 +35,7 @@ export function messageV3CameraParamSet(paramId, value, flag = 0) {
 /**
  * V3: Set exposure/gain parameter
  * Create Encoded Packet for the command CMD_V3_CAMERA_PARAMS_SET_EXP_GAIN (16701)
- * @param {number} paramId - Parameter ID (encoded via encodeParamId)
+ * @param {number|string} paramId - Parameter ID (encoded via encodeParamId)
  * @param {number} value - Exposure or gain value
  * @param {number} [flag=1] - Flag (1 = manual mode)
  * @returns {Uint8Array}
@@ -59,7 +59,7 @@ export function messageV3CameraParamSetExpGain(paramId, value, flag = 1) {
 /**
  * V3: Adjust camera parameter (relative adjustment)
  * Create Encoded Packet for the command CMD_V3_CAMERA_PARAMS_ADJUST (16703)
- * @param {number} paramId - Parameter ID (encoded via encodeParamId)
+ * @param {number|string} paramId - Parameter ID (encoded via encodeParamId)
  * @param {number} value - Adjustment value (positive = increase, negative = decrease)
  * @returns {Uint8Array}
  */
@@ -79,40 +79,66 @@ export function messageV3CameraParamsAdjust(paramId, value) {
 /**
  * Encode a paramId from its constituent parts.
  *
- * paramId layout (unsigned 32-bit packed into int64 proto field):
- *   bits [31..24] = shootingMode  (e.g. 0=photo, 1=video, 2=astro)
- *   bits [23..16] = category      (parameter group)
- *   bits [15..8]  = cameraId      (0=tele, 1=wide)
- *   bits [7..0]   = paramIndex    (parameter index within the category)
+ * paramId layout (64-bit):
+ *   bits 63..56 = shootingMode  (e.g. 0=photo, 1=video, 2=astro)
+ *   bits 55..48 = category      (parameter group)
+ *   bits 47..16 = reserved (0)
+ *   bits 15..8  = cameraId      (0=tele, 1=wide)
+ *   bits 7..0   = paramIndex    (parameter index within the category)
+ *
+ * Returns a decimal string suitable for protobuf.js int64 fields.
  *
  * @param {number} shootingMode - Shooting mode (0=photo, 1=video, 2=astro)
  * @param {number} category - Parameter category
  * @param {number} cameraId - Camera ID (0=tele, 1=wide)
  * @param {number} paramIndex - Parameter index within the category
- * @returns {number} Encoded paramId
+ * @returns {string} Encoded paramId as decimal string
  */
 export function encodeParamId(shootingMode, category, cameraId, paramIndex) {
-  return (
-    (((shootingMode & 0xff) << 24) |
-      ((category & 0xff) << 16) |
-      ((cameraId & 0xff) << 8) |
-      (paramIndex & 0xff)) >>>
-    0
-  );
+  const id =
+    (BigInt(shootingMode & 0xff) << 56n) |
+    (BigInt(category & 0xff) << 48n) |
+    (BigInt(cameraId & 0xff) << 8n) |
+    BigInt(paramIndex & 0xff);
+  return id.toString();
 }
 
 /**
  * Decode a paramId into its constituent parts.
  *
- * @param {number} paramId - Encoded parameter ID
+ * Accepts number, string (decimal), BigInt, or protobuf.js Long object.
+ *
+ * @param {number|string|BigInt|{low: number, high: number}} paramId - Encoded parameter ID
  * @returns {{ shootingMode: number, category: number, cameraId: number, paramIndex: number }}
  */
 export function decodeParamId(paramId) {
-  const id = paramId >>> 0; // normalize to unsigned 32-bit
+  let id;
+  if (typeof paramId === "bigint") {
+    id = paramId;
+  } else if (typeof paramId === "string") {
+    id = BigInt(paramId);
+  } else if (typeof paramId === "number") {
+    if (!Number.isSafeInteger(paramId)) {
+      throw new RangeError(
+        "paramId as number exceeds Number.MAX_SAFE_INTEGER; pass a string or BigInt instead"
+      );
+    }
+    id = BigInt(paramId);
+  } else if (
+    paramId &&
+    typeof (/** @type {*} */ (paramId).low) === "number" &&
+    typeof (/** @type {*} */ (paramId).high) === "number"
+  ) {
+    // protobuf.js Long object
+    const long = /** @type {{low: number, high: number}} */ (paramId);
+    id = (BigInt(long.high >>> 0) << 32n) | BigInt(long.low >>> 0);
+  } else {
+    throw new TypeError("paramId must be a number, string, BigInt, or Long");
+  }
   return {
-    shootingMode: (id >>> 24) & 0xff,
-    category: (id >>> 16) & 0xff,
-    cameraId: (id >>> 8) & 0xff,
-    paramIndex: id & 0xff,
+    shootingMode: Number((id >> 56n) & 0xffn),
+    category: Number((id >> 48n) & 0xffn),
+    cameraId: Number((id >> 8n) & 0xffn),
+    paramIndex: Number(id & 0xffn),
   };
 }
