@@ -154,7 +154,7 @@ node cmd-survey.js --ip 192.168.88.1
 
 ## Common Options
 
-All tools that connect to a device share these CLI options:
+Most tools use `common.js` `parseArgs()` and share these CLI options:
 
 ```
 --ip <addr>      Target IP (default: 192.168.88.1)
@@ -163,6 +163,8 @@ All tools that connect to a device share these CLI options:
 --verbose, -v    Show detailed output
 --help, -h       Show usage
 ```
+
+> **Note:** `ws-proxy.js` uses `--target-ip` / `--target-port` instead of `--ip` / `--port`.
 
 ## Known DWARF mini Ports
 
@@ -176,7 +178,7 @@ All tools that connect to a device share these CLI options:
 
 ## `captures/` Directory
 
-Pcap captures and recorded sessions are stored here. Not committed to git (large files).
+Pcap captures and recorded sessions are stored here. Ignored by `.gitignore` (large binary files).
 
 ## Protocol Notes
 
