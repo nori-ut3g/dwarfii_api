@@ -178,6 +178,29 @@ const INNER_TYPES = {
   "16706:3": "ComResponse",
 };
 
+// ParamId decoder for human-readable display
+const PARAM_INDEX_NAMES = {
+  0x0d: "filterWheel",
+};
+const SHOOTING_MODE_NAMES = ["photo", "video", "astro"];
+const CAMERA_ID_NAMES = ["tele", "wide"];
+
+function formatParamId(paramId) {
+  try {
+    const id = BigInt(paramId);
+    const shootingMode = Number((id >> 56n) & 0xffn);
+    const category = Number((id >> 48n) & 0xffn);
+    const cameraId = Number((id >> 8n) & 0xffn);
+    const paramIndex = Number(id & 0xffn);
+    const modeName = SHOOTING_MODE_NAMES[shootingMode] || `mode${shootingMode}`;
+    const camName = CAMERA_ID_NAMES[cameraId] || `cam${cameraId}`;
+    const idxName = PARAM_INDEX_NAMES[paramIndex] || `idx${paramIndex}`;
+    return `${modeName}/cat${category}/${camName}/${idxName}`;
+  } catch {
+    return String(paramId);
+  }
+}
+
 async function loadProtoRoot() {
   const root = new protobuf.Root();
   const protoFiles = [
@@ -351,7 +374,11 @@ async function main() {
                 v !== 0 && v !== "" && v !== false && v !== null
               );
               if (nz.length > 0) {
-                innerStr = ` → ${innerTypeName}: ${JSON.stringify(Object.fromEntries(nz))}`;
+                // Decode paramId for human-readable display
+                const display = Object.fromEntries(
+                  nz.map(([k, v]) => k === "paramId" ? [k, formatParamId(v)] : [k, v])
+                );
+                innerStr = ` → ${innerTypeName}: ${JSON.stringify(display)}`;
               } else {
                 innerStr = ` → ${innerTypeName}: {}`;
               }
