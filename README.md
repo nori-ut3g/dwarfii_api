@@ -6,6 +6,10 @@ Dwarf Lab's [API V2 documentation](https://tinyphoton.feishu.cn/docx/GBkcdldTIo3
 
 [Documentation](https://stevejcl.github.io/dwarfii_api/) for this package.
 
+## Tools
+
+- **[v3-probe](tools/v3-probe/)** — Diagnostic toolkit for reverse-engineering the DWARF V3 WebSocket protocol (pcap decoder, blind protobuf decoder, MitM proxy, port scanner, etc.)
+
 ## Install
 
 ```

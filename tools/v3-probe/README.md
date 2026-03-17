@@ -101,10 +101,10 @@ Strategies (ranked by confidence):
 
 ```bash
 # 7-stage progressive WebSocket test
-node ws-diagnose.js --ip 192.168.11.31
+node ws-diagnose.js --ip 192.168.88.1
 
 # Run specific tests only
-node ws-diagnose.js --ip 192.168.11.31 --tests A,B,C
+node ws-diagnose.js --ip 192.168.88.1 --tests A,B,C
 
 # Available tests:
 #   A: TCP/WS connection
@@ -119,7 +119,7 @@ node ws-diagnose.js --ip 192.168.11.31 --tests A,B,C
 ### MitM proxy
 
 ```bash
-node ws-proxy.js --target-ip 192.168.11.31
+node ws-proxy.js --target-ip 192.168.88.1
 
 # Phone app ←→ [Proxy :9900] ←→ DWARF device :9900
 # Logs all bidirectional traffic with protobuf decoding
@@ -128,7 +128,7 @@ node ws-proxy.js --target-ip 192.168.11.31
 ### Record WebSocket frames
 
 ```bash
-node raw-recorder.js --ip 192.168.11.31 --duration 120
+node raw-recorder.js --ip 192.168.88.1 --duration 120
 
 # Outputs:
 #   captures/session-<timestamp>.jsonl   — frame metadata
@@ -139,17 +139,17 @@ node raw-recorder.js --ip 192.168.11.31 --duration 120
 
 ```bash
 # Port scan
-node port-scan.js --ip 192.168.11.31
+node port-scan.js --ip 192.168.88.1
 
 # HTTP endpoint probe
-node http-probe.js --ip 192.168.11.31
+node http-probe.js --ip 192.168.88.1
 ```
 
 ### Command survey
 
 ```bash
 # Send safe read-only GET commands to all modules
-node cmd-survey.js --ip 192.168.11.31
+node cmd-survey.js --ip 192.168.88.1
 ```
 
 ## Common Options
