@@ -1,6 +1,6 @@
 #!/usr/bin/env node
 // Verification script for v3_camera_params encode/decode and filter wheel constants.
-// Run: node src/__tests__/v3_camera_params.test.mjs
+// Run: node src/__tests__/v3_camera_params.test.js
 
 import {
   encodeParamId,
