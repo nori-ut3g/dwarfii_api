@@ -4,6 +4,32 @@ import $root from "./protobuf/protobuf.js";
 const Dwarfii_Api = $root;
 import { createPacket } from "./api_utils.js";
 import { cmdMapping } from "./cmd_mapping.js";
+// @ts-ignore — long provides default export at runtime but lacks TypeScript declaration
+import Long from "long";
+
+/** Shooting mode constants for paramId encoding */
+export const V3_SHOOTING_MODE = {
+  PHOTO: 0,
+  VIDEO: 1,
+  ASTRO: 2,
+};
+
+/** Parameter category constants */
+export const V3_PARAM_CATEGORY = {
+  OPTICAL: 1,
+};
+
+/** Camera ID constants for paramId encoding */
+export const V3_CAMERA_ID = {
+  TELE: 0,
+  WIDE: 1,
+};
+
+/** Known parameter indices within categories */
+export const V3_PARAM_INDEX = {
+  /** Filter wheel position (pcap-verified, category=OPTICAL) */
+  FILTER_WHEEL: 0x0d,
+};
 
 /*** --------------------------------------------------------- ***/
 /*** -------- V3 MODULE CAMERA PARAMS (16700+) --------------- ***/
@@ -22,13 +48,16 @@ export function messageV3CameraParamSet(paramId, value, flag = 0) {
   let type_id = Dwarfii_Api.MessageTypeId.TYPE_REQUEST;
   const cmdClass = cmdMapping[interface_id];
   let class_message = Dwarfii_Api[cmdClass];
+  const longParamId = Long.fromString(String(paramId));
   let message = class_message.create({
-    paramId: paramId,
+    paramId: longParamId,
     flag: flag,
     value: value,
   });
   console.log(
-    `class Message = ${cmdClass} created message = ${JSON.stringify(message)}`
+    `class Message = ${cmdClass} created message = ${JSON.stringify(
+      class_message.toObject(message, { longs: String })
+    )}`
   );
   return createPacket(message, class_message, module_id, interface_id, type_id);
 }
@@ -46,13 +75,16 @@ export function messageV3CameraParamSetExpGain(paramId, value, flag = 1) {
   let type_id = Dwarfii_Api.MessageTypeId.TYPE_REQUEST;
   const cmdClass = cmdMapping[interface_id];
   let class_message = Dwarfii_Api[cmdClass];
+  const longParamId = Long.fromString(String(paramId));
   let message = class_message.create({
-    paramId: paramId,
+    paramId: longParamId,
     flag: flag,
     value: value,
   });
   console.log(
-    `class Message = ${cmdClass} created message = ${JSON.stringify(message)}`
+    `class Message = ${cmdClass} created message = ${JSON.stringify(
+      class_message.toObject(message, { longs: String })
+    )}`
   );
   return createPacket(message, class_message, module_id, interface_id, type_id);
 }
@@ -69,11 +101,38 @@ export function messageV3CameraParamsAdjust(paramId, value) {
   let type_id = Dwarfii_Api.MessageTypeId.TYPE_REQUEST;
   const cmdClass = cmdMapping[interface_id];
   let class_message = Dwarfii_Api[cmdClass];
-  let message = class_message.create({ paramId: paramId, value: value });
+  const longParamId = Long.fromString(String(paramId));
+  let message = class_message.create({ paramId: longParamId, value: value });
   console.log(
-    `class Message = ${cmdClass} created message = ${JSON.stringify(message)}`
+    `class Message = ${cmdClass} created message = ${JSON.stringify(
+      class_message.toObject(message, { longs: String })
+    )}`
   );
   return createPacket(message, class_message, module_id, interface_id, type_id);
+}
+
+/**
+ * V3: Set filter wheel position
+ * Convenience wrapper around messageV3CameraParamsAdjust for filter wheel control.
+ * Verified from pcap capture (AcoVanConis, 2026-03-14).
+ *
+ * @param {number} position - Filter position (1-based index)
+ * @param {number} [shootingMode=2] - Shooting mode (default: ASTRO)
+ * @param {number} [cameraId=0] - Camera ID (default: TELE)
+ * @returns {Uint8Array}
+ */
+export function messageV3FilterWheelSet(
+  position,
+  shootingMode = V3_SHOOTING_MODE.ASTRO,
+  cameraId = V3_CAMERA_ID.TELE
+) {
+  const paramId = encodeParamId(
+    shootingMode,
+    V3_PARAM_CATEGORY.OPTICAL,
+    cameraId,
+    V3_PARAM_INDEX.FILTER_WHEEL
+  );
+  return messageV3CameraParamsAdjust(paramId, position);
 }
 
 /**
