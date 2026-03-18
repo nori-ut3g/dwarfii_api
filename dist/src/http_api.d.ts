@@ -2,13 +2,33 @@
 /*** ------------- STREAMING URLs ---------------------------- ***/
 /*** --------------------------------------------------------- ***/
 /**
- * Get the mainstream (telephoto) MJPEG stream URL.
+ * Get the RTSP URL for the telephoto (main) camera stream.
+ * This is the actual working stream protocol used by DWARF mini / 3.
+ * @param {string} IP - Device IP address
+ * @param {number} [port=554] - RTSP port
+ * @returns {string} e.g. "rtsp://192.168.88.1:554/ch0/stream0"
+ */
+export function rtspTeleUrl(IP: string, port?: number): string;
+/**
+ * Get the RTSP URL for the wide-angle camera stream.
+ * This is the actual working stream protocol used by DWARF mini / 3.
+ * @param {string} IP - Device IP address
+ * @param {number} [port=554] - RTSP port
+ * @returns {string} e.g. "rtsp://192.168.88.1:554/ch1/stream0"
+ */
+export function rtspWideUrl(IP: string, port?: number): string;
+/**
+ * Get the mainstream (telephoto) MJPEG stream URL (port 8092).
+ * NOTE: This endpoint exists on the device but returns 0 bytes in practice.
+ * Use {@link rtspTeleUrl} for actual camera streaming.
  * @param {string} IP - Device IP address
  * @returns {string}
  */
 export function mainstreamUrl(IP: string): string;
 /**
- * Get the second stream (wide-angle) MJPEG stream URL.
+ * Get the second stream (wide-angle) MJPEG stream URL (port 8092).
+ * NOTE: This endpoint exists on the device but returns 0 bytes in practice.
+ * Use {@link rtspWideUrl} for actual camera streaming.
  * @param {string} IP - Device IP address
  * @returns {string}
  */
@@ -18,7 +38,7 @@ export function secondstreamUrl(IP: string): string;
 /*** --------------------------------------------------------- ***/
 /**
  * Build the full download URL for a file on the device.
- * Files are served as static assets — just GET the returned URL.
+ * Files are served on port 80 as static assets — just GET the returned URL.
  * @param {string} IP - Device IP address
  * @param {string} filePath - Absolute file path on device (e.g. "/DWARF_mini/Astronomy/.../xxx.fits")
  * @returns {string}
@@ -124,4 +144,6 @@ export function albumDelete(IP: string, datas: Array<{
     subType: number;
     filePath: string;
 }>): Promise<any>;
+export const DEFAULT_RTSP_PORT: 554;
+export const DEFAULT_MJPEG_PORT: 8092;
 //# sourceMappingURL=http_api.d.ts.map

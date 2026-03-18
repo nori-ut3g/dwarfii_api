@@ -255,10 +255,12 @@ enum DwarfCMD {
     CMD_NOTIFY_WIDE_MULTI_TRACK_RESULT = 15251; // Wide-angle multi-target box result notification
     CMD_NOTIFY_WIDE_TRACK_RESULT = 15252; // Wide-angle single target box result notification
 
+    CMD_V3_NOTIFY_SKY_SOLVER_COORDS = 15256; // V3: Sky solver coordinate telemetry (pcap-discovered)
     CMD_NOTIFY_FOCUS = 15257; // Focus Position
 
     CMD_V3_NOTIFY_EXPOSURE_PROGRESS = 15255; // V3: Per-frame exposure countdown
     CMD_V3_NOTIFY_DEVICE_STATE = 15261; // V3: Device state notification
+    CMD_V3_NOTIFY_STATE_LATCH = 15262; // V3: State latch (pcap-discovered)
     CMD_V3_NOTIFY_CAMERA_PARAM_STATE = 15264; // V3: Camera parameter state
     CMD_V3_NOTIFY_MODE_CHANGE = 15267; // V3: Mode change notification
     CMD_V3_NOTIFY_STACKING_DATA = 15270; // V3: Stacking data notification
@@ -267,9 +269,11 @@ enum DwarfCMD {
     CMD_V3_NOTIFY_VIDEO_STATE = 15275; // V3: Video recording state
     CMD_V3_NOTIFY_TIMELAPSE_STATE = 15276; // V3: Timelapse state
     CMD_V3_NOTIFY_AUTOFOCUS_STATE = 15278; // V3: AutoFocus state
+    CMD_V3_NOTIFY_AUTOFOCUS_STATE_ALT = 15280; // V3: AutoFocus state (alternate, no proto in official firmware)
     CMD_V3_NOTIFY_PHOTO_BURST_PROGRESS = 15285; // V3: Photo/burst progress
     CMD_V3_NOTIFY_VIDEO_PROGRESS = 15286; // V3: Video recording progress
     CMD_V3_NOTIFY_TIMELAPSE_PROGRESS = 15287; // V3: Timelapse progress
+    CMD_V3_NOTIFY_EXPOSURE_DURATION = 15288; // V3: Exposure duration telemetry (pcap-discovered)
     CMD_V3_NOTIFY_TEMPERATURE2 = 15292; // V3: Temperature2
     CMD_V3_NOTIFY_OBSERVATION_STATE = 15296; // V3: Observation state
 
@@ -286,6 +290,7 @@ enum DwarfCMD {
 
     CMD_V3_CAMERA_PARAMS_SET_PARAM = 16700; // V3: Set camera param
     CMD_V3_CAMERA_PARAMS_SET_EXP_GAIN = 16701; // V3: Set exposure/gain
+    CMD_V3_CAMERA_PARAMS_UNKNOWN_16702 = 16702; // V3: Unknown camera param command (pcap-discovered)
     CMD_V3_CAMERA_PARAMS_ADJUST = 16703; // V3: Adjust camera param
     CMD_V3_CAMERA_PARAMS_STREAM_CTRL = 16706; // V3: Stream control
 }
