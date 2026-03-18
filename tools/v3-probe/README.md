@@ -154,17 +154,19 @@ node cmd-survey.js --ip 192.168.88.1
 
 ## Common Options
 
-Most tools use `common.js` `parseArgs()` and share these CLI options:
+Tools using `common.js` `parseArgs()` share these CLI options:
 
 ```
 --ip <addr>      Target IP (default: 192.168.88.1)
 --port <port>    WebSocket port (default: 9900)
---dry-run        Run without connecting to a real device
 --verbose, -v    Show detailed output
 --help, -h       Show usage
 ```
 
-> **Note:** `ws-proxy.js` uses `--target-ip` / `--target-port` instead of `--ip` / `--port`.
+Some tools support additional options:
+- `proto-decode.js` supports `--dry-run` for demo mode without device connection
+- `ws-proxy.js` uses `--target-ip` / `--target-port` instead of `--ip` / `--port`
+- `pcap-decode.js` and analysis scripts (`.mjs`) take file paths as positional arguments
 
 ## Known DWARF mini Ports
 
