@@ -5,6 +5,7 @@
 import {
   encodeParamId,
   decodeParamId,
+  messageV3FilterWheelSet,
   V3_SHOOTING_MODE,
   V3_PARAM_CATEGORY,
   V3_CAMERA_ID,
@@ -37,11 +38,19 @@ const astroFilter = encodeParamId(
   V3_CAMERA_ID.TELE,
   V3_PARAM_INDEX.FILTER_WHEEL
 );
-assert(astroFilter === "144396663052566541", `ASTRO filter wheel encodes to 144396663052566541 (got ${astroFilter})`);
+assert(
+  astroFilter === "144396663052566541",
+  `ASTRO filter wheel encodes to 144396663052566541 (got ${astroFilter})`
+);
 
 const decoded1 = decodeParamId(astroFilter);
 assert(
-  deepEqual(decoded1, { shootingMode: 2, category: 1, cameraId: 0, paramIndex: 13 }),
+  deepEqual(decoded1, {
+    shootingMode: 2,
+    category: 1,
+    cameraId: 0,
+    paramIndex: 13,
+  }),
   `decodes back to {shootingMode:2, category:1, cameraId:0, paramIndex:13}`
 );
 
@@ -52,11 +61,19 @@ const photoFilter = encodeParamId(
   V3_CAMERA_ID.TELE,
   V3_PARAM_INDEX.FILTER_WHEEL
 );
-assert(photoFilter === "281474976710669", `PHOTO filter wheel encodes to 281474976710669 (got ${photoFilter})`);
+assert(
+  photoFilter === "281474976710669",
+  `PHOTO filter wheel encodes to 281474976710669 (got ${photoFilter})`
+);
 
 const decoded2 = decodeParamId(photoFilter);
 assert(
-  deepEqual(decoded2, { shootingMode: 0, category: 1, cameraId: 0, paramIndex: 13 }),
+  deepEqual(decoded2, {
+    shootingMode: 0,
+    category: 1,
+    cameraId: 0,
+    paramIndex: 13,
+  }),
   `decodes back to {shootingMode:0, category:1, cameraId:0, paramIndex:13}`
 );
 
@@ -64,7 +81,12 @@ assert(
 const encoded3 = encodeParamId(1, 3, 1, 7);
 const decoded3 = decodeParamId(encoded3);
 assert(
-  deepEqual(decoded3, { shootingMode: 1, category: 3, cameraId: 1, paramIndex: 7 }),
+  deepEqual(decoded3, {
+    shootingMode: 1,
+    category: 3,
+    cameraId: 1,
+    paramIndex: 7,
+  }),
   `roundtrip (1,3,1,7) works`
 );
 
@@ -72,13 +94,21 @@ console.log("\n=== decodeParamId input types ===\n");
 
 // BigInt input
 const fromBigInt = decodeParamId(144396663052566541n);
-assert(fromBigInt.shootingMode === 2 && fromBigInt.paramIndex === 13, "accepts BigInt input");
+assert(
+  fromBigInt.shootingMode === 2 && fromBigInt.paramIndex === 13,
+  "accepts BigInt input"
+);
 
 // protobuf.js Long object
 // 144396663052566541 = 0x020100000000000D → high=0x02010000=33619968, low=0x0000000D=13
 const fromLong = decodeParamId({ low: 13, high: 33619968 });
 assert(
-  deepEqual(fromLong, { shootingMode: 2, category: 1, cameraId: 0, paramIndex: 13 }),
+  deepEqual(fromLong, {
+    shootingMode: 2,
+    category: 1,
+    cameraId: 0,
+    paramIndex: 13,
+  }),
   "accepts protobuf Long object"
 );
 
@@ -95,7 +125,35 @@ console.log("\n=== Constants ===\n");
 assert(V3_SHOOTING_MODE.ASTRO === 2, "V3_SHOOTING_MODE.ASTRO = 2");
 assert(V3_PARAM_CATEGORY.OPTICAL === 1, "V3_PARAM_CATEGORY.OPTICAL = 1");
 assert(V3_CAMERA_ID.TELE === 0, "V3_CAMERA_ID.TELE = 0");
-assert(V3_PARAM_INDEX.FILTER_WHEEL === 0x0d, "V3_PARAM_INDEX.FILTER_WHEEL = 0x0D");
+assert(
+  V3_PARAM_INDEX.FILTER_WHEEL === 0x0d,
+  "V3_PARAM_INDEX.FILTER_WHEEL = 0x0D"
+);
+
+console.log("\n=== messageV3FilterWheelSet ===\n");
+
+// Returns a Uint8Array packet
+const packet = messageV3FilterWheelSet(2);
+assert(packet instanceof Uint8Array, "returns Uint8Array");
+assert(packet.length > 0, `packet length > 0 (got ${packet.length})`);
+
+// Uses correct paramId (astro/optical/tele/filterWheel by default)
+const packetDefault = messageV3FilterWheelSet(1);
+assert(
+  packetDefault instanceof Uint8Array && packetDefault.length > 0,
+  "default args (ASTRO, TELE) produce valid packet"
+);
+
+// Custom shooting mode
+const photoPacket = messageV3FilterWheelSet(
+  1,
+  V3_SHOOTING_MODE.PHOTO,
+  V3_CAMERA_ID.TELE
+);
+assert(
+  photoPacket instanceof Uint8Array && photoPacket.length > 0,
+  "PHOTO mode produces valid packet"
+);
 
 console.log(`\n=== Results: ${passed} passed, ${failed} failed ===\n`);
 process.exit(failed > 0 ? 1 : 0);

@@ -4,6 +4,8 @@ import $root from "./protobuf/protobuf.js";
 const Dwarfii_Api = $root;
 import { createPacket } from "./api_utils.js";
 import { cmdMapping } from "./cmd_mapping.js";
+// @ts-ignore — long provides default export at runtime but lacks TypeScript declaration
+import Long from "long";
 
 /** Shooting mode constants for paramId encoding */
 export const V3_SHOOTING_MODE = {
@@ -46,13 +48,16 @@ export function messageV3CameraParamSet(paramId, value, flag = 0) {
   let type_id = Dwarfii_Api.MessageTypeId.TYPE_REQUEST;
   const cmdClass = cmdMapping[interface_id];
   let class_message = Dwarfii_Api[cmdClass];
+  const longParamId = Long.fromString(String(paramId));
   let message = class_message.create({
-    paramId: paramId,
+    paramId: longParamId,
     flag: flag,
     value: value,
   });
   console.log(
-    `class Message = ${cmdClass} created message = ${JSON.stringify(message)}`
+    `class Message = ${cmdClass} created message = ${JSON.stringify(
+      class_message.toObject(message, { longs: String })
+    )}`
   );
   return createPacket(message, class_message, module_id, interface_id, type_id);
 }
@@ -70,13 +75,16 @@ export function messageV3CameraParamSetExpGain(paramId, value, flag = 1) {
   let type_id = Dwarfii_Api.MessageTypeId.TYPE_REQUEST;
   const cmdClass = cmdMapping[interface_id];
   let class_message = Dwarfii_Api[cmdClass];
+  const longParamId = Long.fromString(String(paramId));
   let message = class_message.create({
-    paramId: paramId,
+    paramId: longParamId,
     flag: flag,
     value: value,
   });
   console.log(
-    `class Message = ${cmdClass} created message = ${JSON.stringify(message)}`
+    `class Message = ${cmdClass} created message = ${JSON.stringify(
+      class_message.toObject(message, { longs: String })
+    )}`
   );
   return createPacket(message, class_message, module_id, interface_id, type_id);
 }
@@ -93,9 +101,12 @@ export function messageV3CameraParamsAdjust(paramId, value) {
   let type_id = Dwarfii_Api.MessageTypeId.TYPE_REQUEST;
   const cmdClass = cmdMapping[interface_id];
   let class_message = Dwarfii_Api[cmdClass];
-  let message = class_message.create({ paramId: paramId, value: value });
+  const longParamId = Long.fromString(String(paramId));
+  let message = class_message.create({ paramId: longParamId, value: value });
   console.log(
-    `class Message = ${cmdClass} created message = ${JSON.stringify(message)}`
+    `class Message = ${cmdClass} created message = ${JSON.stringify(
+      class_message.toObject(message, { longs: String })
+    )}`
   );
   return createPacket(message, class_message, module_id, interface_id, type_id);
 }
