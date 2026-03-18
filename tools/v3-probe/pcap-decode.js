@@ -7,7 +7,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { execSync } from "child_process";
 import { log, hexPreview } from "./common.js";
-import { decodeParamId } from "../../src/v3_camera_params.js";
+import { decodeParamId } from "../../src/paramid_utils.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PROTO_DIR = path.resolve(__dirname, "../../src/proto");
@@ -188,7 +188,7 @@ const CAMERA_ID_NAMES = ["tele", "wide"];
 
 function formatParamId(paramId) {
   try {
-    const { shootingMode, category, cameraId, paramIndex } = decodeParamId(String(paramId));
+    const { shootingMode, category, cameraId, paramIndex } = decodeParamId(paramId);
     const modeName = SHOOTING_MODE_NAMES[shootingMode] || `mode${shootingMode}`;
     const camName = CAMERA_ID_NAMES[cameraId] || `cam${cameraId}`;
     const idxName = PARAM_INDEX_NAMES[paramIndex] || `idx${paramIndex}`;
