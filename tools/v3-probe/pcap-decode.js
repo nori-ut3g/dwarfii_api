@@ -7,6 +7,7 @@ import path from "path";
 import { fileURLToPath } from "url";
 import { execSync } from "child_process";
 import { log, hexPreview } from "./common.js";
+import { decodeParamId } from "../../src/v3_camera_params.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const PROTO_DIR = path.resolve(__dirname, "../../src/proto");
@@ -178,7 +179,7 @@ const INNER_TYPES = {
   "16706:3": "ComResponse",
 };
 
-// ParamId decoder for human-readable display
+// ParamId decoder for human-readable display (uses shared decodeParamId)
 const PARAM_INDEX_NAMES = {
   0x0d: "filterWheel",
 };
@@ -187,11 +188,7 @@ const CAMERA_ID_NAMES = ["tele", "wide"];
 
 function formatParamId(paramId) {
   try {
-    const id = BigInt(paramId);
-    const shootingMode = Number((id >> 56n) & 0xffn);
-    const category = Number((id >> 48n) & 0xffn);
-    const cameraId = Number((id >> 8n) & 0xffn);
-    const paramIndex = Number(id & 0xffn);
+    const { shootingMode, category, cameraId, paramIndex } = decodeParamId(String(paramId));
     const modeName = SHOOTING_MODE_NAMES[shootingMode] || `mode${shootingMode}`;
     const camName = CAMERA_ID_NAMES[cameraId] || `cam${cameraId}`;
     const idxName = PARAM_INDEX_NAMES[paramIndex] || `idx${paramIndex}`;
@@ -370,8 +367,9 @@ async function main() {
                 longs: String, enums: String, bytes: String, defaults: true,
               });
               // Filter out zero/empty values for compact display
+              // Note: longs: String causes int64 zeros to arrive as "0"
               const nz = Object.entries(inner).filter(([, v]) =>
-                v !== 0 && v !== "" && v !== false && v !== null
+                v !== 0 && v !== "0" && v !== "" && v !== false && v !== null
               );
               if (nz.length > 0) {
                 // Decode paramId for human-readable display
