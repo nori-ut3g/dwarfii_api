@@ -43,7 +43,7 @@ Tests:
 Options:
   --ip <addr>      Target IP (default: ${DEFAULT_IP})
   --port <port>    WebSocket port (default: ${DEFAULT_WS_PORT})
-  --tests <list>   Comma-separated test list (default: A,B,C,D,E,F)
+  --tests <list>   Comma-separated test list (default: A,B,C,D,E,F,G)
   --timeout <ms>   Per-test timeout (default: 10000)
   --dry-run        Simulate with mock WebSocket behavior
   --verbose, -v    Show detailed output

@@ -34,7 +34,7 @@ Options:
  * @param {number} timeout
  * @returns {Promise<object>}
  */
-function httpRequest(url, method, timeout) {
+function httpRequest(url, method, timeout, postBody = null) {
   return new Promise((resolve) => {
     const start = Date.now();
     const isHttps = url.startsWith("https://");
@@ -93,9 +93,12 @@ function httpRequest(url, method, timeout) {
       });
     });
 
-    // Send POST body for deviceInfo
+    // Send POST body
     if (method === "POST") {
-      req.write(JSON.stringify({}));
+      const data = JSON.stringify(postBody || {});
+      req.setHeader("Content-Type", "application/json");
+      req.setHeader("Content-Length", Buffer.byteLength(data));
+      req.write(data);
     }
 
     req.end();
@@ -251,7 +254,7 @@ async function main() {
 
     for (const endpoint of HTTP_ENDPOINTS) {
       const url = `${protocol}://${args.ip}:${port}${endpoint.path}`;
-      const result = await httpRequest(url, endpoint.method, timeout);
+      const result = await httpRequest(url, endpoint.method, timeout, endpoint.body);
       allResults.push(result);
       printResult(result, args.verbose);
     }

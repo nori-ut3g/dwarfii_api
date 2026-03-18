@@ -173,7 +173,7 @@ async function main() {
   const priorityResults = await scanPorts(
     args.ip,
     PRIORITY_PORTS,
-    PRIORITY_PORTS.length,
+    Math.min(concurrency, PRIORITY_PORTS.length),
     timeout,
     (r) => {
       if (r.open) log.ok(`Port ${r.port} — OPEN (${r.elapsed}ms)`);
