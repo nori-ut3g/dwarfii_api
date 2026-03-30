@@ -175,6 +175,7 @@ export const cmdMapping = {
     16405: "V3ReqGetDeviceConfig", // V3: Get device config
     16700: "V3ReqSetCameraParam", // V3: Set camera param
     16701: "V3ReqSetExposureGain", // V3: Set exposure/gain
+    16702: "V3ReqUnknownCameraParam", // V3: Unknown camera param command (pcap-discovered)
     16703: "V3ReqAdjustParam", // V3: Adjust camera param
     16706: "V3ReqStreamControl", // V3: Stream control
 };
@@ -341,7 +342,7 @@ export const responseMapping = {
     11036: "ComResponse", // V3: Save complete
     11039: "ComResponse", // V3: Status polling
     11040: "V3ResGetAstroParams", // V3: Get astro parameters
-    11041: "ComResponse", // V3: Set astro parameters
+    11041: "V3ResSetAstroParams", // V3: Set astro parameters
     11043: "V3ResGetExposurePresets", // V3: Get exposure presets
     11047: "ComResponse", // V3: Set observation location
     11048: "ComResponse", // V3: Confirm observation
@@ -354,6 +355,7 @@ export const responseMapping = {
     16405: "V3ResGetDeviceConfig", // V3: Get device config
     16700: "ComResponse", // V3: Set camera param
     16701: "ComResponse", // V3: Set exposure/gain
+    16702: "ComResponse", // V3: Unknown camera param command (pcap-discovered)
     16703: "ComResponse", // V3: Adjust camera param
     16706: "ComResponse", // V3: Stream control
 };
@@ -411,11 +413,13 @@ export const notifyMapping = {
     15250: "ResNotifySkySeacherState", // Sky detection status
     //  CMD_NOTIFY_WIDE_MULTI_TRACK_RESULT = 15251; // Wide-angle multi-target box result notification
     //  CMD_NOTIFY_WIDE_TRACK_RESULT = 15252; // Wide-angle single target box result notification
+    15256: "V3ResNotifySkySolverCoords", // V3: Sky solver coordinate telemetry (pcap-discovered)
     15257: "ResNotifyFocus", // Focus Position
     // V3 Notifications
     11036: "ComResponse", // V3: Save complete notification
     15255: "V3ResNotifyExposureProgress", // V3: Per-frame exposure countdown
     15261: "V3ResNotifyDeviceState", // V3: Device state notification
+    15262: "V3ResNotifyStateLatch", // V3: State latch (pcap-discovered)
     15264: "V3ResNotifyCameraParamState", // V3: Camera parameter state
     15267: "V3ResNotifyModeChange", // V3: Mode change notification
     15270: "V3ResNotifyStackingData", // V3: Stacking data notification
@@ -424,9 +428,11 @@ export const notifyMapping = {
     15275: "V3ResNotifyVideoState", // V3: Video recording state
     15276: "V3ResNotifyTimelapseState", // V3: Timelapse state
     15278: "V3ResNotifyAutoFocusState", // V3: AutoFocus state
+    15280: "V3ResNotifyAutoFocusStateAlt", // V3: AutoFocus state alternate (pcap-discovered)
     15285: "V3ResNotifyPhotoBurstProgress", // V3: Photo/burst progress
     15286: "V3ResNotifyVideoProgress", // V3: Video recording progress
     15287: "V3ResNotifyTimelapseProgress", // V3: Timelapse progress
+    15288: "V3ResNotifyExposureDuration", // V3: Exposure duration telemetry (pcap-discovered)
     15292: "V3ResNotifyTemperature2", // V3: Temperature2
     15296: "V3ResNotifyObservationState", // V3: Observation state
 };
@@ -584,6 +590,7 @@ export const notifyResponseMapping = {
     16402: "V3ResModeQuery", // V3: Mode query
     16403: "V3ResShootingModeSwitch", // V3: Shooting mode switch
     16404: "V3ResModeSwitch", // V3: Mode switch
+    16702: "ComResponse", // V3: Unknown camera param command (pcap-discovered)
     16703: "ComResponse", // V3: Adjust camera param
 };
 const classStateMappings = {

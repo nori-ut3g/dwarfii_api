@@ -172,6 +172,7 @@ export const cmdMapping: {
     16405: string;
     16700: string;
     16701: string;
+    16702: string;
     16703: string;
     16706: string;
 };
@@ -349,6 +350,7 @@ export const responseMapping: {
     16405: string;
     16700: string;
     16701: string;
+    16702: string;
     16703: string;
     16706: string;
 };
@@ -401,10 +403,12 @@ export const notifyMapping: {
     15248: string;
     15249: string;
     15250: string;
+    15256: string;
     15257: string;
     11036: string;
     15255: string;
     15261: string;
+    15262: string;
     15264: string;
     15267: string;
     15270: string;
@@ -413,9 +417,11 @@ export const notifyMapping: {
     15275: string;
     15276: string;
     15278: string;
+    15280: string;
     15285: string;
     15286: string;
     15287: string;
+    15288: string;
     15292: string;
     15296: string;
 };
@@ -572,6 +578,7 @@ export const notifyResponseMapping: {
     16402: string;
     16403: string;
     16404: string;
+    16702: string;
     16703: string;
 };
 //# sourceMappingURL=cmd_mapping.d.ts.map

@@ -15497,6 +15497,293 @@ $root.V3ReqAdjustParam = (function () {
   return V3ReqAdjustParam;
 })();
 
+$root.V3ReqUnknownCameraParam = (function () {
+  /**
+   * Properties of a V3ReqUnknownCameraParam.
+   * @exports IV3ReqUnknownCameraParam
+   * @interface IV3ReqUnknownCameraParam
+   * @property {number|Long|null} [paramId] V3ReqUnknownCameraParam paramId
+   * @property {number|null} [field2] V3ReqUnknownCameraParam field2
+   * @property {number|null} [field3] V3ReqUnknownCameraParam field3
+   */
+
+  /**
+   * Constructs a new V3ReqUnknownCameraParam.
+   * @exports V3ReqUnknownCameraParam
+   * @classdesc Represents a V3ReqUnknownCameraParam.
+   * @implements IV3ReqUnknownCameraParam
+   * @constructor
+   * @param {IV3ReqUnknownCameraParam=} [properties] Properties to set
+   */
+  function V3ReqUnknownCameraParam(properties) {
+    if (properties)
+      for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+        if (properties[keys[i]] != null) this[keys[i]] = properties[keys[i]];
+  }
+
+  /**
+   * V3ReqUnknownCameraParam paramId.
+   * @member {number|Long} paramId
+   * @memberof V3ReqUnknownCameraParam
+   * @instance
+   */
+  V3ReqUnknownCameraParam.prototype.paramId = $util.Long
+    ? $util.Long.fromBits(0, 0, false)
+    : 0;
+
+  /**
+   * V3ReqUnknownCameraParam field2.
+   * @member {number} field2
+   * @memberof V3ReqUnknownCameraParam
+   * @instance
+   */
+  V3ReqUnknownCameraParam.prototype.field2 = 0;
+
+  /**
+   * V3ReqUnknownCameraParam field3.
+   * @member {number} field3
+   * @memberof V3ReqUnknownCameraParam
+   * @instance
+   */
+  V3ReqUnknownCameraParam.prototype.field3 = 0;
+
+  /**
+   * Creates a new V3ReqUnknownCameraParam instance using the specified properties.
+   * @function create
+   * @memberof V3ReqUnknownCameraParam
+   * @static
+   * @param {IV3ReqUnknownCameraParam=} [properties] Properties to set
+   * @returns {V3ReqUnknownCameraParam} V3ReqUnknownCameraParam instance
+   */
+  V3ReqUnknownCameraParam.create = function create(properties) {
+    return new V3ReqUnknownCameraParam(properties);
+  };
+
+  /**
+   * Encodes the specified V3ReqUnknownCameraParam message. Does not implicitly {@link V3ReqUnknownCameraParam.verify|verify} messages.
+   * @function encode
+   * @memberof V3ReqUnknownCameraParam
+   * @static
+   * @param {IV3ReqUnknownCameraParam} message V3ReqUnknownCameraParam message or plain object to encode
+   * @param {$protobuf.Writer} [writer] Writer to encode to
+   * @returns {$protobuf.Writer} Writer
+   */
+  V3ReqUnknownCameraParam.encode = function encode(message, writer) {
+    if (!writer) writer = $Writer.create();
+    if (
+      message.paramId != null &&
+      Object.hasOwnProperty.call(message, "paramId")
+    )
+      writer.uint32(/* id 1, wireType 0 =*/ 8).int64(message.paramId);
+    if (message.field2 != null && Object.hasOwnProperty.call(message, "field2"))
+      writer.uint32(/* id 2, wireType 0 =*/ 16).int32(message.field2);
+    if (message.field3 != null && Object.hasOwnProperty.call(message, "field3"))
+      writer.uint32(/* id 3, wireType 0 =*/ 24).int32(message.field3);
+    return writer;
+  };
+
+  /**
+   * Encodes the specified V3ReqUnknownCameraParam message, length delimited. Does not implicitly {@link V3ReqUnknownCameraParam.verify|verify} messages.
+   * @function encodeDelimited
+   * @memberof V3ReqUnknownCameraParam
+   * @static
+   * @param {IV3ReqUnknownCameraParam} message V3ReqUnknownCameraParam message or plain object to encode
+   * @param {$protobuf.Writer} [writer] Writer to encode to
+   * @returns {$protobuf.Writer} Writer
+   */
+  V3ReqUnknownCameraParam.encodeDelimited = function encodeDelimited(
+    message,
+    writer
+  ) {
+    return this.encode(message, writer).ldelim();
+  };
+
+  /**
+   * Decodes a V3ReqUnknownCameraParam message from the specified reader or buffer.
+   * @function decode
+   * @memberof V3ReqUnknownCameraParam
+   * @static
+   * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+   * @param {number} [length] Message length if known beforehand
+   * @returns {V3ReqUnknownCameraParam} V3ReqUnknownCameraParam
+   * @throws {Error} If the payload is not a reader or valid buffer
+   * @throws {$protobuf.util.ProtocolError} If required fields are missing
+   */
+  V3ReqUnknownCameraParam.decode = function decode(reader, length) {
+    if (!(reader instanceof $Reader)) reader = $Reader.create(reader);
+    var end = length === undefined ? reader.len : reader.pos + length,
+      message = new $root.V3ReqUnknownCameraParam();
+    while (reader.pos < end) {
+      var tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          message.paramId = reader.int64();
+          break;
+        }
+        case 2: {
+          message.field2 = reader.int32();
+          break;
+        }
+        case 3: {
+          message.field3 = reader.int32();
+          break;
+        }
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  };
+
+  /**
+   * Decodes a V3ReqUnknownCameraParam message from the specified reader or buffer, length delimited.
+   * @function decodeDelimited
+   * @memberof V3ReqUnknownCameraParam
+   * @static
+   * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+   * @returns {V3ReqUnknownCameraParam} V3ReqUnknownCameraParam
+   * @throws {Error} If the payload is not a reader or valid buffer
+   * @throws {$protobuf.util.ProtocolError} If required fields are missing
+   */
+  V3ReqUnknownCameraParam.decodeDelimited = function decodeDelimited(reader) {
+    if (!(reader instanceof $Reader)) reader = new $Reader(reader);
+    return this.decode(reader, reader.uint32());
+  };
+
+  /**
+   * Verifies a V3ReqUnknownCameraParam message.
+   * @function verify
+   * @memberof V3ReqUnknownCameraParam
+   * @static
+   * @param {Object.<string,*>} message Plain object to verify
+   * @returns {string|null} `null` if valid, otherwise the reason why it is not
+   */
+  V3ReqUnknownCameraParam.verify = function verify(message) {
+    if (typeof message !== "object" || message === null)
+      return "object expected";
+    if (message.paramId != null && message.hasOwnProperty("paramId"))
+      if (
+        !$util.isInteger(message.paramId) &&
+        !(
+          message.paramId &&
+          $util.isInteger(message.paramId.low) &&
+          $util.isInteger(message.paramId.high)
+        )
+      )
+        return "paramId: integer|Long expected";
+    if (message.field2 != null && message.hasOwnProperty("field2"))
+      if (!$util.isInteger(message.field2)) return "field2: integer expected";
+    if (message.field3 != null && message.hasOwnProperty("field3"))
+      if (!$util.isInteger(message.field3)) return "field3: integer expected";
+    return null;
+  };
+
+  /**
+   * Creates a V3ReqUnknownCameraParam message from a plain object. Also converts values to their respective internal types.
+   * @function fromObject
+   * @memberof V3ReqUnknownCameraParam
+   * @static
+   * @param {Object.<string,*>} object Plain object
+   * @returns {V3ReqUnknownCameraParam} V3ReqUnknownCameraParam
+   */
+  V3ReqUnknownCameraParam.fromObject = function fromObject(object) {
+    if (object instanceof $root.V3ReqUnknownCameraParam) return object;
+    var message = new $root.V3ReqUnknownCameraParam();
+    if (object.paramId != null)
+      if ($util.Long)
+        (message.paramId = $util.Long.fromValue(
+          object.paramId
+        )).unsigned = false;
+      else if (typeof object.paramId === "string")
+        message.paramId = parseInt(object.paramId, 10);
+      else if (typeof object.paramId === "number")
+        message.paramId = object.paramId;
+      else if (typeof object.paramId === "object")
+        message.paramId = new $util.LongBits(
+          object.paramId.low >>> 0,
+          object.paramId.high >>> 0
+        ).toNumber();
+    if (object.field2 != null) message.field2 = object.field2 | 0;
+    if (object.field3 != null) message.field3 = object.field3 | 0;
+    return message;
+  };
+
+  /**
+   * Creates a plain object from a V3ReqUnknownCameraParam message. Also converts values to other types if specified.
+   * @function toObject
+   * @memberof V3ReqUnknownCameraParam
+   * @static
+   * @param {V3ReqUnknownCameraParam} message V3ReqUnknownCameraParam
+   * @param {$protobuf.IConversionOptions} [options] Conversion options
+   * @returns {Object.<string,*>} Plain object
+   */
+  V3ReqUnknownCameraParam.toObject = function toObject(message, options) {
+    if (!options) options = {};
+    var object = {};
+    if (options.defaults) {
+      if ($util.Long) {
+        var long = new $util.Long(0, 0, false);
+        object.paramId =
+          options.longs === String
+            ? long.toString()
+            : options.longs === Number
+            ? long.toNumber()
+            : long;
+      } else object.paramId = options.longs === String ? "0" : 0;
+      object.field2 = 0;
+      object.field3 = 0;
+    }
+    if (message.paramId != null && message.hasOwnProperty("paramId"))
+      if (typeof message.paramId === "number")
+        object.paramId =
+          options.longs === String ? String(message.paramId) : message.paramId;
+      else
+        object.paramId =
+          options.longs === String
+            ? $util.Long.prototype.toString.call(message.paramId)
+            : options.longs === Number
+            ? new $util.LongBits(
+                message.paramId.low >>> 0,
+                message.paramId.high >>> 0
+              ).toNumber()
+            : message.paramId;
+    if (message.field2 != null && message.hasOwnProperty("field2"))
+      object.field2 = message.field2;
+    if (message.field3 != null && message.hasOwnProperty("field3"))
+      object.field3 = message.field3;
+    return object;
+  };
+
+  /**
+   * Converts this V3ReqUnknownCameraParam to JSON.
+   * @function toJSON
+   * @memberof V3ReqUnknownCameraParam
+   * @instance
+   * @returns {Object.<string,*>} JSON object
+   */
+  V3ReqUnknownCameraParam.prototype.toJSON = function toJSON() {
+    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+  };
+
+  /**
+   * Gets the default type url for V3ReqUnknownCameraParam
+   * @function getTypeUrl
+   * @memberof V3ReqUnknownCameraParam
+   * @static
+   * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+   * @returns {string} The default type url
+   */
+  V3ReqUnknownCameraParam.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+    if (typeUrlPrefix === undefined) {
+      typeUrlPrefix = "type.googleapis.com";
+    }
+    return typeUrlPrefix + "/V3ReqUnknownCameraParam";
+  };
+
+  return V3ReqUnknownCameraParam;
+})();
+
 $root.V3ReqStreamControl = (function () {
   /**
    * Properties of a V3ReqStreamControl.
@@ -42452,9 +42739,11 @@ $root.MessageTypeId = (function () {
  * @property {number} CMD_NOTIFY_SKY_SEACHER_STATE=15250 CMD_NOTIFY_SKY_SEACHER_STATE value
  * @property {number} CMD_NOTIFY_WIDE_MULTI_TRACK_RESULT=15251 CMD_NOTIFY_WIDE_MULTI_TRACK_RESULT value
  * @property {number} CMD_NOTIFY_WIDE_TRACK_RESULT=15252 CMD_NOTIFY_WIDE_TRACK_RESULT value
+ * @property {number} CMD_V3_NOTIFY_SKY_SOLVER_COORDS=15256 CMD_V3_NOTIFY_SKY_SOLVER_COORDS value
  * @property {number} CMD_NOTIFY_FOCUS=15257 CMD_NOTIFY_FOCUS value
  * @property {number} CMD_V3_NOTIFY_EXPOSURE_PROGRESS=15255 CMD_V3_NOTIFY_EXPOSURE_PROGRESS value
  * @property {number} CMD_V3_NOTIFY_DEVICE_STATE=15261 CMD_V3_NOTIFY_DEVICE_STATE value
+ * @property {number} CMD_V3_NOTIFY_STATE_LATCH=15262 CMD_V3_NOTIFY_STATE_LATCH value
  * @property {number} CMD_V3_NOTIFY_CAMERA_PARAM_STATE=15264 CMD_V3_NOTIFY_CAMERA_PARAM_STATE value
  * @property {number} CMD_V3_NOTIFY_MODE_CHANGE=15267 CMD_V3_NOTIFY_MODE_CHANGE value
  * @property {number} CMD_V3_NOTIFY_STACKING_DATA=15270 CMD_V3_NOTIFY_STACKING_DATA value
@@ -42463,9 +42752,11 @@ $root.MessageTypeId = (function () {
  * @property {number} CMD_V3_NOTIFY_VIDEO_STATE=15275 CMD_V3_NOTIFY_VIDEO_STATE value
  * @property {number} CMD_V3_NOTIFY_TIMELAPSE_STATE=15276 CMD_V3_NOTIFY_TIMELAPSE_STATE value
  * @property {number} CMD_V3_NOTIFY_AUTOFOCUS_STATE=15278 CMD_V3_NOTIFY_AUTOFOCUS_STATE value
+ * @property {number} CMD_V3_NOTIFY_AUTOFOCUS_STATE_ALT=15280 CMD_V3_NOTIFY_AUTOFOCUS_STATE_ALT value
  * @property {number} CMD_V3_NOTIFY_PHOTO_BURST_PROGRESS=15285 CMD_V3_NOTIFY_PHOTO_BURST_PROGRESS value
  * @property {number} CMD_V3_NOTIFY_VIDEO_PROGRESS=15286 CMD_V3_NOTIFY_VIDEO_PROGRESS value
  * @property {number} CMD_V3_NOTIFY_TIMELAPSE_PROGRESS=15287 CMD_V3_NOTIFY_TIMELAPSE_PROGRESS value
+ * @property {number} CMD_V3_NOTIFY_EXPOSURE_DURATION=15288 CMD_V3_NOTIFY_EXPOSURE_DURATION value
  * @property {number} CMD_V3_NOTIFY_TEMPERATURE2=15292 CMD_V3_NOTIFY_TEMPERATURE2 value
  * @property {number} CMD_V3_NOTIFY_OBSERVATION_STATE=15296 CMD_V3_NOTIFY_OBSERVATION_STATE value
  * @property {number} CMD_PANORAMA_START_GRID=15500 CMD_PANORAMA_START_GRID value
@@ -42478,6 +42769,7 @@ $root.MessageTypeId = (function () {
  * @property {number} CMD_V3_DEVICE_CONFIG_GET_CONFIG=16405 CMD_V3_DEVICE_CONFIG_GET_CONFIG value
  * @property {number} CMD_V3_CAMERA_PARAMS_SET_PARAM=16700 CMD_V3_CAMERA_PARAMS_SET_PARAM value
  * @property {number} CMD_V3_CAMERA_PARAMS_SET_EXP_GAIN=16701 CMD_V3_CAMERA_PARAMS_SET_EXP_GAIN value
+ * @property {number} CMD_V3_CAMERA_PARAMS_UNKNOWN_16702=16702 CMD_V3_CAMERA_PARAMS_UNKNOWN_16702 value
  * @property {number} CMD_V3_CAMERA_PARAMS_ADJUST=16703 CMD_V3_CAMERA_PARAMS_ADJUST value
  * @property {number} CMD_V3_CAMERA_PARAMS_STREAM_CTRL=16706 CMD_V3_CAMERA_PARAMS_STREAM_CTRL value
  */
@@ -42738,9 +43030,11 @@ $root.DwarfCMD = (function () {
   values[(valuesById[15250] = "CMD_NOTIFY_SKY_SEACHER_STATE")] = 15250;
   values[(valuesById[15251] = "CMD_NOTIFY_WIDE_MULTI_TRACK_RESULT")] = 15251;
   values[(valuesById[15252] = "CMD_NOTIFY_WIDE_TRACK_RESULT")] = 15252;
+  values[(valuesById[15256] = "CMD_V3_NOTIFY_SKY_SOLVER_COORDS")] = 15256;
   values[(valuesById[15257] = "CMD_NOTIFY_FOCUS")] = 15257;
   values[(valuesById[15255] = "CMD_V3_NOTIFY_EXPOSURE_PROGRESS")] = 15255;
   values[(valuesById[15261] = "CMD_V3_NOTIFY_DEVICE_STATE")] = 15261;
+  values[(valuesById[15262] = "CMD_V3_NOTIFY_STATE_LATCH")] = 15262;
   values[(valuesById[15264] = "CMD_V3_NOTIFY_CAMERA_PARAM_STATE")] = 15264;
   values[(valuesById[15267] = "CMD_V3_NOTIFY_MODE_CHANGE")] = 15267;
   values[(valuesById[15270] = "CMD_V3_NOTIFY_STACKING_DATA")] = 15270;
@@ -42749,9 +43043,11 @@ $root.DwarfCMD = (function () {
   values[(valuesById[15275] = "CMD_V3_NOTIFY_VIDEO_STATE")] = 15275;
   values[(valuesById[15276] = "CMD_V3_NOTIFY_TIMELAPSE_STATE")] = 15276;
   values[(valuesById[15278] = "CMD_V3_NOTIFY_AUTOFOCUS_STATE")] = 15278;
+  values[(valuesById[15280] = "CMD_V3_NOTIFY_AUTOFOCUS_STATE_ALT")] = 15280;
   values[(valuesById[15285] = "CMD_V3_NOTIFY_PHOTO_BURST_PROGRESS")] = 15285;
   values[(valuesById[15286] = "CMD_V3_NOTIFY_VIDEO_PROGRESS")] = 15286;
   values[(valuesById[15287] = "CMD_V3_NOTIFY_TIMELAPSE_PROGRESS")] = 15287;
+  values[(valuesById[15288] = "CMD_V3_NOTIFY_EXPOSURE_DURATION")] = 15288;
   values[(valuesById[15292] = "CMD_V3_NOTIFY_TEMPERATURE2")] = 15292;
   values[(valuesById[15296] = "CMD_V3_NOTIFY_OBSERVATION_STATE")] = 15296;
   values[(valuesById[15500] = "CMD_PANORAMA_START_GRID")] = 15500;
@@ -42764,6 +43060,7 @@ $root.DwarfCMD = (function () {
   values[(valuesById[16405] = "CMD_V3_DEVICE_CONFIG_GET_CONFIG")] = 16405;
   values[(valuesById[16700] = "CMD_V3_CAMERA_PARAMS_SET_PARAM")] = 16700;
   values[(valuesById[16701] = "CMD_V3_CAMERA_PARAMS_SET_EXP_GAIN")] = 16701;
+  values[(valuesById[16702] = "CMD_V3_CAMERA_PARAMS_UNKNOWN_16702")] = 16702;
   values[(valuesById[16703] = "CMD_V3_CAMERA_PARAMS_ADJUST")] = 16703;
   values[(valuesById[16706] = "CMD_V3_CAMERA_PARAMS_STREAM_CTRL")] = 16706;
   return values;
@@ -62386,6 +62683,836 @@ $root.V3ResNotifyObservationState = (function () {
   };
 
   return V3ResNotifyObservationState;
+})();
+
+$root.V3ResNotifySkySolverCoords = (function () {
+  /**
+   * Properties of a V3ResNotifySkySolverCoords.
+   * @exports IV3ResNotifySkySolverCoords
+   * @interface IV3ResNotifySkySolverCoords
+   * @property {number|null} [coord1] V3ResNotifySkySolverCoords coord1
+   * @property {number|null} [coord2] V3ResNotifySkySolverCoords coord2
+   */
+
+  /**
+   * Constructs a new V3ResNotifySkySolverCoords.
+   * @exports V3ResNotifySkySolverCoords
+   * @classdesc Represents a V3ResNotifySkySolverCoords.
+   * @implements IV3ResNotifySkySolverCoords
+   * @constructor
+   * @param {IV3ResNotifySkySolverCoords=} [properties] Properties to set
+   */
+  function V3ResNotifySkySolverCoords(properties) {
+    if (properties)
+      for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+        if (properties[keys[i]] != null) this[keys[i]] = properties[keys[i]];
+  }
+
+  /**
+   * V3ResNotifySkySolverCoords coord1.
+   * @member {number} coord1
+   * @memberof V3ResNotifySkySolverCoords
+   * @instance
+   */
+  V3ResNotifySkySolverCoords.prototype.coord1 = 0;
+
+  /**
+   * V3ResNotifySkySolverCoords coord2.
+   * @member {number} coord2
+   * @memberof V3ResNotifySkySolverCoords
+   * @instance
+   */
+  V3ResNotifySkySolverCoords.prototype.coord2 = 0;
+
+  /**
+   * Creates a new V3ResNotifySkySolverCoords instance using the specified properties.
+   * @function create
+   * @memberof V3ResNotifySkySolverCoords
+   * @static
+   * @param {IV3ResNotifySkySolverCoords=} [properties] Properties to set
+   * @returns {V3ResNotifySkySolverCoords} V3ResNotifySkySolverCoords instance
+   */
+  V3ResNotifySkySolverCoords.create = function create(properties) {
+    return new V3ResNotifySkySolverCoords(properties);
+  };
+
+  /**
+   * Encodes the specified V3ResNotifySkySolverCoords message. Does not implicitly {@link V3ResNotifySkySolverCoords.verify|verify} messages.
+   * @function encode
+   * @memberof V3ResNotifySkySolverCoords
+   * @static
+   * @param {IV3ResNotifySkySolverCoords} message V3ResNotifySkySolverCoords message or plain object to encode
+   * @param {$protobuf.Writer} [writer] Writer to encode to
+   * @returns {$protobuf.Writer} Writer
+   */
+  V3ResNotifySkySolverCoords.encode = function encode(message, writer) {
+    if (!writer) writer = $Writer.create();
+    if (message.coord1 != null && Object.hasOwnProperty.call(message, "coord1"))
+      writer.uint32(/* id 1, wireType 1 =*/ 9).double(message.coord1);
+    if (message.coord2 != null && Object.hasOwnProperty.call(message, "coord2"))
+      writer.uint32(/* id 2, wireType 1 =*/ 17).double(message.coord2);
+    return writer;
+  };
+
+  /**
+   * Encodes the specified V3ResNotifySkySolverCoords message, length delimited. Does not implicitly {@link V3ResNotifySkySolverCoords.verify|verify} messages.
+   * @function encodeDelimited
+   * @memberof V3ResNotifySkySolverCoords
+   * @static
+   * @param {IV3ResNotifySkySolverCoords} message V3ResNotifySkySolverCoords message or plain object to encode
+   * @param {$protobuf.Writer} [writer] Writer to encode to
+   * @returns {$protobuf.Writer} Writer
+   */
+  V3ResNotifySkySolverCoords.encodeDelimited = function encodeDelimited(
+    message,
+    writer
+  ) {
+    return this.encode(message, writer).ldelim();
+  };
+
+  /**
+   * Decodes a V3ResNotifySkySolverCoords message from the specified reader or buffer.
+   * @function decode
+   * @memberof V3ResNotifySkySolverCoords
+   * @static
+   * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+   * @param {number} [length] Message length if known beforehand
+   * @returns {V3ResNotifySkySolverCoords} V3ResNotifySkySolverCoords
+   * @throws {Error} If the payload is not a reader or valid buffer
+   * @throws {$protobuf.util.ProtocolError} If required fields are missing
+   */
+  V3ResNotifySkySolverCoords.decode = function decode(reader, length) {
+    if (!(reader instanceof $Reader)) reader = $Reader.create(reader);
+    var end = length === undefined ? reader.len : reader.pos + length,
+      message = new $root.V3ResNotifySkySolverCoords();
+    while (reader.pos < end) {
+      var tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          message.coord1 = reader.double();
+          break;
+        }
+        case 2: {
+          message.coord2 = reader.double();
+          break;
+        }
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  };
+
+  /**
+   * Decodes a V3ResNotifySkySolverCoords message from the specified reader or buffer, length delimited.
+   * @function decodeDelimited
+   * @memberof V3ResNotifySkySolverCoords
+   * @static
+   * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+   * @returns {V3ResNotifySkySolverCoords} V3ResNotifySkySolverCoords
+   * @throws {Error} If the payload is not a reader or valid buffer
+   * @throws {$protobuf.util.ProtocolError} If required fields are missing
+   */
+  V3ResNotifySkySolverCoords.decodeDelimited = function decodeDelimited(
+    reader
+  ) {
+    if (!(reader instanceof $Reader)) reader = new $Reader(reader);
+    return this.decode(reader, reader.uint32());
+  };
+
+  /**
+   * Verifies a V3ResNotifySkySolverCoords message.
+   * @function verify
+   * @memberof V3ResNotifySkySolverCoords
+   * @static
+   * @param {Object.<string,*>} message Plain object to verify
+   * @returns {string|null} `null` if valid, otherwise the reason why it is not
+   */
+  V3ResNotifySkySolverCoords.verify = function verify(message) {
+    if (typeof message !== "object" || message === null)
+      return "object expected";
+    if (message.coord1 != null && message.hasOwnProperty("coord1"))
+      if (typeof message.coord1 !== "number") return "coord1: number expected";
+    if (message.coord2 != null && message.hasOwnProperty("coord2"))
+      if (typeof message.coord2 !== "number") return "coord2: number expected";
+    return null;
+  };
+
+  /**
+   * Creates a V3ResNotifySkySolverCoords message from a plain object. Also converts values to their respective internal types.
+   * @function fromObject
+   * @memberof V3ResNotifySkySolverCoords
+   * @static
+   * @param {Object.<string,*>} object Plain object
+   * @returns {V3ResNotifySkySolverCoords} V3ResNotifySkySolverCoords
+   */
+  V3ResNotifySkySolverCoords.fromObject = function fromObject(object) {
+    if (object instanceof $root.V3ResNotifySkySolverCoords) return object;
+    var message = new $root.V3ResNotifySkySolverCoords();
+    if (object.coord1 != null) message.coord1 = Number(object.coord1);
+    if (object.coord2 != null) message.coord2 = Number(object.coord2);
+    return message;
+  };
+
+  /**
+   * Creates a plain object from a V3ResNotifySkySolverCoords message. Also converts values to other types if specified.
+   * @function toObject
+   * @memberof V3ResNotifySkySolverCoords
+   * @static
+   * @param {V3ResNotifySkySolverCoords} message V3ResNotifySkySolverCoords
+   * @param {$protobuf.IConversionOptions} [options] Conversion options
+   * @returns {Object.<string,*>} Plain object
+   */
+  V3ResNotifySkySolverCoords.toObject = function toObject(message, options) {
+    if (!options) options = {};
+    var object = {};
+    if (options.defaults) {
+      object.coord1 = 0;
+      object.coord2 = 0;
+    }
+    if (message.coord1 != null && message.hasOwnProperty("coord1"))
+      object.coord1 =
+        options.json && !isFinite(message.coord1)
+          ? String(message.coord1)
+          : message.coord1;
+    if (message.coord2 != null && message.hasOwnProperty("coord2"))
+      object.coord2 =
+        options.json && !isFinite(message.coord2)
+          ? String(message.coord2)
+          : message.coord2;
+    return object;
+  };
+
+  /**
+   * Converts this V3ResNotifySkySolverCoords to JSON.
+   * @function toJSON
+   * @memberof V3ResNotifySkySolverCoords
+   * @instance
+   * @returns {Object.<string,*>} JSON object
+   */
+  V3ResNotifySkySolverCoords.prototype.toJSON = function toJSON() {
+    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+  };
+
+  /**
+   * Gets the default type url for V3ResNotifySkySolverCoords
+   * @function getTypeUrl
+   * @memberof V3ResNotifySkySolverCoords
+   * @static
+   * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+   * @returns {string} The default type url
+   */
+  V3ResNotifySkySolverCoords.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+    if (typeUrlPrefix === undefined) {
+      typeUrlPrefix = "type.googleapis.com";
+    }
+    return typeUrlPrefix + "/V3ResNotifySkySolverCoords";
+  };
+
+  return V3ResNotifySkySolverCoords;
+})();
+
+$root.V3ResNotifyStateLatch = (function () {
+  /**
+   * Properties of a V3ResNotifyStateLatch.
+   * @exports IV3ResNotifyStateLatch
+   * @interface IV3ResNotifyStateLatch
+   * @property {number|null} [state] V3ResNotifyStateLatch state
+   */
+
+  /**
+   * Constructs a new V3ResNotifyStateLatch.
+   * @exports V3ResNotifyStateLatch
+   * @classdesc Represents a V3ResNotifyStateLatch.
+   * @implements IV3ResNotifyStateLatch
+   * @constructor
+   * @param {IV3ResNotifyStateLatch=} [properties] Properties to set
+   */
+  function V3ResNotifyStateLatch(properties) {
+    if (properties)
+      for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+        if (properties[keys[i]] != null) this[keys[i]] = properties[keys[i]];
+  }
+
+  /**
+   * V3ResNotifyStateLatch state.
+   * @member {number} state
+   * @memberof V3ResNotifyStateLatch
+   * @instance
+   */
+  V3ResNotifyStateLatch.prototype.state = 0;
+
+  /**
+   * Creates a new V3ResNotifyStateLatch instance using the specified properties.
+   * @function create
+   * @memberof V3ResNotifyStateLatch
+   * @static
+   * @param {IV3ResNotifyStateLatch=} [properties] Properties to set
+   * @returns {V3ResNotifyStateLatch} V3ResNotifyStateLatch instance
+   */
+  V3ResNotifyStateLatch.create = function create(properties) {
+    return new V3ResNotifyStateLatch(properties);
+  };
+
+  /**
+   * Encodes the specified V3ResNotifyStateLatch message. Does not implicitly {@link V3ResNotifyStateLatch.verify|verify} messages.
+   * @function encode
+   * @memberof V3ResNotifyStateLatch
+   * @static
+   * @param {IV3ResNotifyStateLatch} message V3ResNotifyStateLatch message or plain object to encode
+   * @param {$protobuf.Writer} [writer] Writer to encode to
+   * @returns {$protobuf.Writer} Writer
+   */
+  V3ResNotifyStateLatch.encode = function encode(message, writer) {
+    if (!writer) writer = $Writer.create();
+    if (message.state != null && Object.hasOwnProperty.call(message, "state"))
+      writer.uint32(/* id 1, wireType 0 =*/ 8).int32(message.state);
+    return writer;
+  };
+
+  /**
+   * Encodes the specified V3ResNotifyStateLatch message, length delimited. Does not implicitly {@link V3ResNotifyStateLatch.verify|verify} messages.
+   * @function encodeDelimited
+   * @memberof V3ResNotifyStateLatch
+   * @static
+   * @param {IV3ResNotifyStateLatch} message V3ResNotifyStateLatch message or plain object to encode
+   * @param {$protobuf.Writer} [writer] Writer to encode to
+   * @returns {$protobuf.Writer} Writer
+   */
+  V3ResNotifyStateLatch.encodeDelimited = function encodeDelimited(
+    message,
+    writer
+  ) {
+    return this.encode(message, writer).ldelim();
+  };
+
+  /**
+   * Decodes a V3ResNotifyStateLatch message from the specified reader or buffer.
+   * @function decode
+   * @memberof V3ResNotifyStateLatch
+   * @static
+   * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+   * @param {number} [length] Message length if known beforehand
+   * @returns {V3ResNotifyStateLatch} V3ResNotifyStateLatch
+   * @throws {Error} If the payload is not a reader or valid buffer
+   * @throws {$protobuf.util.ProtocolError} If required fields are missing
+   */
+  V3ResNotifyStateLatch.decode = function decode(reader, length) {
+    if (!(reader instanceof $Reader)) reader = $Reader.create(reader);
+    var end = length === undefined ? reader.len : reader.pos + length,
+      message = new $root.V3ResNotifyStateLatch();
+    while (reader.pos < end) {
+      var tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          message.state = reader.int32();
+          break;
+        }
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  };
+
+  /**
+   * Decodes a V3ResNotifyStateLatch message from the specified reader or buffer, length delimited.
+   * @function decodeDelimited
+   * @memberof V3ResNotifyStateLatch
+   * @static
+   * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+   * @returns {V3ResNotifyStateLatch} V3ResNotifyStateLatch
+   * @throws {Error} If the payload is not a reader or valid buffer
+   * @throws {$protobuf.util.ProtocolError} If required fields are missing
+   */
+  V3ResNotifyStateLatch.decodeDelimited = function decodeDelimited(reader) {
+    if (!(reader instanceof $Reader)) reader = new $Reader(reader);
+    return this.decode(reader, reader.uint32());
+  };
+
+  /**
+   * Verifies a V3ResNotifyStateLatch message.
+   * @function verify
+   * @memberof V3ResNotifyStateLatch
+   * @static
+   * @param {Object.<string,*>} message Plain object to verify
+   * @returns {string|null} `null` if valid, otherwise the reason why it is not
+   */
+  V3ResNotifyStateLatch.verify = function verify(message) {
+    if (typeof message !== "object" || message === null)
+      return "object expected";
+    if (message.state != null && message.hasOwnProperty("state"))
+      if (!$util.isInteger(message.state)) return "state: integer expected";
+    return null;
+  };
+
+  /**
+   * Creates a V3ResNotifyStateLatch message from a plain object. Also converts values to their respective internal types.
+   * @function fromObject
+   * @memberof V3ResNotifyStateLatch
+   * @static
+   * @param {Object.<string,*>} object Plain object
+   * @returns {V3ResNotifyStateLatch} V3ResNotifyStateLatch
+   */
+  V3ResNotifyStateLatch.fromObject = function fromObject(object) {
+    if (object instanceof $root.V3ResNotifyStateLatch) return object;
+    var message = new $root.V3ResNotifyStateLatch();
+    if (object.state != null) message.state = object.state | 0;
+    return message;
+  };
+
+  /**
+   * Creates a plain object from a V3ResNotifyStateLatch message. Also converts values to other types if specified.
+   * @function toObject
+   * @memberof V3ResNotifyStateLatch
+   * @static
+   * @param {V3ResNotifyStateLatch} message V3ResNotifyStateLatch
+   * @param {$protobuf.IConversionOptions} [options] Conversion options
+   * @returns {Object.<string,*>} Plain object
+   */
+  V3ResNotifyStateLatch.toObject = function toObject(message, options) {
+    if (!options) options = {};
+    var object = {};
+    if (options.defaults) object.state = 0;
+    if (message.state != null && message.hasOwnProperty("state"))
+      object.state = message.state;
+    return object;
+  };
+
+  /**
+   * Converts this V3ResNotifyStateLatch to JSON.
+   * @function toJSON
+   * @memberof V3ResNotifyStateLatch
+   * @instance
+   * @returns {Object.<string,*>} JSON object
+   */
+  V3ResNotifyStateLatch.prototype.toJSON = function toJSON() {
+    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+  };
+
+  /**
+   * Gets the default type url for V3ResNotifyStateLatch
+   * @function getTypeUrl
+   * @memberof V3ResNotifyStateLatch
+   * @static
+   * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+   * @returns {string} The default type url
+   */
+  V3ResNotifyStateLatch.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+    if (typeUrlPrefix === undefined) {
+      typeUrlPrefix = "type.googleapis.com";
+    }
+    return typeUrlPrefix + "/V3ResNotifyStateLatch";
+  };
+
+  return V3ResNotifyStateLatch;
+})();
+
+$root.V3ResNotifyAutoFocusStateAlt = (function () {
+  /**
+   * Properties of a V3ResNotifyAutoFocusStateAlt.
+   * @exports IV3ResNotifyAutoFocusStateAlt
+   * @interface IV3ResNotifyAutoFocusStateAlt
+   * @property {number|null} [state] V3ResNotifyAutoFocusStateAlt state
+   */
+
+  /**
+   * Constructs a new V3ResNotifyAutoFocusStateAlt.
+   * @exports V3ResNotifyAutoFocusStateAlt
+   * @classdesc Represents a V3ResNotifyAutoFocusStateAlt.
+   * @implements IV3ResNotifyAutoFocusStateAlt
+   * @constructor
+   * @param {IV3ResNotifyAutoFocusStateAlt=} [properties] Properties to set
+   */
+  function V3ResNotifyAutoFocusStateAlt(properties) {
+    if (properties)
+      for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+        if (properties[keys[i]] != null) this[keys[i]] = properties[keys[i]];
+  }
+
+  /**
+   * V3ResNotifyAutoFocusStateAlt state.
+   * @member {number} state
+   * @memberof V3ResNotifyAutoFocusStateAlt
+   * @instance
+   */
+  V3ResNotifyAutoFocusStateAlt.prototype.state = 0;
+
+  /**
+   * Creates a new V3ResNotifyAutoFocusStateAlt instance using the specified properties.
+   * @function create
+   * @memberof V3ResNotifyAutoFocusStateAlt
+   * @static
+   * @param {IV3ResNotifyAutoFocusStateAlt=} [properties] Properties to set
+   * @returns {V3ResNotifyAutoFocusStateAlt} V3ResNotifyAutoFocusStateAlt instance
+   */
+  V3ResNotifyAutoFocusStateAlt.create = function create(properties) {
+    return new V3ResNotifyAutoFocusStateAlt(properties);
+  };
+
+  /**
+   * Encodes the specified V3ResNotifyAutoFocusStateAlt message. Does not implicitly {@link V3ResNotifyAutoFocusStateAlt.verify|verify} messages.
+   * @function encode
+   * @memberof V3ResNotifyAutoFocusStateAlt
+   * @static
+   * @param {IV3ResNotifyAutoFocusStateAlt} message V3ResNotifyAutoFocusStateAlt message or plain object to encode
+   * @param {$protobuf.Writer} [writer] Writer to encode to
+   * @returns {$protobuf.Writer} Writer
+   */
+  V3ResNotifyAutoFocusStateAlt.encode = function encode(message, writer) {
+    if (!writer) writer = $Writer.create();
+    if (message.state != null && Object.hasOwnProperty.call(message, "state"))
+      writer.uint32(/* id 1, wireType 0 =*/ 8).int32(message.state);
+    return writer;
+  };
+
+  /**
+   * Encodes the specified V3ResNotifyAutoFocusStateAlt message, length delimited. Does not implicitly {@link V3ResNotifyAutoFocusStateAlt.verify|verify} messages.
+   * @function encodeDelimited
+   * @memberof V3ResNotifyAutoFocusStateAlt
+   * @static
+   * @param {IV3ResNotifyAutoFocusStateAlt} message V3ResNotifyAutoFocusStateAlt message or plain object to encode
+   * @param {$protobuf.Writer} [writer] Writer to encode to
+   * @returns {$protobuf.Writer} Writer
+   */
+  V3ResNotifyAutoFocusStateAlt.encodeDelimited = function encodeDelimited(
+    message,
+    writer
+  ) {
+    return this.encode(message, writer).ldelim();
+  };
+
+  /**
+   * Decodes a V3ResNotifyAutoFocusStateAlt message from the specified reader or buffer.
+   * @function decode
+   * @memberof V3ResNotifyAutoFocusStateAlt
+   * @static
+   * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+   * @param {number} [length] Message length if known beforehand
+   * @returns {V3ResNotifyAutoFocusStateAlt} V3ResNotifyAutoFocusStateAlt
+   * @throws {Error} If the payload is not a reader or valid buffer
+   * @throws {$protobuf.util.ProtocolError} If required fields are missing
+   */
+  V3ResNotifyAutoFocusStateAlt.decode = function decode(reader, length) {
+    if (!(reader instanceof $Reader)) reader = $Reader.create(reader);
+    var end = length === undefined ? reader.len : reader.pos + length,
+      message = new $root.V3ResNotifyAutoFocusStateAlt();
+    while (reader.pos < end) {
+      var tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          message.state = reader.int32();
+          break;
+        }
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  };
+
+  /**
+   * Decodes a V3ResNotifyAutoFocusStateAlt message from the specified reader or buffer, length delimited.
+   * @function decodeDelimited
+   * @memberof V3ResNotifyAutoFocusStateAlt
+   * @static
+   * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+   * @returns {V3ResNotifyAutoFocusStateAlt} V3ResNotifyAutoFocusStateAlt
+   * @throws {Error} If the payload is not a reader or valid buffer
+   * @throws {$protobuf.util.ProtocolError} If required fields are missing
+   */
+  V3ResNotifyAutoFocusStateAlt.decodeDelimited = function decodeDelimited(
+    reader
+  ) {
+    if (!(reader instanceof $Reader)) reader = new $Reader(reader);
+    return this.decode(reader, reader.uint32());
+  };
+
+  /**
+   * Verifies a V3ResNotifyAutoFocusStateAlt message.
+   * @function verify
+   * @memberof V3ResNotifyAutoFocusStateAlt
+   * @static
+   * @param {Object.<string,*>} message Plain object to verify
+   * @returns {string|null} `null` if valid, otherwise the reason why it is not
+   */
+  V3ResNotifyAutoFocusStateAlt.verify = function verify(message) {
+    if (typeof message !== "object" || message === null)
+      return "object expected";
+    if (message.state != null && message.hasOwnProperty("state"))
+      if (!$util.isInteger(message.state)) return "state: integer expected";
+    return null;
+  };
+
+  /**
+   * Creates a V3ResNotifyAutoFocusStateAlt message from a plain object. Also converts values to their respective internal types.
+   * @function fromObject
+   * @memberof V3ResNotifyAutoFocusStateAlt
+   * @static
+   * @param {Object.<string,*>} object Plain object
+   * @returns {V3ResNotifyAutoFocusStateAlt} V3ResNotifyAutoFocusStateAlt
+   */
+  V3ResNotifyAutoFocusStateAlt.fromObject = function fromObject(object) {
+    if (object instanceof $root.V3ResNotifyAutoFocusStateAlt) return object;
+    var message = new $root.V3ResNotifyAutoFocusStateAlt();
+    if (object.state != null) message.state = object.state | 0;
+    return message;
+  };
+
+  /**
+   * Creates a plain object from a V3ResNotifyAutoFocusStateAlt message. Also converts values to other types if specified.
+   * @function toObject
+   * @memberof V3ResNotifyAutoFocusStateAlt
+   * @static
+   * @param {V3ResNotifyAutoFocusStateAlt} message V3ResNotifyAutoFocusStateAlt
+   * @param {$protobuf.IConversionOptions} [options] Conversion options
+   * @returns {Object.<string,*>} Plain object
+   */
+  V3ResNotifyAutoFocusStateAlt.toObject = function toObject(message, options) {
+    if (!options) options = {};
+    var object = {};
+    if (options.defaults) object.state = 0;
+    if (message.state != null && message.hasOwnProperty("state"))
+      object.state = message.state;
+    return object;
+  };
+
+  /**
+   * Converts this V3ResNotifyAutoFocusStateAlt to JSON.
+   * @function toJSON
+   * @memberof V3ResNotifyAutoFocusStateAlt
+   * @instance
+   * @returns {Object.<string,*>} JSON object
+   */
+  V3ResNotifyAutoFocusStateAlt.prototype.toJSON = function toJSON() {
+    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+  };
+
+  /**
+   * Gets the default type url for V3ResNotifyAutoFocusStateAlt
+   * @function getTypeUrl
+   * @memberof V3ResNotifyAutoFocusStateAlt
+   * @static
+   * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+   * @returns {string} The default type url
+   */
+  V3ResNotifyAutoFocusStateAlt.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+    if (typeUrlPrefix === undefined) {
+      typeUrlPrefix = "type.googleapis.com";
+    }
+    return typeUrlPrefix + "/V3ResNotifyAutoFocusStateAlt";
+  };
+
+  return V3ResNotifyAutoFocusStateAlt;
+})();
+
+$root.V3ResNotifyExposureDuration = (function () {
+  /**
+   * Properties of a V3ResNotifyExposureDuration.
+   * @exports IV3ResNotifyExposureDuration
+   * @interface IV3ResNotifyExposureDuration
+   * @property {number|null} [duration] V3ResNotifyExposureDuration duration
+   */
+
+  /**
+   * Constructs a new V3ResNotifyExposureDuration.
+   * @exports V3ResNotifyExposureDuration
+   * @classdesc Represents a V3ResNotifyExposureDuration.
+   * @implements IV3ResNotifyExposureDuration
+   * @constructor
+   * @param {IV3ResNotifyExposureDuration=} [properties] Properties to set
+   */
+  function V3ResNotifyExposureDuration(properties) {
+    if (properties)
+      for (var keys = Object.keys(properties), i = 0; i < keys.length; ++i)
+        if (properties[keys[i]] != null) this[keys[i]] = properties[keys[i]];
+  }
+
+  /**
+   * V3ResNotifyExposureDuration duration.
+   * @member {number} duration
+   * @memberof V3ResNotifyExposureDuration
+   * @instance
+   */
+  V3ResNotifyExposureDuration.prototype.duration = 0;
+
+  /**
+   * Creates a new V3ResNotifyExposureDuration instance using the specified properties.
+   * @function create
+   * @memberof V3ResNotifyExposureDuration
+   * @static
+   * @param {IV3ResNotifyExposureDuration=} [properties] Properties to set
+   * @returns {V3ResNotifyExposureDuration} V3ResNotifyExposureDuration instance
+   */
+  V3ResNotifyExposureDuration.create = function create(properties) {
+    return new V3ResNotifyExposureDuration(properties);
+  };
+
+  /**
+   * Encodes the specified V3ResNotifyExposureDuration message. Does not implicitly {@link V3ResNotifyExposureDuration.verify|verify} messages.
+   * @function encode
+   * @memberof V3ResNotifyExposureDuration
+   * @static
+   * @param {IV3ResNotifyExposureDuration} message V3ResNotifyExposureDuration message or plain object to encode
+   * @param {$protobuf.Writer} [writer] Writer to encode to
+   * @returns {$protobuf.Writer} Writer
+   */
+  V3ResNotifyExposureDuration.encode = function encode(message, writer) {
+    if (!writer) writer = $Writer.create();
+    if (
+      message.duration != null &&
+      Object.hasOwnProperty.call(message, "duration")
+    )
+      writer.uint32(/* id 1, wireType 1 =*/ 9).double(message.duration);
+    return writer;
+  };
+
+  /**
+   * Encodes the specified V3ResNotifyExposureDuration message, length delimited. Does not implicitly {@link V3ResNotifyExposureDuration.verify|verify} messages.
+   * @function encodeDelimited
+   * @memberof V3ResNotifyExposureDuration
+   * @static
+   * @param {IV3ResNotifyExposureDuration} message V3ResNotifyExposureDuration message or plain object to encode
+   * @param {$protobuf.Writer} [writer] Writer to encode to
+   * @returns {$protobuf.Writer} Writer
+   */
+  V3ResNotifyExposureDuration.encodeDelimited = function encodeDelimited(
+    message,
+    writer
+  ) {
+    return this.encode(message, writer).ldelim();
+  };
+
+  /**
+   * Decodes a V3ResNotifyExposureDuration message from the specified reader or buffer.
+   * @function decode
+   * @memberof V3ResNotifyExposureDuration
+   * @static
+   * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+   * @param {number} [length] Message length if known beforehand
+   * @returns {V3ResNotifyExposureDuration} V3ResNotifyExposureDuration
+   * @throws {Error} If the payload is not a reader or valid buffer
+   * @throws {$protobuf.util.ProtocolError} If required fields are missing
+   */
+  V3ResNotifyExposureDuration.decode = function decode(reader, length) {
+    if (!(reader instanceof $Reader)) reader = $Reader.create(reader);
+    var end = length === undefined ? reader.len : reader.pos + length,
+      message = new $root.V3ResNotifyExposureDuration();
+    while (reader.pos < end) {
+      var tag = reader.uint32();
+      switch (tag >>> 3) {
+        case 1: {
+          message.duration = reader.double();
+          break;
+        }
+        default:
+          reader.skipType(tag & 7);
+          break;
+      }
+    }
+    return message;
+  };
+
+  /**
+   * Decodes a V3ResNotifyExposureDuration message from the specified reader or buffer, length delimited.
+   * @function decodeDelimited
+   * @memberof V3ResNotifyExposureDuration
+   * @static
+   * @param {$protobuf.Reader|Uint8Array} reader Reader or buffer to decode from
+   * @returns {V3ResNotifyExposureDuration} V3ResNotifyExposureDuration
+   * @throws {Error} If the payload is not a reader or valid buffer
+   * @throws {$protobuf.util.ProtocolError} If required fields are missing
+   */
+  V3ResNotifyExposureDuration.decodeDelimited = function decodeDelimited(
+    reader
+  ) {
+    if (!(reader instanceof $Reader)) reader = new $Reader(reader);
+    return this.decode(reader, reader.uint32());
+  };
+
+  /**
+   * Verifies a V3ResNotifyExposureDuration message.
+   * @function verify
+   * @memberof V3ResNotifyExposureDuration
+   * @static
+   * @param {Object.<string,*>} message Plain object to verify
+   * @returns {string|null} `null` if valid, otherwise the reason why it is not
+   */
+  V3ResNotifyExposureDuration.verify = function verify(message) {
+    if (typeof message !== "object" || message === null)
+      return "object expected";
+    if (message.duration != null && message.hasOwnProperty("duration"))
+      if (typeof message.duration !== "number")
+        return "duration: number expected";
+    return null;
+  };
+
+  /**
+   * Creates a V3ResNotifyExposureDuration message from a plain object. Also converts values to their respective internal types.
+   * @function fromObject
+   * @memberof V3ResNotifyExposureDuration
+   * @static
+   * @param {Object.<string,*>} object Plain object
+   * @returns {V3ResNotifyExposureDuration} V3ResNotifyExposureDuration
+   */
+  V3ResNotifyExposureDuration.fromObject = function fromObject(object) {
+    if (object instanceof $root.V3ResNotifyExposureDuration) return object;
+    var message = new $root.V3ResNotifyExposureDuration();
+    if (object.duration != null) message.duration = Number(object.duration);
+    return message;
+  };
+
+  /**
+   * Creates a plain object from a V3ResNotifyExposureDuration message. Also converts values to other types if specified.
+   * @function toObject
+   * @memberof V3ResNotifyExposureDuration
+   * @static
+   * @param {V3ResNotifyExposureDuration} message V3ResNotifyExposureDuration
+   * @param {$protobuf.IConversionOptions} [options] Conversion options
+   * @returns {Object.<string,*>} Plain object
+   */
+  V3ResNotifyExposureDuration.toObject = function toObject(message, options) {
+    if (!options) options = {};
+    var object = {};
+    if (options.defaults) object.duration = 0;
+    if (message.duration != null && message.hasOwnProperty("duration"))
+      object.duration =
+        options.json && !isFinite(message.duration)
+          ? String(message.duration)
+          : message.duration;
+    return object;
+  };
+
+  /**
+   * Converts this V3ResNotifyExposureDuration to JSON.
+   * @function toJSON
+   * @memberof V3ResNotifyExposureDuration
+   * @instance
+   * @returns {Object.<string,*>} JSON object
+   */
+  V3ResNotifyExposureDuration.prototype.toJSON = function toJSON() {
+    return this.constructor.toObject(this, $protobuf.util.toJSONOptions);
+  };
+
+  /**
+   * Gets the default type url for V3ResNotifyExposureDuration
+   * @function getTypeUrl
+   * @memberof V3ResNotifyExposureDuration
+   * @static
+   * @param {string} [typeUrlPrefix] your custom typeUrlPrefix(default "type.googleapis.com")
+   * @returns {string} The default type url
+   */
+  V3ResNotifyExposureDuration.getTypeUrl = function getTypeUrl(typeUrlPrefix) {
+    if (typeUrlPrefix === undefined) {
+      typeUrlPrefix = "type.googleapis.com";
+    }
+    return typeUrlPrefix + "/V3ResNotifyExposureDuration";
+  };
+
+  return V3ResNotifyExposureDuration;
 })();
 
 $root.V3ReqSetGPSLocation = (function () {
