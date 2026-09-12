@@ -2,12 +2,26 @@
 /*** ------------- V3 MODULE ASTRO (11xxx) ------------------- ***/
 /*** --------------------------------------------------------- ***/
 /**
- * V3: Start stacking with frame count
+ * V3: Start stacking with the model-appropriate payload.
  * Create Encoded Packet for the command CMD_ASTRO_START_CAPTURE_RAW_LIVE_STACKING
- * @param {number} frameCount - Number of frames (-1 for infinite)
+ * DWARF 3 and DWARF mini send the capture filter (1=Astro, 2=Duo-Band).
+ * Filterless DWARF 2 uses irIndex=-1, which serializes as the observed sentinel.
+ * @param {number} irIndex - Capture filter, or -1 for the filterless sentinel path
+ * @param {boolean} forceStart - Continue despite recoverable preflight warnings such as a missing or temperature-mismatched dark frame
  * @returns {Uint8Array}
  */
-export function messageV3AstroStartStacking(frameCount?: number): Uint8Array;
+export function messageV3AstroStartStacking(irIndex?: number, forceStart?: boolean): Uint8Array;
+/**
+ * V3 protocol >=2.5: continue after firmware reports a recoverable dark-frame
+ * warning such as `CODE_ASTRO_DARK_NOT_FOUND` (-11503) or
+ * `CODE_ASTRO_DARK_TEMP_MISMATCH` (-11530).
+ *
+ * DWARF 2 and older protocol versions repeat the start request with
+ * `forceStart=true` instead.
+ *
+ * @returns {Uint8Array}
+ */
+export function messageV3AstroContinueShooting(): Uint8Array;
 /**
  * V3: Stop stacking
  * Create Encoded Packet for the command CMD_ASTRO_STOP_CAPTURE_RAW_LIVE_STACKING
@@ -76,9 +90,10 @@ export function messageV3AstroStatusPolling(f1?: number, f2?: number, f3?: numbe
  * V3: Get astro parameters
  * Create Encoded Packet for the command CMD_V3_ASTRO_GET_PARAMS (11040)
  *
- * Response contains repeated V3AstroParamsData, each with a pipeParams field
- * in the format: "exposure|gain|total|count|binning|format"
- * e.g. "0|0|60|60|1|null"
+ * Response contains repeated V3AstroParamsData. Its six-component pipeParams
+ * string has confirmed positions 3=exposure seconds, 4=gain and 5=frame count.
+ * Components 1, 2 and 6 remain unresolved; component 1 is not a filter.
+ * Example: "0|0|60|60|1|null".
  *
  * @param {number} mode - Mode (0 or 1)
  * @returns {Uint8Array}
@@ -88,8 +103,9 @@ export function messageV3AstroGetParams(mode?: number): Uint8Array;
  * V3: Set astro parameters
  * Create Encoded Packet for the command CMD_V3_ASTRO_SET_PARAMS (11041)
  *
- * The params string is pipe-delimited: "exposure|gain|total|count|binning|format"
- * e.g. "0|0|60|60|1|null"
+ * The six-component params string has confirmed positions 3=exposure seconds,
+ * 4=gain and 5=frame count. Components 1, 2 and 6 remain unresolved.
+ * Example: "0|0|60|60|1|null".
  *
  * Response is V3ResSetAstroParams with code and pipeParams echo.
  *
@@ -98,11 +114,49 @@ export function messageV3AstroGetParams(mode?: number): Uint8Array;
  */
 export function messageV3AstroSetParams(params: string): Uint8Array;
 /**
- * V3: Get exposure presets
+ * V3: Provisional command 11043 decoder.
+ * Existing captures resemble exposure-preset data, while DWARFLAB 3.4.1 names
+ * this command GET_CALI_FRAME_LIST. Validate the raw response before relying on
+ * this function's response schema.
  * Create Encoded Packet for the command CMD_V3_ASTRO_GET_PRESETS
  * @returns {Uint8Array}
  */
 export function messageV3AstroGetPresets(): Uint8Array;
+/**
+ * V3: Start a calibration-frame capture (CMD 11045).
+ *
+ * The request schema is confirmed from DWARFLAB 3.4.1. Hardware result delivery
+ * and completion notifications are not yet verified.
+ *
+ * @param {number} expIndex - Exposure index
+ * @param {number} gain - Gain value
+ * @param {number} resolution - 0=4K, 1=1080P, 2=720P
+ * @param {number} capSize - Number of calibration frames
+ * @param {number} cameraType - 0=tele camera
+ * @param {number} caliFrameType - 0=dark frame
+ * @param {number} filterType - 3=DWARF mini Dark filter
+ * @param {number} sceneType - 0=setting, 1=shooting
+ * @returns {Uint8Array}
+ */
+export function messageV3AstroStartCalibrationFrame(expIndex: number, gain: number, resolution?: number, capSize?: number, cameraType?: number, caliFrameType?: number, filterType?: number, sceneType?: number): Uint8Array;
+/**
+ * V3: Start a DWARF mini dark-frame calibration capture.
+ * Dark is a calibration workflow, not a normal Deep Sky filter-wheel position.
+ *
+ * @param {number} expIndex - Exposure index
+ * @param {number} gain - Gain value
+ * @param {number} resolution - 0=4K, 1=1080P, 2=720P
+ * @param {number} capSize - Number of dark frames
+ * @param {number} sceneType - 0=setting, 1=shooting
+ * @returns {Uint8Array}
+ */
+export function messageV3AstroStartDarkCalibration(expIndex: number, gain: number, resolution?: number, capSize?: number, sceneType?: number): Uint8Array;
+/**
+ * V3: Stop a calibration-frame capture (CMD 11046).
+ * @param {number} cameraType - 0=tele camera
+ * @returns {Uint8Array}
+ */
+export function messageV3AstroStopCalibrationFrame(cameraType?: number): Uint8Array;
 /**
  * V3: Set observation location
  * Create Encoded Packet for the command CMD_V3_ASTRO_SET_LOCATION

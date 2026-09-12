@@ -6,6 +6,7 @@ Sources:
 - `dwarfii_api/src/proto/protocol.proto` — protobuf enum definitions
 - `dwarfii_api/src/cmd_mapping.js` — CMD → protobuf class mappings
 - 15 pcap captures decoded with `tools/v3-probe/pcap-decode.js`
+- DWARFLAB 3.4.1 APK audit; see [APK 3.4.1 WebSocket additions](apk-3.4.1-websocket-additions.md)
 
 ---
 
@@ -154,12 +155,13 @@ C1–C10: locally decoded. C11–C13: referenced from external analysis (not loc
 
 | CMD | Enum | Description | Observed |
 |-----|------|-------------|----------|
-| 11000 | CMD_ASTRO_START_CALIBRATION | Start calibration | C2 C10 |
+| 11000 | CMD_ASTRO_START_CALIBRATION | Start calibration; `ReqStartCalibration { lon=1, lat=2 }` in decimal degrees | C2 C10; APK 3.4.1 |
 | 11001 | CMD_ASTRO_STOP_CALIBRATION | Stop calibration | C2 C5 C6 C8 |
 | 11002 | CMD_ASTRO_START_GOTO_DSO | GoTo DSO (V2) | C10 |
 | 11003 | CMD_ASTRO_START_GOTO_SOLAR_SYSTEM | GoTo solar system (V2) | C2 |
 | 11004 | CMD_ASTRO_STOP_GOTO | Stop GoTo (V2) | — |
-| 11005 | CMD_ASTRO_START_CAPTURE_RAW_LIVE_STACKING | Start stacking. Payload: `08 ff..ff 01` (sentinel). | C2 C3 C10 |
+| 11005 | CMD_ASTRO_START_CAPTURE_RAW_LIVE_STACKING | Start stacking. DWARF 3/mini use `{ir_index, force_start}`; filterless DWARF 2 uses `08 ff..ff 01` (`ir_index=-1`) sentinel. APK 3.4.1 defines `-11530` as a dark-temperature mismatch. DWARF 2/older protocols continue with `force_start=true`. | C2 C3 C10; APK 3.4.1; D3 live |
+| 11050 | CMD_ASTRO_CONTINUE_SHOOTING | Empty `ReqContinueShooting`; APK 3.4.1 uses this on protocol >=2.5, except DWARF 2, after the user accepts a missing/temperature-mismatched dark warning. | APK 3.4.1 |
 | 11006 | CMD_ASTRO_STOP_CAPTURE_RAW_LIVE_STACKING | Stop stacking | C2 C3 |
 | 11007 | CMD_ASTRO_START_CAPTURE_RAW_DARK | Start dark capture | — |
 | 11008 | CMD_ASTRO_STOP_CAPTURE_RAW_DARK | Stop dark capture | — |
@@ -167,7 +169,7 @@ C1–C10: locally decoded. C11–C13: referenced from external analysis (not loc
 | 11010 | CMD_ASTRO_GO_LIVE | Go live | C2 C3 C10 |
 | 11011 | CMD_ASTRO_START_TRACK_SPECIAL_TARGET | Start sun/moon tracking | — |
 | 11012 | CMD_ASTRO_STOP_TRACK_SPECIAL_TARGET | Stop sun/moon tracking | — |
-| 11013 | CMD_ASTRO_START_ONE_CLICK_GOTO_DSO | One-click GoTo DSO. Args: RA, Dec, targetName, lon, lat. | C2 C5 C6 C8 C10 |
+| 11013 | CMD_ASTRO_START_ONE_CLICK_GOTO_DSO | One-click calibration + DSO GoTo. Fields: RA hours=1, Dec=2, target=3, lon=4, lat=5, shooting_mode=6, goto_only=7, optional rotation=8. The Atlas workflow uses mode 2 and goto_only=false. | C2 C5 C6 C8 C10 |
 | 11014 | CMD_ASTRO_START_ONE_CLICK_GOTO_SOLAR_SYSTEM | One-click GoTo solar system | C2 |
 | 11015 | CMD_ASTRO_STOP_ONE_CLICK_GOTO | Stop one-click GoTo | C2 C5 C6 C8 C10 |
 | 11016 | CMD_ASTRO_START_WIDE_CAPTURE_LIVE_STACKING | Start wide stacking | — |
@@ -182,7 +184,9 @@ C1–C10: locally decoded. C11–C13: referenced from external analysis (not loc
 | 11039 | CMD_V3_ASTRO_STATUS_POLLING | Status polling (V3). Args: field1=-1, field2=100, field3=100, field4=-1. | C1 C3 C5 C9 C10 |
 | 11040 | CMD_V3_ASTRO_GET_PARAMS | Get astro params (V3). Args: mode=1. | C1–C10 |
 | 11041 | CMD_V3_ASTRO_SET_PARAMS | Set astro params (V3). Args: pipe-delimited string e.g. `"0\|0\|60\|60\|1\|null"`. | C5 C10 |
-| 11043 | CMD_V3_ASTRO_GET_PRESETS | Get exposure presets (V3) | C1–C8 |
+| 11043 | CMD_V3_ASTRO_GET_PRESETS | Provisional decoder name; APK 3.4.1 names this GET_CALI_FRAME_LIST | C1–C8 |
+| 11045 | CMD_V3_ASTRO_START_CAPTURE_CALI_FRAME | Start calibration frame; fields: exposure, gain, resolution, count, camera, calibration type, optional filter, scene | APK 3.4.1 |
+| 11046 | CMD_V3_ASTRO_STOP_CAPTURE_CALI_FRAME | Stop calibration-frame capture for camera type | APK 3.4.1 |
 | 11047 | CMD_V3_ASTRO_SET_LOCATION | Set observation location (V3). Args: lon, lat. | C4 C10 |
 | 11048 | CMD_V3_ASTRO_CONFIRM | Confirm observation (V3). Called after 11047. | C4 C10 |
 
@@ -327,6 +331,7 @@ Device-to-app one-way notifications. Displayed as `[NOTIFY]` in pcap output.
 | 15251 | CMD_NOTIFY_WIDE_MULTI_TRACK_RESULT | (unmapped) | Wide multi-object tracking result | — |
 | 15252 | CMD_NOTIFY_WIDE_TRACK_RESULT | (unmapped) | Wide tracking result | — |
 | 15255 | CMD_V3_NOTIFY_EXPOSURE_PROGRESS | V3ResNotifyExposureProgress | Exposure progress (V3). elapsed/total in seconds. | C2 C3 C10 |
+| 15256 | CMD_NOTIFY_CALIBRATION_RESULT | CalibrationResult | Successful V3 mount calibration; solved azimuth and altitude | C10; APK 3.4.1 descriptor |
 | 15257 | CMD_NOTIFY_FOCUS | ResNotifyFocus | Focus position | C2 C4–C6 C8 C10 |
 | 15261 | CMD_V3_NOTIFY_DEVICE_STATE | V3ResNotifyDeviceState | Device state (V3) | C1 C2 C4 C7 |
 | 15264 | CMD_V3_NOTIFY_CAMERA_PARAM_STATE | V3ResNotifyCameraParamState | Camera param state (V3). paramId + value. | C1–C10 |
@@ -342,14 +347,32 @@ Device-to-app one-way notifications. Displayed as `[NOTIFY]` in pcap output.
 | 15286 | CMD_V3_NOTIFY_VIDEO_PROGRESS | V3ResNotifyVideoProgress | Video progress (V3) | C4 C8 |
 | 15287 | CMD_V3_NOTIFY_TIMELAPSE_PROGRESS | V3ResNotifyTimelapseProgress | Timelapse progress (V3) | C4 C8 |
 | 15288 | **(no protobuf def)** | — | Exposure duration telemetry. Payload: fixed64/double (seconds). | C8 C10 C11 C13 |
+| 15290 | CMD_V3_NOTIFY_CALI_FRAME_STATE | V3ResNotifyCaliFrameState | Calibration-frame state; state, camera type, calibration type | APK 3.4.1 |
+| 15291 | CMD_V3_NOTIFY_CALI_FRAME_PROGRESS | V3ResNotifyCaliFrameProgress | Calibration-frame progress; progress, camera type, calibration type | APK 3.4.1 |
 | 15292 | CMD_V3_NOTIFY_TEMPERATURE2 | V3ResNotifyTemperature2 | Temperature 2 (V3, °C). Paired with 15243. | C2–C10 |
 | 15296 | CMD_V3_NOTIFY_OBSERVATION_STATE | V3ResNotifyObservationState | Observation state (V3). Values: `1→3`. | C4 C10 |
+
+Recommended shared V3 mount-calibration sequence (DWARF 2, DWARF 3, and
+DWARF mini): start astronomical autofocus with `15004` and wait for state `3`
+on `15278` or `15280`; then issue `11000`, continue waiting across repeated
+`15210` plate-solving attempts, and accept `15256` as successful completion.
+Cloud cover can make the firmware perform multiple solve attempts, so clients
+should use a multi-minute calibration timeout rather than treating the first
+unsuccessful solve as terminal.
+
+Firmware decompilation further shows that the solver has a bounded attempt and
+required-success count. It can reinitialize the camera after an initial solve
+failure, reverse yaw search direction after motor-limit outcomes, wait two
+seconds between positions, and retry. Successful calibration publishes `15256`
+and then `15262`; exhausted solving or yaw-stop failure returns `-11504`.
+Search direction is cached for approximately 601 seconds. Direct DSO goto
+`11002` does not calibrate and returns `-11511` if its solved position is zero;
+clients may recover through one-click calibration+goto `11013`.
 
 ### Undefined Notifications (no protobuf definition, discovered from pcap)
 
 | CMD | Payload | Observed |
 |-----|---------|----------|
-| 15256 | double×2 (e.g. 359.57, 49.78) — sky solver coordinates | C10 |
 | 15262 | varint `08 01` — state latch, paired with 15256 | C10 |
 
 Note: 15280 and 15288 are listed in the main table above.
@@ -389,10 +412,10 @@ Note: 15280 and 15288 are listed in the main table above.
 
 | CMD | Enum | Description | Observed |
 |-----|------|-------------|----------|
-| 16700 | CMD_V3_CAMERA_PARAMS_SET_PARAM | Set parameter | C1 C5 C8 |
-| 16701 | CMD_V3_CAMERA_PARAMS_SET_EXP_GAIN | Set exposure/gain | C5 C8 |
+| 16700 | CMD_V3_CAMERA_PARAMS_SET_PARAM | Set exposure parameter. APK `WsSetExposureParamReq` uses `ReqSetExposure {param_id, mode, value}`; value is a firmware exposure index. | C1 C5 C8; APK 3.4.1; Mini live |
+| 16701 | CMD_V3_CAMERA_PARAMS_SET_EXP_GAIN | Set gain parameter using the same wire schema; value is the selected gain. | C5 C8; APK 3.4.1; Mini live |
 | 16702 | **(undefined)** | Unknown. Payload: paramId + field2 + field3 (optional). | C8 |
-| 16703 | CMD_V3_CAMERA_PARAMS_ADJUST | Adjust parameter (filter wheel, etc.) | C2 C4 C5 C8 C9 C10 |
+| 16703 | CMD_V3_CAMERA_PARAMS_ADJUST | Write/adjust parameter (filter wheel; absolute astronomy frame count) | C2 C4 C5 C8 C9 C10 |
 | 16706 | CMD_V3_CAMERA_PARAMS_STREAM_CTRL | Stream control | C5 |
 
 ---
@@ -403,10 +426,10 @@ Note: 15280 and 15288 are listed in the main table above.
 
 ```
 bits 63..56 = shootingMode  (0=photo, 1=video, 2=astro)
-bits 55..48 = category       (1=OPTICAL, 2=?)
+bits 55..48 = category       (1=OPTICAL, 2=CAPTURE for verified frame count)
 bits 47..16 = reserved (0)
 bits 15..8  = cameraId       (0=tele, 1=wide)
-bits  7..0  = paramIndex     (0x0D=filterWheel, etc.)
+bits  7..0  = paramIndex     (0x0D=filterWheel, 0x10=frameCount in category 2)
 ```
 
 ### ParamIds Observed in Captures
@@ -414,8 +437,8 @@ bits  7..0  = paramIndex     (0x0D=filterWheel, etc.)
 | paramId (decimal) | mode | cat | cam | idx | Context |
 |-------------------|------|-----|-----|-----|---------|
 | 281474976710669 | 0 (photo) | 1 | 0 (tele) | 13 (0x0D) | notifications |
-| 144396663052566529 | 2 (astro) | 1 | 0 (tele) | 1 | notifications |
-| 144396663052566530 | 2 (astro) | 1 | 0 (tele) | 2 | notifications |
+| 144396663052566529 | 2 (astro) | 1 | 0 (tele) | 1 | Exposure; write with 16700. Live catalogue: 1s=120, 5s=141, 10s=150, 15s=156 |
+| 144396663052566530 | 2 (astro) | 1 | 0 (tele) | 2 | Gain; write with 16701 |
 | 144396663052566532 | 2 (astro) | 1 | 0 (tele) | 4 | notifications |
 | 144396663052566533 | 2 (astro) | 1 | 0 (tele) | 5 | notifications |
 | 144396663052566534 | 2 (astro) | 1 | 0 (tele) | 6 | notifications |
@@ -423,7 +446,7 @@ bits  7..0  = paramIndex     (0x0D=filterWheel, etc.)
 | 144396663052566536 | 2 (astro) | 1 | 0 (tele) | 8 | notifications |
 | 144396663052566541 | 2 (astro) | 1 | 0 (tele) | 13 (0x0D) | REQ + notifications (filter wheel) |
 | 144414255238610945 | 2 (astro) | 1 | 0 (tele) | 1 | 1 notification |
-| 144678138029277200 | 2 (astro) | 2 | 0 (tele) | 16 (0x10) | 2 REQs |
+| 144678138029277200 | 2 (astro) | 2 | 0 (tele) | 16 (0x10) | Absolute frame count; app writes 509/999 after 11041 |
 | 792915009393917965 | 11 | 1 | 0 (tele) | 13 (0x0D) | 1 notification (session end) |
 
 ---
@@ -463,4 +486,11 @@ bits  7..0  = paramIndex     (0x0D=filterWheel, etc.)
 
 | CMD | Code | Description |
 |-----|------|-------------|
+| 11002 (Goto DSO) | -11511 | `CODE_ASTRO_NEED_CALIBRATION`; direct goto requires an existing solved position and does not start calibration |
+| 11005 (StartStacking) | -11501 | `CODE_ASTRO_FUNCTION_BUSY`; another exclusive astronomy workflow is active |
+| 11005 (StartStacking) | -11503 | `CODE_ASTRO_DARK_NOT_FOUND`; the app can capture a dark, cancel, or Continue with `11050` (protocol >=2.5, non-DWARF-2) or `force_start=true` |
+| 11005 (StartStacking) | -11513 | `CODE_ASTRO_NEED_GOTO`; observed as a non-blocking late warning while stacking progress continued |
+| 11005 (StartStacking) | -11514 | `CODE_ASTRO_NEED_ADJUST_SHOOT_PARAM`; requested shooting parameters are unsuitable |
+| 11005 (StartStacking) | -11527 | `CODE_ASTRO_EXP_TOO_LONG`; the selected exposure is longer than the active calibrated/tracking state permits |
+| 11005 (StartStacking) | -11530 | `CODE_ASTRO_DARK_TEMP_MISMATCH`; a dark exists but is outside the firmware temperature tolerance. Continue uses `11050` (protocol >=2.5, non-DWARF-2) or `force_start=true` |
 | 11033 (SaveStacked) | -16600 | V3 save/export failure |

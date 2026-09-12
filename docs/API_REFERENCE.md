@@ -65,7 +65,7 @@ DWARF II / 3 / mini 用 WebSocket API ライブラリ。
 
 | CMD ID | 関数 | 引数 | 説明 |
 |--------|------|------|------|
-| 11000 | `messageAstroStartCalibration()` | — | キャリブレーション開始 |
+| 11000 | `messageAstroStartCalibration(lon, lat)` | ReqStartCalibration | キャリブレーション開始（観測地の経度・緯度、十進度） |
 | 11001 | `messageAstroStopCalibration()` | — | キャリブレーション停止 |
 | 11002 | `messageAstroStartGotoDso(ra, dec, target_name)` | ra: RA(度), dec: Dec(度), target_name: 天体名 | DSO へ GOTO 開始 |
 | 11003 | `messageAstroStartGotoSolarSystem(index, lon, lat, targetName)` | index: 天体ID, lon: 経度, lat: 緯度, targetName: 名前 | 太陽系天体へ GOTO 開始 |
@@ -78,8 +78,8 @@ DWARF II / 3 / mini 用 WebSocket API ライブラリ。
 | 11010 | `messageAstroGoLive()` | — | ライブビュー (トラッキング開始) |
 | 11011 | `messageAstroStartTrackSpecialTarget(index, lon, lat)` | index: 天体ID, lon: 経度, lat: 緯度 | 太陽/月トラッキング開始 |
 | 11012 | `messageAstroStopTrackSpecialTarget()` | — | 太陽/月トラッキング停止 |
-| 11013 | `messageAstroStartOneClickGotoDso(ra, dec, target_name)` | ra: RA(度), dec: Dec(度), target_name: 天体名 | ワンクリック DSO GOTO |
-| 11014 | `messageAstroStartOneClickGotoSolarSystem(index, lon, lat, targetName)` | index: 天体ID, lon: 経度, lat: 緯度, targetName: 名前 | ワンクリック太陽系 GOTO |
+| 11013 | `messageAstroStartOneClickGotoDso(ra, dec, target_name, lon, lat, shootingMode, gotoOnly, rotation?)` | ra: RA(時), dec: Dec(度), target/location, Deep Sky mode=2, gotoOnly=false for calibration | ワンクリック校正 + DSO GOTO |
+| 11014 | `messageAstroStartOneClickGotoSolarSystem(index, lon, lat, targetName, shootingMode, forceStart)` | index: 天体ID, observer location, target, mode, force flag | ワンクリック太陽系 GOTO |
 | 11015 | `messageAstroStopOneClickGoto()` | — | ワンクリック GOTO 停止 |
 | 11016 | `messageAstroStartWideCaptureLiveStacking()` | — | 広角スタッキング開始 |
 | 11017 | `messageAstroStopWideCaptureLiveStacking()` | — | 広角スタッキング停止 |
@@ -94,6 +94,8 @@ DWARF II / 3 / mini 用 WebSocket API ライブラリ。
 | 11026 | `messageAstroStopCaptureWideDarkFrameWithParam()` | — | 広角パラメータ指定ダーク撮影停止 |
 | 11027 | `messageAstroGetWideDarkFrameList()` | — | 広角ダークフレーム一覧取得 |
 | 11028 | `messageAstroDelWideDarkFrameList(exp_index, gain_index, bin_index)` | 露出/ゲイン/ビニング | 広角ダークフレーム削除 |
+| 11031 | `messageStartTeleMosaic(horizontalScale, verticalScale, rotation, irIndex, forceStart)` | `ReqStartMosaic` | Direct Tele Mosaic start; separate from Panorama. See [Tele Mosaic protocol](TELE_MOSAIC.md). |
+| 11032 | — | Request schema unresolved | `CMD_ASTRO_CHECK_IF_RESTACKABLE`; not a Mosaic stop command. |
 
 ### Camera Tele (望遠カメラ)
 
@@ -265,6 +267,37 @@ DWARF II / 3 / mini 用 WebSocket API ライブラリ。
 > V3 は DWARF mini (deviceId=4, FW 1.0.25.2) で使用するプロトコル v1.20 のコマンドです。
 > 一部のコマンド (11005, 11006, 11010, 11013, 11014, 11015) は V2 と共通の CMD ID で、追加フィールドにより拡張されています。
 
+### DWARF mini V3 evidence update (2026-07-30)
+
+Validated against a DWARF MINI running firmware `1.1.3 build 2`, the
+DWARFLAB 3.4.1 APK, and safe read/write probes:
+
+- WebSocket profile is protocol `1.20`, `deviceId=4`, client ID
+  `0000DAF4-0000-1000-8000-00805F9B34FB`.
+- Normal Deep Sky capture has Astro (`ir_index=1`) and Duo-Band
+  (`ir_index=2`). There is no no-filter position.
+- Dark (`filter_type=3`) is reserved for calibration-frame capture through
+  commands `11045`/`11046`; it is not a normal filter move.
+- `11040` mode 0 returned `0|0|15|60|1|null`, `0|0|30|60|1|null`,
+  `0|0|60|60|1|null`, `0|0|90|60|1|null`, and
+  `0|0|180|60|1|null`. Mode 1 returned `1|0|10|40|1|null`.
+- Older firmware represented quick sets as a six-component string. APK 3.4.1
+  defines 11040 as `GET_QUICK_SET_LIST` and 11041 as `SET_QUICK_SET` with an
+  exact `info_id`; an echoed modified string is not proof that it was applied.
+- APK 3.4.1 posts `{modeId:2}` to `/shootingMode/getParamAndSetting`, then
+  writes exposure with 16700 and gain with 16701. Mini firmware 1.1.3 build 2
+  reports 1s=index 120 and 5s=index 141.
+- Legacy feature query `10038` timed out. Device config `16405` reported
+  `1920x1080`.
+- APK 3.4.1 calls `11043` `GET_CALI_FRAME_LIST`, conflicting with the
+  provisional exposure-preset decoder in this library. Inspect the raw response
+  before depending on that decoder.
+- `16700` is exposure, `16701` is gain, and `16703` handles general integer
+  parameters such as filter and frame count. `15264` reports their state.
+
+The calibration request schema is APK-confirmed, but calibration result delivery
+and completion notifications still require a controlled hardware capture.
+
 ### V3 Camera Tele
 
 **モジュール: `v3_camera_tele.js`** — Module ID: 1 (MODULE_CAMERA_TELE)
@@ -291,7 +324,8 @@ DWARF II / 3 / mini 用 WebSocket API ライブラリ。
 
 | CMD ID | 関数 | Request | Response | 説明 |
 |--------|------|---------|----------|------|
-| 11005 | `messageV3AstroStartStacking(frameCount)` | ReqCaptureRawLiveStacking `{frameCount}` | ComResponse | スタッキング開始 (フレーム数指定, -1=無限) |
+| 11005 | `messageV3AstroStartStacking(irIndex, forceStart)` | ReqCaptureRawLiveStacking `{irIndex, forceStart}` | ResAstroShooting-compatible response | Start stacking; DWARF 3/mini: Astro=1, Duo-Band=2; filterless DWARF 2: irIndex=-1 sentinel. `forceStart=true` is the DWARF 2/older-protocol fallback for recoverable dark warnings. |
+| 11050 | `messageV3AstroContinueShooting()` | Empty `ReqContinueShooting` | ComResponse | Protocol >=2.5 continuation after `-11503`/`-11530`; current APK excludes DWARF 2 and uses its `forceStart` fallback there. |
 | 11006 | `messageV3AstroStopStacking()` | ReqStopCaptureRawLiveStacking | ComResponse | スタッキング停止 |
 | 11010 | `messageV3AstroStartTracking()` | ReqGoLive | ComResponse | トラッキング開始 |
 | 11013 | `messageV3AstroGotoDSO(ra, dec, targetName, lon, lat, mode)` | ReqOneClickGotoDSO | ResOneClickGoto | DSO へワンクリック GOTO (V3: lon/lat/mode 追加) |
@@ -301,10 +335,59 @@ DWARF II / 3 / mini 用 WebSocket API ライブラリ。
 | 11034 | `messageV3AstroListImages()` | V3ReqListSavedImages | ComResponse | 保存画像一覧取得 |
 | 11039 | `messageV3AstroStatusPolling(f1, f2, f3, f4)` | V3ReqStatusPolling | ComResponse | ステータスポーリング |
 | 11040 | `messageV3AstroGetParams(mode)` | V3ReqGetAstroParams `{mode}` | V3ResGetAstroParams | 撮影パラメータ取得 |
-| 11041 | `messageV3AstroSetParams(params)` | V3ReqSetAstroParams `{params}` | ComResponse | 撮影パラメータ設定 (パイプ区切り文字列) |
-| 11043 | `messageV3AstroGetPresets()` | V3ReqGetExposurePresets | V3ResGetExposurePresets | 露出プリセット取得 |
+| 11041 | `messageV3AstroSetParams(params)` | V3ReqSetAstroParams `{params}` | V3ResSetAstroParams | 撮影パラメータ設定 (パイプ区切り文字列) |
+| 11043 | `messageV3AstroGetPresets()` | V3ReqGetExposurePresets | V3ResGetExposurePresets | Provisional: APK names this GET_CALI_FRAME_LIST |
+| 11045 | `messageV3AstroStartCalibrationFrame(...)` / `messageV3AstroStartDarkCalibration(...)` | V3ReqCaptureCaliFrame | ComResponse | Start calibration frame; dark uses type=0/filter=3 |
+| 11046 | `messageV3AstroStopCalibrationFrame(cameraType)` | V3ReqStopCaptureCaliFrame | ComResponse | Stop calibration-frame capture |
 | 11047 | `messageV3AstroSetLocation(lon, lat)` | V3ReqSetObservationLocation | ComResponse | 観測地点設定 |
 | 11048 | `messageV3AstroConfirm()` | V3ReqConfirmObservation | ComResponse | 観測確認 |
+
+For DWARF 2, DWARF 3, and DWARF mini, clients should obtain the mode-2 live
+parameter catalogue, send `messageV3AstroExposureSet(index)` (16700) and
+`messageV3AstroGainSet(gain)` (16701), prime the persisted tuple with
+`messageV3AstroSetParams(params)` (11041), then send
+`messageV3AstroFrameCountSet(count)` (`16703`, paramId
+`144678138029277200`) immediately before `11005`. The `11041` echo is not
+authoritative by itself for modified values: current hardware retained exposure index
+156 (15s) after echoing a 5-second-looking string. A DWARF 3 live test confirmed
+that `16700/16701 -> 11041 -> 16703 -> 11005` preserves a 1-second
+Astro-filter request across the tested firmware. Mini firmware can return -1
+for 16700; clients may then use the complete accepted 11041 tuple as fallback.
+A later DWARF 3 VIS-filter test nevertheless reloaded 15
+seconds. Treat notification `15288.total_time` as the authoritative applied
+duration, report substitutions to the client/log, and associate the fresh FITS
+with that actual duration rather than discarding it. Current DWARF 3 firmware
+emits `15264` from module 15 while preparing `11005`; exposure/gain parameter
+IDs in those packets identify an internal capture namespace (mode 11 and mode
+13 were observed). Reapply `16700`, `16701`, and the `16703` frame-count write
+using that namespace after its late preset reload. The fifth `11041` tuple
+component is a resolution index (DWARF 3 `0`, Mini `1`), not frame count, and
+must be preserved. Then monitor notification `15209`.
+For an Alpaca raw-FITS result, `current_count` reaching the requested
+frame count is the retrieval boundary; `stacked_count` remains the accepted
+live-stack boundary when a stacked result is required. Stop with `11006`
+without waiting for media download. Then follow `15208` through running (1),
+stopping (2), and stopped (3); the firmware can reject a subsequent `11005`
+with `-11501` until stopped/idle is reported. Command `16405` returns the APK's
+whole-device state and can recover a missed `15208` transition. `target_name`
+can contain persisted metadata from an earlier session.
+
+The `11005` command ID is shared, but its payload follows device capability.
+Hardware logs confirm DWARF 3 requires the selected `irIndex`/`forceStart`
+payload. APK 3.4.1 identifies `-11530` as
+`CODE_ASTRO_DARK_TEMP_MISMATCH`; it is not a filter-payload validation code.
+The app offers to capture a new dark, cancel, or continue. Protocol >=2.5 on
+non-DWARF-2 models sends empty command `11050`; DWARF 2 and older protocol
+versions repeat `11005` with `forceStart=true`.
+DWARF mini also embeds its selected filter. Use the sentinel only for DWARF 2,
+which has no internal filter wheel.
+
+Calibration-frame capture emits APK-defined notifications:
+
+| CMD ID | Message | Fields | Confidence |
+|--------|---------|--------|------------|
+| 15290 | `V3ResNotifyCaliFrameState` | state=1, camera_type=2, cali_frame_type=3 | Confirmed in DWARFLAB 3.4.1 code; hardware values unverified |
+| 15291 | `V3ResNotifyCaliFrameProgress` | progress=1, camera_type=2, cali_frame_type=3 | Confirmed in DWARFLAB 3.4.1 code; hardware values unverified |
 
 ### V3 System
 
@@ -332,7 +415,7 @@ DWARF II / 3 / mini 用 WebSocket API ライブラリ。
 | 16402 | `messageV3DeviceConfigModeQuery(targetMode)` | V3ReqModeQuery `{targetMode}` | V3ResModeQuery | モード問い合わせ (2=通常, 8=天体) |
 | 16403 | `messageV3DeviceConfigShootingModeSwitch(modeId)` | V3ReqShootingModeSwitch `{modeId}` | V3ResShootingModeSwitch | 撮影モード切替 (1=写真, 3=連写, 4=動画, 5=タイムラプス) |
 | 16404 | `messageV3DeviceConfigModeSwitch()` | V3ReqModeSwitch `{inner:{value:1}}` | V3ResModeSwitch | 天体モード切替 |
-| 16405 | `messageV3DeviceConfigGetConfig()` | V3ReqGetDeviceConfig | V3ResGetDeviceConfig | デバイス設定取得 |
+| 16405 | `messageV3GetDeviceStateInfo()` (`messageV3DeviceConfigGetConfig()` compatibility alias) | APK `ReqGetDeviceStateInfo` (legacy local name `V3ReqGetDeviceConfig`) | APK `ResGetDeviceStateInfo` (legacy local compatibility decoder) | Complete work state, including tele `CaptureRawState`; use it to recover idle/running/stopping/stopped state |
 
 ### V3 Camera Params
 
@@ -341,6 +424,13 @@ DWARF II / 3 / mini 用 WebSocket API ライブラリ。
 | CMD ID | 関数 | Request | Response | 説明 |
 |--------|------|---------|----------|------|
 | 16703 | `messageV3CameraParamsAdjust(paramId, value)` | V3ReqAdjustParam `{paramId, value}` | ComResponse | カメラパラメータ調整 |
+
+`messageV3AstroFrameCountSet(frameCount)` is the pcap-verified shared V3
+absolute frame-count wrapper for `16703`. It uses paramId
+`144678138029277200` (`0x0202000000000010`).
+
+> `16700` and `16703` are generic camera-parameter commands. Parameter IDs must
+> be verified for the selected shooting mode, category, and camera.
 
 ### V3 Schedule
 

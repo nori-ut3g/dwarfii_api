@@ -4,11 +4,60 @@
 
 This document captures protocol findings from DWARF mini pcap captures and translates them into practical driver implications.
 
+The available captures were recorded with an older DWARFLAB application and
+firmware. They document historical wire behavior, but do not prove that newer
+APK commands such as `11050` are unsupported by current firmware.
+
 Decoder used: `tools/v3-probe/pcap-decode.js`
 
 ---
 
 ## Executive Summary
+
+### Finite capture and stop timing (new 2026-08-02 analysis)
+
+`iphone-capture2.pcap` shows `11005` starting a persisted sequence with
+`15209 totalCount=20`, `expIndex=42`, `gainIndex=3`, and stale
+`targetName="Sun"`. The app sent `11006` after `stackedCount=5`; a sixth stack
+completed while the stop request was being processed. In
+`iphone-capture3-photo.pcap`, a persisted `totalCount=999` likewise continued
+until an explicit `11006`.
+
+The DWARF 3 app additionally writes frame count with `16703`, paramId
+`144678138029277200` (`0x0202000000000010`, astro/cat2/tele/frameCount).
+This write changed from 509 to 999 in the capture. A live test proved that
+`11041` can echo a requested count of 1 while `15209.total_count` remains at
+the stale value 999. Cross-model live testing refined the interoperable order:
+send exact exposure/gain (`16700`, `16701`), prime `11041`, then write frame
+count with `16703` immediately before `11005`. Mini firmware can reject 16700
+with generic code -1; in that case the complete accepted 11041 tuple is the
+fallback. Then monitor
+`15209.stacked_count`, and send `11006` as soon as the
+requested number of completed stacks is reached. Media download must not delay
+the stop request. `current_count` is acquisition progress and can run ahead of
+accepted stacks; `targetName` is persisted firmware metadata rather than proof
+of the current client's target selection.
+
+A 2026-08-26 DWARF 3 live test confirmed that this complete sequence preserved
+a requested 1-second, gain-60 Astro exposure and produced a fresh raw FITS.
+Omitting the persisted quick-set priming allowed `11005` to reload 15 seconds.
+Notification `15288` (`LongExpPhotoProgress.total_time`) reports the duration
+actually selected by the firmware. A 1-millisecond request and a later
+1-second VIS-filter request were replaced by 15 seconds on the tested firmware,
+so a command acknowledgement alone is not proof that a duration was applied.
+Clients should record/report the actual duration and still deliver the matching
+fresh FITS; discarding it leaves asynchronous Alpaca clients polling forever.
+
+A follow-up live trace located the override: during `11005` preparation,
+DWARF 3 emits `15264` from module 15 and reloads exposure/gain in an internal
+capture namespace (mode 11 or 13 observed). Clients must not discard module-15
+`15264` packets. Detect the namespace from the high byte of its exposure/gain
+paramId and reapply `16700`, `16701`, and the namespaced `16703` frame count.
+The fifth `11041` component is resolution (D3 `0`, Mini `1`), not count. With
+this workflow, a live 0.001-second/gain-0 request produced a non-uniform FITS
+with values 200..1649 instead of the saved 15-second preset. Daylight files
+whose min and max are both 4095 are genuinely saturated at the 12-bit ceiling;
+they are not zero-valued images introduced by FITS decoding.
 
 ### Confirmed protocol behavior
 
@@ -22,7 +71,7 @@ Decoder used: `tools/v3-probe/pcap-decode.js`
 
 ### Remaining open items
 
-- `15256`: confirmed sky solver telemetry (coordinate-like doubles).
+- `15256`: resolved by the APK 3.4.1 descriptor as `CalibrationResult` (`azi`, `alt`).
 - `15262`: varint flag (`1` observed), likely state latch.
 - `15280`: autofocus-state style notify (`1 -> 3`), observed as alternate autofocus-state signal.
 
@@ -238,7 +287,14 @@ The decoder output includes parsed request payload fields for many calls. Below 
   - interpretation: 3rd value = exposure seconds, 4th value = gain (always 60).
 - `11005` StartStacking
   - raw payload: `08 ff ff ff ff ff ff ff ff ff 01`
-  - app-side sentinel/default argument for stack start.
+  - app-side sentinel/default argument for that historical captured session.
+  - not universal: live DWARF 3 testing requires the selected filter index and
+    `force_start`; the sentinel attempt returned `-11530` and no progress.
+    APK 3.4.1 names this code `CODE_ASTRO_DARK_TEMP_MISMATCH`, so the capture
+    was blocked by dark-frame temperature validation rather than proving a
+    malformed filter payload. APK 3.4.1 uses empty command `11050` to Continue
+    on protocol >=2.5 non-DWARF-2 devices, with `force_start=true` as the
+    DWARF 2/older-protocol fallback.
 
 ### Filter change
 
@@ -272,7 +328,7 @@ Notes on argument format:
 
 Conclusion: High confidence that `15288` carries exposure/session duration telemetry in seconds.
 
-### `15256` sky solver telemetry
+### `15256` calibration result
 
 Observed payload shape:
 
@@ -285,7 +341,8 @@ Sample values:
 - `359.5906`, `49.6943`
 - `359.5646`, `49.7261`
 
-Conclusion: Confirmed part of sky solver flow. Coordinate-like telemetry (likely sky coordinates or solver intermediate coordinates).
+Conclusion: The APK 3.4.1 embedded `notify.proto` descriptor identifies this as
+`CalibrationResult` with `double azi = 1` and `double alt = 2`.
 
 ---
 
@@ -293,7 +350,7 @@ Conclusion: Confirmed part of sky solver flow. Coordinate-like telemetry (likely
 
 ### `15256` (notify, mod=9)
 
-Status: Confirmed sky solver related.
+Status: Confirmed successful calibration result by the APK descriptor.
 
 Working interpretation: Two doubles, coordinate-like solver telemetry.
 
@@ -338,7 +395,7 @@ Working interpretation: exposure/session duration telemetry.
 
 1. Add explicit notify decode path for `15280` in runtime/session diagnostics.
 2. Add optional runtime field for latest `15288` value for easier troubleshooting.
-3. Keep `15256` values logged during solve/goto flows to correlate with telescope state.
+3. Treat `15256` as successful calibration completion and retain its solved azimuth/altitude.
 
 ---
 

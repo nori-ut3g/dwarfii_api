@@ -18,14 +18,15 @@ This document cross-checks claims from external pcap analysis against independen
 - Our result: C10 shows `60.0` ×3 (`09 00 00 00 00 00 00 4e 40`). C8 also shows `60.0` ×1.
 - **Verdict: Full match. High confidence.**
 
-### 15256 = Sky Solver Coordinates
+### 15256 = Calibration Result
 
 - External claim: double×2, coordinate-like values (`359.5664, 49.7777`, etc.)
 - Our result: 3 samples from C10, values match exactly:
   - `359.566401, 49.777716`
   - `359.590588, 49.694299`
   - `359.564649, 49.726089`
-- **Verdict: Full match.**
+- APK 3.4.1 descriptor result: `notify.CalibrationResult { double azi = 1; double alt = 2; }`.
+- **Verdict: Payload observations match the authoritative APK schema.**
 
 ### 15262 = State Latch
 
@@ -39,11 +40,16 @@ This document cross-checks claims from external pcap analysis against independen
 - Our result: C10 shows 38 occurrences. No argument = forward (focus+1), `08 01` = backward (focus-1). Confirmed via 15257 focus position transitions (674→687→678).
 - **Verdict: Match.**
 
-### 11005 = Start Stacking (sentinel argument)
+### 11005 = Start Stacking (capability-dependent argument)
 
 - External claim: `08 ff ff ff ff ff ff ff ff ff 01` (large signed varint)
 - Our result: Identical byte sequence found in C10.
-- **Verdict: Full match.**
+- **Verdict: Full match for the older app/firmware captured sentinel session.**
+  It does not prove that newer commands are unsupported. Separate DWARF 3
+  hardware logs prove that a filtered device must send `ir_index` and
+  `force_start`; a live sentinel attempt returned `-11530` before any capture,
+  but APK 3.4.1 resolves that code as `CODE_ASTRO_DARK_TEMP_MISMATCH`, so it
+  does not establish that the sentinel itself was invalid.
 
 ### 11039 = Status Polling
 
@@ -149,7 +155,10 @@ These were found primarily in C10, which was not covered by the external analysi
 
 - Observed in C10.
 - `144678138029277200` = astro/cat2/tele/idx16
-- value: 1 → 2
+- Identified as the absolute astronomy frame count from app writes of 509 and
+  999 immediately after `11041`.
+- A device test confirmed that relying on the `11041` echo alone leaves a stale
+  `15209.total_count=999`.
 - Different from the known filterWheel paramId (cat1/idx13)
 
 ### shootingMode=11

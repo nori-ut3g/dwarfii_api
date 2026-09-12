@@ -1,3 +1,7 @@
+/** Set the V3 astronomy exposure using an index returned by getParamAndSetting. */
+export function messageV3AstroExposureSet(exposureIndex: any): Uint8Array<ArrayBufferLike>;
+/** Set the V3 astronomy gain using a value returned by getParamAndSetting. */
+export function messageV3AstroGainSet(gain: any): Uint8Array<ArrayBufferLike>;
 /*** --------------------------------------------------------- ***/
 /*** -------- V3 MODULE CAMERA PARAMS (16700+) --------------- ***/
 /*** --------------------------------------------------------- ***/
@@ -39,6 +43,20 @@ export function messageV3CameraParamsAdjust(paramId: number | string, value: num
  */
 export function messageV3FilterWheelSet(position: number, shootingMode?: number, cameraId?: number): Uint8Array;
 /**
+ * V3: Set the astronomy live-stacking frame count.
+ *
+ * V3 app captures show this absolute `16703` write immediately after
+ * `11041`. The firmware may otherwise retain an earlier count even when
+ * `11041` echoes the newly requested pipe string.
+ *
+ * This command belongs to the shared DWARF 2, DWARF 3, and DWARF mini V3 API.
+ *
+ * @param {number} frameCount - Number of frames to acquire (minimum 1)
+ * @param {number} [cameraId=0] - Camera ID (default: TELE)
+ * @returns {Uint8Array}
+ */
+export function messageV3AstroFrameCountSet(frameCount: number, cameraId?: number): Uint8Array;
+/**
  * Encode a paramId from its constituent parts.
  *
  * paramId layout (64-bit):
@@ -65,7 +83,7 @@ export function encodeParamId(shootingMode: number, category: number, cameraId: 
  * @param {number|string|BigInt|{low: number, high: number}} paramId - Encoded parameter ID
  * @returns {{ shootingMode: number, category: number, cameraId: number, paramIndex: number }}
  */
-export function decodeParamId(paramId: number | string | BigInt | {
+export function decodeParamId(paramId: number | string | bigint | {
     low: number;
     high: number;
 }): {
@@ -81,12 +99,16 @@ export namespace V3_SHOOTING_MODE {
 }
 export namespace V3_PARAM_CATEGORY {
     let OPTICAL: number;
+    let CAPTURE: number;
 }
 export namespace V3_CAMERA_ID {
     let TELE: number;
     let WIDE: number;
 }
 export namespace V3_PARAM_INDEX {
+    let EXPOSURE: number;
+    let GAIN: number;
     let FILTER_WHEEL: number;
+    let FRAME_COUNT: number;
 }
 //# sourceMappingURL=v3_camera_params.d.ts.map
